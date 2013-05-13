@@ -1,0 +1,53 @@
+<?php require 'header.html.php' ?>
+
+<h1><?php echo $this->get('pageTitle') ?></h1>
+
+<p>
+Want to join the fun? Fill out the form below to register!
+</p>
+
+<?php /*if (isset($this->get('MSG_WARN'))){ ?>
+    <span class="msg warn"><?php echo $this->get('MSG_WARN') ?></span>
+    <br />
+<?php }elseif (isset($this->get('MSG_FAIL'))){ ?>
+    <span class="msg fail"><?php echo $this->get('MSG_FAIL') ?></span>
+    <br />
+<?php } */?>
+
+<form method="POST" action="Register">
+    <table width="80%" align=center>
+        <tr>
+            <td valign=top>
+                <label>Username</label>
+                <input type="text" size="40" name="username" zindex="1" />
+                <label>Email</label>
+                <input type="text" size="40" name="email" zindex="2" />
+            </td>
+            <td valign=top>
+                <label>Password</label>
+                <input type="password" size="40" name="password" zindex="3" />
+
+                <label>Verify Password</label>
+                <input type="password" size="40" name="password2" zindex="4" />
+            </td>
+        </tr>
+        <tr>
+            <td colspan=2 align="center">
+				<input type="hidden" name="verify" value="0" />
+                <br />
+                <input name="register" type="submit" value="Register" class="button" zindex="5" />
+            </td>
+        </tr>
+                
+    </table>
+</form>
+
+<script>
+	$.run('ready', 'security.botCheck');
+</script>
+
+<p>
+	<?php print_r( $this->get('helloWorld')) ?>
+</p>
+
+<?php require 'footer.html.php' ?>

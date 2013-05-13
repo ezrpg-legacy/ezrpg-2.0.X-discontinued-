@@ -1,0 +1,252 @@
+<?php
+
+namespace ezRPG;
+
+class App implements Interfaces\App
+{
+	protected
+		$action         = 'index',
+		$args           = array(),
+		$config         = array(),
+		$controller,
+		$controllerName = 'Index',
+		$hooks          = array(),
+		$plugins        = array(),
+		$rootPath       = '/',
+		$singletons     = array(),
+		$view
+		;
+
+	/**
+	 * Run the application
+	 */
+	public function run()
+	{
+		// Determine the client-side path to root
+		if ( !empty($_SERVER['REQUEST_URI']) ) {
+			$this->rootPath = preg_replace('/(index\.php)?(\?.*)?$/', '', rawurldecode($_SERVER['REQUEST_URI']));
+		}
+
+		// Run from command line, e.g. "php index.php -q index"
+		$opt = getopt('q:');
+
+		if ( isset($opt['q']) ) {
+			$_GET['q'] = $opt['q'];
+		}
+
+		if ( !empty($_GET['q']) ) {
+			$this->rootPath = preg_replace('/' . preg_quote($_GET['q'], '/') . '$/', '', $this->rootPath);
+		}
+
+		// Extract controller name, view name, action name and arguments from URL
+		if ( !empty($_GET['q']) ) {
+			$this->args = explode('/', $_GET['q']);
+
+			if ( $this->args ) {
+				$this->controllerName = str_replace(' ', '/', ucwords(str_replace('_', ' ', str_replace('-', '', array_shift($this->args)))));
+			}
+
+			if ( $action = $this->args ? array_shift($this->args) : '' ) {
+				$this->action = str_replace('-', '', $action);
+			}
+		}
+
+		if ( !is_file('ezRPG/Controllers/' . $this->controllerName . '.php') ) {
+			$this->controllerName .= '/Index';
+
+			if ( !is_file('ezRPG/Controllers/' . $this->controllerName . '.php') ) {
+				$this->controllerName = 'Error404';
+			}
+		}
+
+		$this->view = new View($this, strtolower($this->controllerName));
+
+		// Instantiate the controller
+		$controller = 'ezRPG\Controllers\\' . str_replace('/', '\\', $this->controllerName);
+
+		$this->controller = new $controller($this, $this->view);
+
+		// Load plugins
+		if ( $handle = opendir('ezRPG/Plugins') ) {
+			while ( ( $file = readdir($handle) ) !== FALSE ) {
+				if ( is_file('ezRPG/Plugins/' . $file) && preg_match('/^(.+)\.php$/', $file, $match) ) {
+					$pluginName = 'ezRPG\Plugins\\' . $match[1];
+
+					$this->plugins[$pluginName] = array();
+
+					foreach ( get_class_methods($pluginName) as $methodName ) {
+						$method = new \ReflectionMethod($pluginName, $methodName);
+
+						if ( $method->isPublic() && !$method->isFinal() && !$method->isConstructor() ) {
+							$this->plugins[$pluginName][] = $methodName;
+						}
+					}
+				}
+			}
+
+			ksort($this->plugins);
+
+			closedir($handle);
+		}
+
+		// Call the controller action
+		$this->registerHook('actionBefore');
+
+		if ( method_exists($this->controller, $this->action) ) {
+			$method = new \ReflectionMethod($this->controller, $this->action);
+
+			if ( $method->isPublic() && !$method->isFinal() && !$method->isConstructor() ) {
+				$this->controller->{$this->action}();
+			} else {
+				$this->controller->notImplemented();
+			}
+		} else {
+			$this->controller->notImplemented();
+		}
+
+		$this->registerHook('actionAfter');
+
+		return array($this->view, $this->controller);
+	}
+
+	/**
+	 * Serve the page
+	 */
+	public function serve()
+	{
+		$this->view->render();
+	}
+
+	/**
+	 * Get a configuration value
+	 * @param string $variable
+	 * @return mixed
+	 */
+	public function getConfig($variable)
+	{
+		if ( isset($this->config[$variable]) ) {
+			return $this->config[$variable];
+		}
+	}
+
+	/**
+	 * Set a configuration value
+	 * @param string $variable
+	 * @param mixed
+	 */
+	public function setConfig($variable, $value)
+	{
+		$this->config[$variable] = $value;
+	}
+
+	/**
+	 * Get the client-side path to root
+	 * @return string
+	 */
+	public function getRootPath()
+	{
+		return $this->rootPath;
+	}
+
+	/**
+	 * Get the controller name
+	 * @return string
+	 */
+	public function getControllerName()
+	{
+		return $this->controllerName;
+	}
+
+	/**
+	 * Get the action name
+	 * @return string
+	 */
+	public function getAction()
+	{
+		return $this->action;
+	}
+
+	/**
+	 * Get the arguments
+	 * @return array
+	 */
+	public function getArgs()
+	{
+		return $this->args;
+	}
+
+	/**
+	 * Get a model
+	 * @param string $modelName
+	 * @return object
+	 */
+	public function getModel($modelName)
+	{
+		$modelName = 'ezRPG\Models\\' . ucfirst($modelName);
+
+		// Instantiate the model
+		return new $modelName($this);
+	}
+
+	/**
+	 * Get a model singleton
+	 * @param string $modelName
+	 * @return object
+	 */
+	public function getSingleton($modelName)
+	{
+		if ( isset($this->singletons[$modelName]) ) {
+			return $this->singletons[$modelName];
+		}
+
+		$model = $this->getModel($modelName);
+
+		$this->singletons[$modelName] = $model;
+
+		return $model;
+	}
+
+	/**
+	 * Register a hook for plugins to implement
+	 * @param string $hookName
+	 * @param array $params
+	 */
+	public function registerHook($hookName, array $params = array())
+	{
+		$this->hooks[] = $hookName;
+
+		foreach ( $this->plugins as $pluginName => $hooks ) {
+			if ( in_array($hookName, $hooks) ) {
+				$plugin = new $pluginName($this, $this->view, $this->controller);
+
+				$plugin->{$hookName}($params);
+			}
+		}
+	}
+
+	/**
+	 * Class autoloader
+	 * @param $className
+	 * @see https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-0.md
+	 */
+	public function autoload($className)
+	{
+		preg_match('/(^.+\\\)?([^\\\]+)$/', ltrim($className, '\\'), $match);
+
+		$file = str_replace('\\', '/', $match[1]) . str_replace('_', '/', $match[2]) . '.php';
+
+		require $file;
+	}
+
+	/**
+	 * Error handler
+	 * @param int $number
+	 * @param string $string
+	 * @param string $file
+	 * @param int $line
+	 */
+	public function error($number, $string, $file, $line)
+	{
+		throw new \Exception('Error #' . $number . ': ' . $string . ' in ' . $file . ' on line ' . $line);
+	}
+}
