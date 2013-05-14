@@ -7,8 +7,9 @@ $app->setConfig('db', array(
 	'host'     => '127.0.0.1',
 	'database' => 'ezrpg',
 	'username' => 'root',
-	'password' => 'booters',
-	'port' => '3307'
+	'password' => 'password',
+	'port' => '3306',
+	'prefix' => ''
 	));
 
 	// Add your own configuration values here or in a separate file
