@@ -14,7 +14,7 @@
 	<body>
 
 		<div id="wrapper">
-
+ 
 			<div id="header">
 				<span id="title"><a href="./">ezRPG <span>rework</span></a></span>
 				<span id="time">Null:Null:Null
@@ -25,8 +25,13 @@
 			<div id="nav">
 				<ul>
 					<!-- Put Check for Logged In HERE -->
-						<li><a href="index.php">Home</a></li>
+						<?php if ( $this->get('loggedIn') ) { ?>
+						<li><a href="Index">Home</a></li>
+						<li><a href="Logout">Logout</a></li>
+						<?php } else { ?>
+						<li><a href="Index">Home</a></li>
 						<li><a href="Register">Register</a></li>
+						<?php } ?>
 				</ul>
 			</div>
 			<div id="body_wrap">
