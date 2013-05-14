@@ -11,7 +11,7 @@ class Register extends \ezRPG\Controller
 	 * Default action
 	 */
 	public function index()
-	{
+	{ 
 		// Some example code to get you started
 
 		// Create a model instance, see /ezRPG/Models/Example.php
@@ -19,7 +19,7 @@ class Register extends \ezRPG\Controller
 		$user = '';
 		if ( isset ( $_POST['email']	) )	
 		{
-			$user = $exampleModel->register($_POST['email'], $_POST['password']);
+			$user = $exampleModel->register($_POST['username'], $_POST['email'], $_POST['password']);
 		}
 		if ($user == 1)
 		{
