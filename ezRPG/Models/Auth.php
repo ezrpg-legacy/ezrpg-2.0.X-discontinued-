@@ -36,20 +36,21 @@ class Auth extends \ezRPG\Model
 	 * @param string $password
 	 * @return object
 	 */
-	public function authenticate($email, $password)
+	public function authenticate($id, $password)
 	{
-		if ( !filter_var($email, FILTER_VALIDATE_EMAIL) ) {
-			throw new \Exception('Email address invalid', self::EMAIL_INVALID);
+		if ( !filter_var($id, FILTER_VALIDATE_EMAIL) ) {
+			$user = $this->getUser($id);
+		} else {
+			$user = $this->getEmail($id);
 		}
 
-		$user = $this->getUser($email);
 
 		if ( !$user ) {
 			throw new \Exception('User does not exist', self::USER_NOT_FOUND);
 		}
 
-		if ( crypt($password, $user->password) != $user->password ) {
-			throw new \Exception('Password incorrect', self::PASSWORD_INCORRECT);
+		if ( substr(crypt($password, $user->secret_key), 0, 40) != $user->password ) {
+			throw new \Exception('Password Incorrect', self::PASSWORD_INCORRECT);
 		}
 
 		return $user;
@@ -62,34 +63,48 @@ class Auth extends \ezRPG\Model
 	 * @param string $password
 	 * @return bool
 	 */
-	public function register($email, $password)
+	public function register($user = '', $email = '', $password = '')
 	{
 		if ( !filter_var($email, FILTER_VALIDATE_EMAIL) ) {
 			throw new \Exception('Email address invalid', self::EMAIL_INVALID);
 		}
 
-		$user = $this->getUser($email);
-
-		if ( $user ) {
+		if ( $this->getEmail($email) ) {
 			throw new \Exception('Email address already in use', self::EMAIL_IN_USE);
 		}
-
-		$hash = $this->generateHash($password);
-
+		
+		$userName = filter_var($user, FILTER_SANITIZE_STRING);
+		
+		if ( $this->getUser($userName) ) {
+			throw new \Exception('Username is already in use', self::EMAIL_IN_USE);
+		}
+		$salt = $this->generateSalt();
+	
+		$hash = $this->generateHash($password, $salt);
+		
 		$dbh = $this->app->getSingleton('pdo')->getHandle();
-
+		
+		$config = $this->app->getConfig('db');
+		
 		$sth = $dbh->prepare('
-			INSERT INTO ez101players (
+			INSERT INTO ' . $config["prefix"] . 'players (
+				username,
 				email,
-				password
+				password,
+				secret_key,
+				registered
 			) VALUES (
+				:username,
 				:email,
-				:password
+				:password,
+				:salt,
+				' . time() . '
 			)
 			;');
-
+		$sth->bindParam(':username',    $userName);
 		$sth->bindParam(':email',    $email);
 		$sth->bindParam(':password', $hash);
+		$sth->bindParam(':salt', $salt);
 
 		return $sth->execute();
 	}
@@ -106,9 +121,11 @@ class Auth extends \ezRPG\Model
 		$hash = $this->generateHash($password);
 
 		$dbh = $this->app->getSingleton('pdo')->getHandle();
-
+		
+		$config = $this->app->getConfig('db');
+		
 		$sth = $dbh->prepare('
-			UPDATE ez101players SET
+			UPDATE ' . $config["prefix"] . 'players SET
 				password = :password
 			WHERE
 				id    = :id OR
@@ -129,13 +146,39 @@ class Auth extends \ezRPG\Model
 	public function getUser($id)
 	{
 		$dbh = $this->app->getSingleton('pdo')->getHandle();
+		
+		$config = $this->app->getConfig('db');
+		
+		$sth = $dbh->prepare('
+			SELECT
+				*
+			FROM ' . $config["prefix"] . 'players
+			WHERE
+				id    = :id OR
+				username = :id
+			LIMIT 1
+			;');
 
+		$sth->bindParam(':id', $id);
+
+		$sth->execute();
+
+		return $sth->fetch(\PDO::FETCH_OBJ);
+	}
+	
+	public function getEmail($id)
+	{
+		$dbh = $this->app->getSingleton('pdo')->getHandle();
+		
+		$config = $this->app->getConfig('db');
+		
 		$sth = $dbh->prepare('
 			SELECT
 				id,
 				email,
-				password
-			FROM ez101players
+				password,
+				secret_key
+			FROM ' . $config["prefix"] . 'players
 			WHERE
 				id    = :id OR
 				email = :id
@@ -148,11 +191,35 @@ class Auth extends \ezRPG\Model
 
 		return $sth->fetch(\PDO::FETCH_OBJ);
 	}
-
-	protected function generateHash($password)
+	
+	protected function generateHash($password, $salt)
 	{
-    $salt = sprintf('$2a$%02d$', $this->bcryptCost) . strtr(base64_encode(mcrypt_create_iv(16, MCRYPT_DEV_URANDOM)), '+', '.');
 
     return crypt($password, $salt);
+	}
+	
+	protected function generateSalt()
+	{
+	$salt = sprintf('$2a$%02d$', $this->bcryptCost) . strtr(base64_encode(mcrypt_create_iv(16, MCRYPT_DEV_URANDOM)), '+', '.');
+	return $salt;
+	}
+ 
+	public function setLastLogin($id)
+	{
+		$dbh = $this->app->getSingleton('pdo')->getHandle();
+
+		$config = $this->app->getConfig('db');
+		
+		$sth = $dbh->prepare('
+			UPDATE ' . $config["prefix"] . 'players SET
+				last_login = ' . time() . '
+			WHERE
+				id    = :id OR
+				username = :id
+			LIMIT 1
+			;');
+		$sth->bindParam(':id', $id);
+
+		return $sth->execute();
 	}
 }
