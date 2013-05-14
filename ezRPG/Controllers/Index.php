@@ -12,14 +12,14 @@ class Index extends \ezRPG\Controller
 	 */
 	public function index()
 	{
-		$checkUser = $this->app->getSingleton('session')->loggedIn();
-		$this->view->set('loggedIn', $checkUser);
-		if ($checkUser === false ){
+		$checkPlayer = $this->app->getSingleton('session')->loggedIn();
+		$this->view->set('loggedIn', $checkPlayer);
+		if ($checkPlayer === false ){
 			$this->view->name = 'index';
 		} else {
-			$userID = $this->app->getSingleton('session')->get('userid');
+			$playerID = $this->app->getSingleton('session')->get('playerid');
 			$this->view->name = 'home';
-			$this->view->set('player', $this->app->getSingleton('auth')->getUser($userID));
+			$this->view->set('player', $this->app->getSingleton('auth')->getPlayer($playerID));
 		}
 	}
 }

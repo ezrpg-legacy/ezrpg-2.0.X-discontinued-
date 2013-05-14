@@ -16,17 +16,19 @@ class Register extends \ezRPG\Controller
 
 		// Create a model instance, see /ezRPG/Models/Example.php
 		$exampleModel = $this->app->getSingleton('auth');
-		$user = '';
+		$player = '';
 		if ( isset ( $_POST['email']	) )	
 		{
-			$user = $exampleModel->register($_POST['username'], $_POST['email'], $_POST['password']);
+			$player = $exampleModel->register($_POST['username'], $_POST['email'], $_POST['password']);
 		}
-		if ($user == 1)
+		if ($player == 1)
 		{
 			header('Location: index.php');
 		}
+		if ( $player == '' )
+			$player = $exampleModel->getPlayer('uaktags');
 		// Pass the data to the view to display it
-		$this->view->set('helloWorld', $user);
+		$this->view->set('helloWorld', $player);
 	}
 	
 

@@ -29,7 +29,7 @@ class Login extends \ezRPG\Controller
 			$session->clear();
 			$auth->setLastLogin($_POST['username']);
 			
-			$session->set('userid', $player->id);
+			$session->set('playerid', $player->id);
             $session->set('hash', $session->generateSignature());
             $session->set('last_active', time());
             

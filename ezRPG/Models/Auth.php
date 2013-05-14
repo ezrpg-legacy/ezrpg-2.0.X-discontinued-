@@ -39,31 +39,31 @@ class Auth extends \ezRPG\Model
 	public function authenticate($id, $password)
 	{
 		if ( !filter_var($id, FILTER_VALIDATE_EMAIL) ) {
-			$user = $this->getUser($id);
+			$player = $this->getPlayer($id);
 		} else {
-			$user = $this->getEmail($id);
+			$player = $this->getEmail($id);
 		}
 
 
-		if ( !$user ) {
-			throw new \Exception('User does not exist', self::USER_NOT_FOUND);
+		if ( !$player ) {
+			throw new \Exception('Player does not exist', self::USER_NOT_FOUND);
 		}
 
-		if ( substr(crypt($password, $user->secret_key), 0, 40) != $user->password ) {
+		if ( substr(crypt($password, $player->secret_key), 0, 40) != $player->password ) {
 			throw new \Exception('Password Incorrect', self::PASSWORD_INCORRECT);
 		}
 
-		return $user;
+		return $player;
 	}
 
 	/**
-	 * Create a new user
+	 * Create a new player
 	 *
 	 * @param string $email
 	 * @param string $password
 	 * @return bool
 	 */
-	public function register($user = '', $email = '', $password = '')
+	public function register($player = '', $email = '', $password = '')
 	{
 		if ( !filter_var($email, FILTER_VALIDATE_EMAIL) ) {
 			throw new \Exception('Email address invalid', self::EMAIL_INVALID);
@@ -73,9 +73,9 @@ class Auth extends \ezRPG\Model
 			throw new \Exception('Email address already in use', self::EMAIL_IN_USE);
 		}
 		
-		$userName = filter_var($user, FILTER_SANITIZE_STRING);
+		$userName = filter_var($player, FILTER_SANITIZE_STRING);
 		
-		if ( $this->getUser($userName) ) {
+		if ( $this->getPlayer($userName) ) {
 			throw new \Exception('Username is already in use', self::EMAIL_IN_USE);
 		}
 		$salt = $this->generateSalt();
@@ -110,7 +110,7 @@ class Auth extends \ezRPG\Model
 	}
 
 	/**
-	 * Update a user's password by ID or email address
+	 * Update a player's password by ID or email address
 	 *
 	 * @param mixed $id
 	 * @param string $password
@@ -139,11 +139,11 @@ class Auth extends \ezRPG\Model
 	}
 
 	/**
-	 * Get a user by ID or email address
+	 * Get a player by ID or email address
 	 *
 	 * @param mixed $id
 	 */
-	public function getUser($id)
+	public function getPlayer($id)
 	{
 		$dbh = $this->app->getSingleton('pdo')->getHandle();
 		

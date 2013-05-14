@@ -52,16 +52,16 @@ class Session extends \ezRPG\Model
 	function generateSignature() 
 	{
 		
-		$client = array_key_exists('userid', $_SESSION) ? 
-						$_SESSION['userid'] : 'guest';
+		$client = array_key_exists('playerid', $_SESSION) ? 
+						$_SESSION['playerid'] : 'guest';
 		
 		if ( $client == 'guest' )
 			$key = $this->app->getSingleton('auth')->generateSalt;
 		else
-			$key = $this->app->getSingleton('auth')->getUser($client)->secret_key;
+			$key = $this->app->getSingleton('auth')->getPlayer($client)->secret_key;
 			
 		$bits = array(
-			'userid'    => $client,
+			'playerid'    => $client,
 			'ip'        => $_SERVER['REMOTE_ADDR'],
 			'browser'   => $_SERVER['HTTP_USER_AGENT'],
 			'key'       => $key
@@ -92,8 +92,8 @@ class Session extends \ezRPG\Model
 		$this->messages[$level] .= $message;
 		return true;
 	}
-	public function validUser(){
-		if ( !( $playerId = $this->get('userid') ) ) {
+	public function validPlayer(){
+		if ( !( $playerId = $this->get('playerid') ) ) {
 			header('HTTP/1.0 403 Forbidden');
 
 			header('Location: index');
@@ -105,7 +105,7 @@ class Session extends \ezRPG\Model
 	}
 	
 	public function loggedIn(){
-		if (  $this->get('userid')  ) {
+		if (  $this->get('playerid')  ) {
 			return true;
 		}
 		return false;
