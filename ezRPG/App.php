@@ -5,11 +5,11 @@ namespace ezRPG;
 class App implements Interfaces\App
 {
 	protected
-		$action         = 'index',
+		$action,
 		$args           = array(),
 		$config         = array(),
-		$controller,
-		$controllerName = 'Index',
+		$module,
+		$moduleName,
 		$hooks          = array(),
 		$plugins        = array(),
 		$rootPath       = '/',
@@ -38,33 +38,30 @@ class App implements Interfaces\App
 			$this->rootPath = preg_replace('/' . preg_quote($_GET['q'], '/') . '$/', '', $this->rootPath);
 		}
 
-		// Extract controller name, view name, action name and arguments from URL
-		if ( !empty($_GET['q']) ) {
-			$this->args = explode('/', $_GET['q']);
-
-			if ( $this->args ) {
-				$this->controllerName = str_replace(' ', '/', ucwords(str_replace('_', ' ', str_replace('-', '', array_shift($this->args)))));
-			}
-
-			if ( $action = $this->args ? array_shift($this->args) : '' ) {
-				$this->action = str_replace('-', '', $action);
-			}
+		if (!(array_key_exists('q', $_GET) && !empty($_GET['q']))) {
+			$_GET['q'] = 'Index';
 		}
 
-		if ( !is_file('ezRPG/Controllers/' . $this->controllerName . '.php') ) {
-			$this->controllerName .= '/Index';
-
-			if ( !is_file('ezRPG/Controllers/' . $this->controllerName . '.php') ) {
-				$this->controllerName = 'Error404';
-			}
+		// Create router and resolve query
+		$router = new Router;
+		$router->buildRoutes('ezRPG/Modules');
+		
+		$router->addRoute(array('Error404' => 'ezRPG\Modules\Error404'));
+		$routeMatch = $router->resolve($_GET['q']);
+		
+		if ($routeMatch == false) {
+			$routeMatch = $router->resolve('Error404');
 		}
-
-		$this->view = new View($this, strtolower($this->controllerName));
+		
+		$this->module = $routeMatch['module'];
+		$this->action = $routeMatch['action'];
+		
+		// Instantiate the view
+		$this->moduleName = strtolower(substr($this->module, strrpos($this->module, '\\') + 1));
+		$this->view = new View($this, $this->moduleName);
 
 		// Instantiate the controller
-		$controller = 'ezRPG\Controllers\\' . str_replace('/', '\\', $this->controllerName);
-
-		$this->controller = new $controller($this, $this->view);
+		$this->module = new $this->module($this, $this->view);
 
 		// Load plugins
 		if ( $handle = opendir('ezRPG/Plugins') ) {
@@ -91,22 +88,12 @@ class App implements Interfaces\App
 
 		// Call the controller action
 		$this->registerHook('actionBefore');
-
-		if ( method_exists($this->controller, $this->action) ) {
-			$method = new \ReflectionMethod($this->controller, $this->action);
-
-			if ( $method->isPublic() && !$method->isFinal() && !$method->isConstructor() ) {
-				$this->controller->{$this->action}();
-			} else {
-				$this->controller->notImplemented();
-			}
-		} else {
-			$this->controller->notImplemented();
-		}
-
+		
+		$this->module->{$this->action}();
+		
 		$this->registerHook('actionAfter');
 
-		return array($this->view, $this->controller);
+		return array($this->view, $this->module);
 	}
 
 	/**
@@ -149,12 +136,12 @@ class App implements Interfaces\App
 	}
 
 	/**
-	 * Get the controller name
+	 * Get the module name
 	 * @return string
 	 */
-	public function getControllerName()
+	public function getModuleName()
 	{
-		return $this->controllerName;
+		return $this->moduleName;
 	}
 
 	/**
@@ -217,7 +204,7 @@ class App implements Interfaces\App
 
 		foreach ( $this->plugins as $pluginName => $hooks ) {
 			if ( in_array($hookName, $hooks) ) {
-				$plugin = new $pluginName($this, $this->view, $this->controller);
+				$plugin = new $pluginName($this, $this->view, $this->module);
 
 				$plugin->{$hookName}($params);
 			}
@@ -232,7 +219,6 @@ class App implements Interfaces\App
 	public function autoload($className)
 	{
 		preg_match('/(^.+\\\)?([^\\\]+)$/', ltrim($className, '\\'), $match);
-
 		$file = str_replace('\\', '/', $match[1]) . str_replace('_', '/', $match[2]) . '.php';
 
 		require $file;

@@ -9,7 +9,7 @@ class Example extends \ezRPG\Plugin
 	 */
 	public function actionAfter()
 	{
-		if ( get_class($this->controller) === 'ezRPG\Controllers\Index' ) {
+		if ( get_class($this->module) === 'ezRPG\Modules\Index' ) {
 			$helloWorld = $this->view->get('helloWorld');
 
 			$this->view->set('helloWorld', $helloWorld . ' This string was altered by ' . __CLASS__ . '.');

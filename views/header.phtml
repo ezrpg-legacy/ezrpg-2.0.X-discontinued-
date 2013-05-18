@@ -4,9 +4,8 @@
 		<meta name="keywords" content="" />
 		
 		<link type="text/css" rel="stylesheet" href="<?php echo $this->app->getRootPath() ?>views/css/style.css">
-		<script src="<?php echo $this->app->getRootPath() ?>views/scripts/ext/jquery/jquery.1.8.1.min.js"></script>
-		<script src="<?php echo $this->app->getRootPath() ?>views/scripts/ext/jquery/plugins/run.js"></script>
-		<script src="<?php echo $this->app->getRootPath() ?>views/scripts/security.js"></script>
+		<script src="<?php echo $this->app->getRootPath() ?>views/js/lib/ext/jquery/jquery.1.8.1.min.js"></script>
+		<script src="<?php echo $this->app->getRootPath() ?>views/js/lib/ext/jquery/plugins/run.js"></script>
 		<title><?php echo $this->htmlEncode($this->app->getConfig('siteName')) . ' - ' . $this->get('pageTitle') ?></title>
 
 	</head>
@@ -26,11 +25,11 @@
 				<ul>
 					<!-- Put Check for Logged In HERE -->
 						<?php if ( $this->get('loggedIn') ) { ?>
-						<li><a href="Index">Home</a></li>
-						<li><a href="Logout">Logout</a></li>
+						<li><a href="/Index">Home</a></li>
+						<li><a href="/Logout">Logout</a></li>
 						<?php } else { ?>
-						<li><a href="Index">Home</a></li>
-						<li><a href="Register">Register</a></li>
+						<li><a href="/Index">Home</a></li>
+						<li><a href="/Register">Register</a></li>
 						<?php } ?>
 				</ul>
 			</div>
