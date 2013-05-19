@@ -118,7 +118,9 @@ class Auth extends \ezRPG\Model
 	 */
 	public function setPassword($id, $password)
 	{
-		$hash = $this->generateHash($password);
+		$salt = $this->generateSalt();
+
+		$hash = $this->generateHash($password, $salt);
 
 		$dbh = $this->app->getSingleton('pdo')->getHandle();
 		
@@ -126,7 +128,8 @@ class Auth extends \ezRPG\Model
 		
 		$sth = $dbh->prepare('
 			UPDATE ' . $config["prefix"] . 'players SET
-				password = :password
+				password = :password,
+				secret_key = :salt
 			WHERE
 				id    = :id OR
 				email = :id
@@ -134,6 +137,8 @@ class Auth extends \ezRPG\Model
 			;');
 
 		$sth->bindParam(':id', $id);
+		$sth->bindParam(':password', $hash);
+		$sth->bindParam(':salt', $salt);
 
 		return $sth->execute();
 	}
