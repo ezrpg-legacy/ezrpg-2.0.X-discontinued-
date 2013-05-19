@@ -118,4 +118,14 @@ class View implements Interfaces\View
 			throw new \Exception('View not found');
 		}
 	}
+	
+	/**
+	 * Create a msg var.
+	 * $this->get('msg', FALSE) FALSE must be used to decode the HTML
+	 */
+	public function setMessage($message, $warn)
+	{
+		$html = '<span class="msg '.$warn.'">'.$message.'</span>';
+		$this->set('msg', $html);
+	}
 }
