@@ -86,12 +86,13 @@ class App implements Interfaces\App
 			closedir($handle);
 		}
 
-		// Call the controller action
-		$this->registerHook('actionBefore');
+		// Removed: Call the controller action (Not Utilized, Swiftlet Example of Hook Usage)
+		//$this->registerHook('actionBefore');
 		
 		$this->module->{$this->action}();
 		
-		$this->registerHook('actionAfter');
+		// Removed: Call the controller action (Not Utilized, Swiftlet Example of Hook Usage)
+		//$this->registerHook('actionAfter');
 
 		return array($this->view, $this->module);
 	}
