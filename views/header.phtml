@@ -25,14 +25,14 @@
 				<ul>
 					<!-- Put Check for Logged In HERE -->
 						<?php if ( $this->get('loggedIn') ) { ?>
-						<li><a href="/Index">Home</a></li>
-						<li><a href="/Logout">Logout</a></li>
+						<li><a href="<?php echo $this->app->getConfig('siteURL') ?>/Index">Home</a></li>
+						<li><a href="<?php echo $this->app->getConfig('siteURL') ?>/Logout">Logout</a></li>
 						<?php } else { ?>
-						<li><a href="/Index">Home</a></li>
-						<li><a href="/Register">Register</a></li>
+						<li><a href="<?php echo $this->app->getConfig('siteURL') ?>/Index">Home</a></li>
+						<li><a href="<?php echo $this->app->getConfig('siteURL') ?>/Register">Register</a></li>
 						<?php } ?>
 				</ul>
 			</div>
 			<div id="body_wrap">
-				
+				<?php echo $this->get('msg', false); ?>
 				<div id="body">
