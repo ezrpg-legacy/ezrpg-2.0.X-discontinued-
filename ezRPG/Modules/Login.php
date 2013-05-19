@@ -25,7 +25,7 @@ class Login extends \ezRPG\Module
 				$fail = 'Please check your username/password!';
 		}
 		
-        if ($player) {
+        if (!$fail && !$warn) {
 			$session->clear();
 			$auth->setLastLogin($_POST['username']);
 			
@@ -33,20 +33,19 @@ class Login extends \ezRPG\Module
             $session->set('hash', $session->generateSignature());
             $session->set('last_active', time());
             
-            header('Location: index');
+            header('Location: Index');
             exit;
         } else {
-            $session->clear();
+			$session->clear();
 			
-			/*if (!empty($warn)) {
-				$this->setMessage($warn, 'WARN');
+			if (!empty($warn)) {
+				$this->view->setMessage($warn, 'WARN');
 			} else {
 				$msg = 'Sorry, you could not be logged in:<br />' . $fail;
-				$this->setMessage($msg, 'FAIL');
-			}*/
-			
-            header('Location: index');
-            exit;
+				$this->view->setMessage($msg, 'FAIL');
+			}
+			// Changed from a header to just grabbing the view itself
+            $this->view->name = "index";
         }
 	}
 }
