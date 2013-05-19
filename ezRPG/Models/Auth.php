@@ -49,8 +49,17 @@ class Auth extends \ezRPG\Model
 			throw new \Exception('Player does not exist', self::USER_NOT_FOUND);
 		}
 
-		if ( substr(crypt($password, $player->secret_key), 0, 40) != $player->password ) {
-			throw new \Exception('Password Incorrect', self::PASSWORD_INCORRECT);
+		//$check = sha1($player->secret_key . $_POST['password'] . SECRET_KEY);
+		if( $this->app->getConfig('legacy_secret') && $player->password == "" ){
+			if ( sha1($player->secret_key . $password . $this->app->getConfig('legacy_secret')) != $player->oldpass ){
+				throw new \Exception('Password Incorrect', self::PASSWORD_INCORRECT);
+			}else{
+				$this->setPassword($player->id, $password);
+			}
+		}else{
+			if ( substr(crypt($password, $player->secret_key), 0, 40) != $player->password ) {
+				throw new \Exception('Password Incorrect', self::PASSWORD_INCORRECT);
+			}
 		}
 
 		return $player;
