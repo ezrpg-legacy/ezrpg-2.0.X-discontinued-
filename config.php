@@ -12,4 +12,5 @@ $app->setConfig('db', array(
 	'prefix' => ''
 	));
 
+$app->setConfig('siteURL', 'http://localhost/');
 	// Add your own configuration values here or in a separate file
