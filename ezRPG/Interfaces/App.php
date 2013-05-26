@@ -24,7 +24,5 @@ interface App
 
 	public function registerHook($hookName, array $params = array());
 
-	public function autoload($className);
-
 	public function error($number, $string, $file, $line);
 }

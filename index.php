@@ -1,19 +1,20 @@
 <?php
-
 namespace ezRPG;
 
 try {
-	chdir(dirname(__FILE__));
+	chdir(__DIR__);
 
 	// Bootstrap the application
-	require 'ezRPG/Interfaces/App.php';
-	require 'ezRPG/App.php';
-
+        require 'ezRPG/Autoload.php';
+        
+        $autoloader = new Autoload;
+        
+        spl_autoload_register(array($autoloader, 'loadClass'));
+        
 	$app = new App;
 
 	set_error_handler(array($app, 'error'), E_ALL | E_STRICT);
 
-	spl_autoload_register(array($app, 'autoload'));
 
 	require 'config.php';
 

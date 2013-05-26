@@ -213,19 +213,6 @@ class App implements Interfaces\App
 	}
 
 	/**
-	 * Class autoloader
-	 * @param $className
-	 * @see https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-0.md
-	 */
-	public function autoload($className)
-	{
-		preg_match('/(^.+\\\)?([^\\\]+)$/', ltrim($className, '\\'), $match);
-		$file = str_replace('\\', '/', $match[1]) . str_replace('_', '/', $match[2]) . '.php';
-
-		require $file;
-	}
-
-	/**
 	 * Error handler
 	 * @param int $number
 	 * @param string $string
