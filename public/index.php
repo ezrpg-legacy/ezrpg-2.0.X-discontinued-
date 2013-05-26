@@ -11,14 +11,17 @@ $loader->register();
 
 $app = new Library\App();
 
-//Create an instance of Config class
+// Create an instance of Config class
 $config = new Library\Config();
 
-//Now include the actual configuration
+// Now include the actual configuration
 require 'config.php';
 
-echo $config['database']['username']; //testing
+$app->setConfig($config);
 
+
+//testing
+echo $app->test();
 
 
 
