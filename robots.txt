@@ -1,7 +1,0 @@
-User-agent: *
-Disallow: /ezRPG/
-Disallow: /tests/
-Disallow: /views/
-Disallow: /config.php
-Disallow: /COPYING
-Disallow: /Readme.md
