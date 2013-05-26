@@ -3,7 +3,7 @@ namespace Library;
 
 class App implements AppInterface
 {
-    public $config;
+    protected $config;
     
     public function run()
     {
