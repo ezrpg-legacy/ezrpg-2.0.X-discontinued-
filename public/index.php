@@ -9,19 +9,24 @@ require '/Library/Autoloader.php';
 $loader = new Library\Autoloader();
 $loader->register();
 
-$app = new Library\App();
+$container = new Library\Container();
 
-// Create an instance of Config class
-$config = new Library\Config();
+$container['config'] = $container->share(function ($container) {
+    // Create an instance of Config class
+    $config = new Library\Config();
 
-// Now include the actual configuration
-require 'config.php';
+    // Now include the actual configuration
+    require 'config.php';
+    
+    return $config;
+});
 
-$app->setConfig($config);
 
 
-//testing
-echo $app->test();
+$app = new Library\App($container);
+
+
+
 
 
 

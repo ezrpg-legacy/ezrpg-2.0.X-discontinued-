@@ -33,4 +33,23 @@ class Config implements ConfigInterface, \ArrayAccess
     {
         unset($this->config[$offset]);
     }
+    
+    public function get($key, $default = null)
+    {
+        $config = $this->config;
+        
+        if (is_null($key)) return $config;
+        
+        foreach (explode('.', $key) as $segment)
+        {
+            if ( ! is_array($config) or ! array_key_exists($segment, $config))
+            {
+                return $default;
+            }
+
+            $config = $config[$segment];
+        }
+        
+        return $config;
+    }
 }

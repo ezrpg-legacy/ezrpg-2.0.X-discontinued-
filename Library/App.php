@@ -3,20 +3,14 @@ namespace Library;
 
 class App implements AppInterface
 {
-    protected $config;
+    protected $container;
+    
+    public function __construct(ContainerInterface $container)
+    {
+        $this->container = $container;
+    }
     
     public function run()
     {
     }
-    
-    public function setConfig(\Library\ConfigInterface $config)
-    {
-        $this->config = $config;
-    }
-    
-    public function test()
-    {
-        return $this->config['database']['username'];
-    }
-    
 }
