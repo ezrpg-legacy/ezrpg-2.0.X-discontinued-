@@ -1,11 +1,6 @@
-<<<<<<< HEAD
 <?php
 
 namespace ezRPG\Library\Router;
-=======
-<?php
-namespace Library\Router;
->>>>>>> 4b834a18650eae41cddb6f27bf0182d9e5bdcbd9
 
 class RouteMatch implements RouteMatchInterface
 {
@@ -24,8 +19,4 @@ class RouteMatch implements RouteMatchInterface
 
         return $default;
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 4b834a18650eae41cddb6f27bf0182d9e5bdcbd9
