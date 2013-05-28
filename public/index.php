@@ -11,23 +11,14 @@ $loader->register();
 
 $container = new Library\Container();
 
-$container['config'] = $container->share(function ($container) {
-    // Create an instance of Config class
-    $config = new Library\Config();
+$config = new Library\Config();
 
-    // Now include the actual configuration
-    require 'config.php';
-    
-    return $config;
-});
+require 'config.php';
 
+$container['config'] = $config;
+
+// Routing
 
 
 $app = new Library\App($container);
-
-
-
-
-
-
 $app->run();

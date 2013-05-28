@@ -25,7 +25,7 @@ namespace Library;
  * THE SOFTWARE.
  */
 
-class Container implements \ArrayAccess
+class Container implements ContainerInterface
 {
     protected $values = array();
 

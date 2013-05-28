@@ -1,7 +1,7 @@
 <?php
 namespace Library;
 
-interface ConfigInterface
+interface ConfigInterface extends \ArrayAccess
 {
     public function get($key, $default = null);
 }

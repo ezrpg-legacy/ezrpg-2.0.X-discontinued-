@@ -1,7 +1,7 @@
 <?php
 namespace Library;
 
-interface ContainerInterface
+interface ContainerInterface extends \ArrayAccess
 {
     
 }

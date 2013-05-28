@@ -1,7 +1,7 @@
 <?php
 namespace Library;
 
-class Config implements ConfigInterface, \ArrayAccess
+class Config implements ConfigInterface
 {
     private $config = array();
 

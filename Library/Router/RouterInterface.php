@@ -1,5 +1,5 @@
 <?php
-namespace Library;
+namespace Library\Router;
 
 interface RouterInterface
 {
