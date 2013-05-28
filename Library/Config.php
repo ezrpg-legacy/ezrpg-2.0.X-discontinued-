@@ -1,5 +1,6 @@
 <?php
-namespace Library;
+
+namespace ezRPG\Library;
 
 class Config implements ConfigInterface
 {

@@ -1,5 +1,6 @@
 <?php
-namespace Library;
+
+namespace ezRPG\Library;
 
 /*
  * This file is part of Pimple.

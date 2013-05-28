@@ -1,5 +1,6 @@
 <?php
-namespace Library\Router;
+
+namespace ezRPG\Library\Router;
 
 class Router implements RouterInterface
 {

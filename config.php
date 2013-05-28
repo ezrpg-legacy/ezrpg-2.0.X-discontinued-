@@ -1,6 +1,12 @@
 <?php
-// Configuration
 
-$config['database'] = array(
-    'username' => 'root',
+/**
+ * Configuration
+ */ 
+
+$userland_config = array(
+	'database' => array(
+    	'username' => 'root',
+		'password' => ''
+	)
 );

@@ -1,5 +1,8 @@
 <?php
-namespace Library;
+
+namespace ezRPG\Library;
+
+use \RuntimeException;
 
 class App implements AppInterface
 {
@@ -12,6 +15,7 @@ class App implements AppInterface
     
     public function run()
     {
-        
+    	// does nothing.
+    	throw new RuntimeException('Not implemeneted');
     }
 }
