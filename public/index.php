@@ -15,7 +15,6 @@ use ezRPG\Library\App,
 chdir(dirname(__DIR__));
 
 // Bootstrap the application
-require 'config.php';
 require dirname(__DIR__) . '/Library/Autoloader.php';
 
 // Instantiate the autoloader
@@ -27,10 +26,24 @@ $container = new Container;
 
 // set required dependancies for the container
 $config = new Config;
-$config['database'] = $userland_config['database'];
+require 'config.php';
 
 $container['config'] = $config;
 
 // Run
-$app = new App($container);
-$app->run();
+try {
+	$app = new App($container);
+	
+	// Set error handler
+	set_error_handler(array($app, 'error'), E_ALL | E_STRICT);
+	
+	$app->run();
+	$app->serve();
+} catch ( \Exception $e ) {
+	if ( !headers_sent() ) {
+		header('HTTP/1.1 503 Service Temporarily Unavailable');
+		header('Status: 503 Service Temporarily Unavailable');
+	}
+
+	exit('ezRPG Exception: ' . $e->getMessage());
+}

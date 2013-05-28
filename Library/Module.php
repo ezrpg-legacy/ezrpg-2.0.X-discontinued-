@@ -2,13 +2,39 @@
 
 namespace ezRPG\Library;
 
-abstract class Module
+abstract class Module implements Interfaces\Module
 {
-	
-	protected $container;
-	
-    public function __construct(ConfigInterface $container) 
-    {
-    	$this->container = $container;
-    }
+	protected
+		$app,
+		$view,
+		$title
+		;
+
+	/**
+	 * Constructor
+	 * @param object $app
+	 * @param object $view
+	 */
+	public function __construct(Interfaces\App $app, Interfaces\View $view)
+	{
+		$this->app  = $app;
+		$this->view = $view;
+
+		$this->view->set('pageTitle', $this->title);
+	}
+
+	/**
+	 * Default action
+	 */
+	public function index()
+	{
+	}
+
+	/**
+	 * Fallback in case action doesn't exist
+	 */
+	public function notImplemented()
+	{
+		throw new \Exception('Action ' . $this->view->htmlEncode($this->app->getAction()) . ' not implemented in ' . get_called_class());
+	}
 }
