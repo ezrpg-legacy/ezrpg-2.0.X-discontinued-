@@ -89,9 +89,10 @@ class Router implements Interfaces\Router
 			$class =  new ReflectionClass($class_name);
 
 			foreach($class->getMethods(256) as $method) {
+				/*This keeps stopping the router from getting routes?
 				if ($method->isConstructor() || $method->isAbstract() || $method->isFinal()) {
 					continue;
-				}
+				}*/
 				
 				$method = $method->name;
 				$uri = $class_name;
