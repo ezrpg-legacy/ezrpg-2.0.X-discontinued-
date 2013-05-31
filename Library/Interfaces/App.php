@@ -7,11 +7,7 @@ interface App
 	public function run();
 
 	public function serve();
-
-	public function getConfig($variable);
-
-	public function setConfig($variable, $value);
-
+	
 	public function getRootPath();
 
 	public function getAction();

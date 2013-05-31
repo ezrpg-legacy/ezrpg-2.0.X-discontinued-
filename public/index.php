@@ -25,7 +25,7 @@ $autoloader->register();
 $container = new Container;
 
 // set required dependancies for the container
-$config = new Config;
+$config = new Config();
 require 'config.php';
 
 $container['config'] = $config;

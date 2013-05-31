@@ -7,7 +7,7 @@
 		<script src="<?php echo $this->app->getRootPath() ?>js/lib/ext/jquery/jquery.1.8.1.min.js"></script> 
 		<script src="<?php echo $this->app->getRootPath() ?>js/lib/ext/jquery/plugins/run.js"></script>
 		<script src="<?php echo $this->app->getRootPath() ?>js/lib/ext/clock.js"></script>
-		<title><?php echo $this->htmlEncode($this->app->getConfig('siteName')) . ' - ' . $this->get('pageTitle') ?></title>
+		<title><?php echo $this->app->config->get('site.name') ?></title>
                 <script>
 			$(document).ready(function()
 				{
@@ -32,11 +32,11 @@
 				<ul>
 					<!-- Put Check for Logged In HERE -->
 						<?php if ( $this->get('loggedIn') ) { ?>
-						<li><a href="<?php echo $this->app->getConfig('siteURL') ?>/Index">Home</a></li>
-						<li><a href="<?php echo $this->app->getConfig('siteURL') ?>/Logout">Logout</a></li>
+						<li><a href="<?php echo $this->app->config->get('site.url') ?>Index">Home</a></li>
+						<li><a href="<?php echo $this->app->config->get('site.url') ?>Logout">Logout</a></li>
 						<?php } else { ?>
-						<li><a href="<?php echo $this->app->getConfig('siteURL') ?>/Index">Home</a></li>
-						<li><a href="<?php echo $this->app->getConfig('siteURL') ?>/Register">Register</a></li>
+						<li><a href="<?php echo $this->app->config->get('site.url') ?>Index">Home</a></li>
+						<li><a href="<?php echo $this->app->config->get('site.url') ?>Register">Register</a></li>
 						<?php } ?>
 				</ul>
 			</div>

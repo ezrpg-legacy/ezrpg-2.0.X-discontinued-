@@ -11,7 +11,6 @@ class App implements Interfaces\App
     protected $container, 
     		  $action, 
     		  $args 		= array(), 
-    		  $config 		= array(),
     		  $module, 
     		  $moduleName, 
     		  $hooks 		= array(),
@@ -26,6 +25,7 @@ class App implements Interfaces\App
     
     public function run()
     {
+
         // Determine the client-side path to root
 		if ( !empty($_SERVER['REQUEST_URI']) ) {
 			$this->rootPath = preg_replace('/(index\.php)?(\?.*)?$/', '', rawurldecode($_SERVER['REQUEST_URI']));
@@ -119,29 +119,6 @@ class App implements Interfaces\App
     public function serve()
     {
     	$this->view->render();
-    }
-    
-    /**
-     * Get a configuration value
-     * @param string $variable
-     * @return mixed
-     */
-    public function getConfig($variable)
-    {
-    	if ( isset($this->container['config'][$variable]) ) {
-    		return $this->container['config'][$variable];
-    	}
-    }
-    
-    /**
-     * Set a configuration value
-     * @param string $variable
-     * @param mixed
-     * @deprecated
-     */
-    public function setConfig($variable, $value)
-    {
-    	$this->container['config'][$variable] = $value;
     }
     
     /**
@@ -255,5 +232,11 @@ class App implements Interfaces\App
     public function error($number, $string, $file, $line)
     {
     	throw new \Exception('Error #' . $number . ': ' . $string . ' in ' . $file . ' on line ' . $line);
+    }
+
+
+    public function __get($key)
+    {
+        return $this->container[$key];
     }
 }
