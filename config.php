@@ -5,7 +5,7 @@
  */ 
 
 $config['siteName'] = 'ezRPG';
-$config['siteURL'] = 'http://ezrpg.dakota.esu';
+$config['siteURL'] = 'http://localhost:9000/GitHub/Rework-Revisited/public/';
 
 $config['db'] = array(
 	'driver'   => 'mysql',
