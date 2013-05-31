@@ -3,14 +3,14 @@
 namespace ezRPG\Module\Login;
 use ezRPG\Library\Module;
 
-class Index extends Module
+class Login extends Module
 {
 
-  /**
+	/**
 	 * Default action
 	 */
 	public function index()	{
-		/*$fail = '';
+		$fail = '';
 		$warn = '';
 		$auth = $this->app->getModel('auth');
 		$session = $this->app->getModel('session');
@@ -29,8 +29,7 @@ class Index extends Module
 			$session->set('playerid', $player->id);
             $session->set('hash', $session->generateSignature());
             $session->set('last_active', time());
-            
-            header('Location: Index');
+            header('Location: Home');
             exit;
         } else {
 			$session->clear();
@@ -43,7 +42,7 @@ class Index extends Module
 			}
 			// Changed from a header to just grabbing the view itself
             $this->view->name = "index";
-        }*/
+        }
 		
 	}
 	
