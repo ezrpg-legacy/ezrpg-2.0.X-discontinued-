@@ -48,9 +48,14 @@ class App implements Interfaces\App
 
 		// Create router and resolve query
 		$router = new Router;
-		$router->buildRoutes('Module');
+		
 
-		$router->addRoute(array('Error404' => '\ezRPG\Module\Error404\Index'));
+        //
+
+        $router->addRoutes($this->container['config']['routes']);
+
+        $router->buildRoutes('Module');
+
 		$uri = str_replace('/', '\\', $_GET['q']);
 		$routeMatch = $router->resolve($uri);
 
@@ -59,11 +64,16 @@ class App implements Interfaces\App
 		}
 
 		$this->module = $routeMatch['module'];
+
+
 		$this->action = $routeMatch['action'];
 		$this->arguments = $routeMatch['arguments'];
 
 		// Instantiate the view
 		$this->moduleName = strtolower(substr($this->module, strrpos($this->module, '\\') + 1));
+
+  
+
 		$this->view = new View($this, $this->moduleName);
 
 		// Instantiate the controller

@@ -3,7 +3,7 @@
 namespace ezRPG\Module\Error404;
 use ezRPG\Library\Module;
 
-class Index extends Module
+class Error404 extends Module
 {
 	protected
 		$title = 'Error 404'

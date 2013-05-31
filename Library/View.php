@@ -1,17 +1,13 @@
 <?php
-
 namespace ezRPG\Library;
 
 class View implements Interfaces\View
 {
-	protected
-		$app,
-		$variables = array()
-		;
+	protected $app;
+	protected $variables = array();
 
-	public
-		$name
-		;
+	public $layout = 'default';
+	public $name;
 
 	/**
 	 * Constructor
@@ -110,7 +106,7 @@ class View implements Interfaces\View
 	 */
 	public function render()
 	{
-		$file = 'Theme/default/' . $this->name . '.phtml';
+		$file = 'Theme/' . $this->layout . '/' . $this->name . '.phtml';
 		if ( is_file($file) ) {
 			header('X-Generator: ezRPG');
 			require $file;

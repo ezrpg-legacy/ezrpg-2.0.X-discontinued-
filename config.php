@@ -16,3 +16,15 @@ $config['db'] = array(
 	'port' => '3306',
 	'prefix' => ''
 );
+
+
+//Routing
+
+$config['routes'] = array(
+	'Login' => '\ezRPG\Module\Login\Index',
+	'Error404' => '\ezRPG\Module\Error404\Error404',
+	'Home' => '\ezRPG\Module\Home\Home',
+
+
+
+);

@@ -3,9 +3,10 @@
 namespace ezRPG\Module\Home;
 use ezRPG\Library\Module;
 
-class Index extends Module
+class Home extends Module
 {
-    public function __construct() {
-    	throw new \Exception('Hello');
-    }
+	public function index()
+	{
+		echo 'Hello World!';
+	}
 }
