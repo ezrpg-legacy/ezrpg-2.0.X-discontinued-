@@ -3,7 +3,7 @@
 namespace ezRPG\Module\Login;
 use ezRPG\Library\Module;
 
-class Login extends Module
+class Index extends Module
 {
 
 	/**
