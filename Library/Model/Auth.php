@@ -216,8 +216,8 @@ class Auth extends Model
 	
 	protected function generateSalt()
 	{
-	$salt = sprintf('$2a$%02d$', $this->bcryptCost) . strtr(base64_encode(mcrypt_create_iv(16, MCRYPT_DEV_URANDOM)), '+', '.');
-	return $salt;
+		$salt = sprintf('$2a$%02d$', $this->bcryptCost) . strtr(base64_encode(mcrypt_create_iv(16, MCRYPT_DEV_URANDOM)), '+', '.');
+		return $salt;
 	}
  
 	public function setLastLogin($id)
