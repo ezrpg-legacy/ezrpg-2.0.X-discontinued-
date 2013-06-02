@@ -80,7 +80,7 @@ class App implements Interfaces\App
 		$this->module = new $this->module($this, $this->view);
 
 		// Load plugins
-		if ( $handle = opendir('Library/Plugin') ) {
+		if ( $handle = opendir('Library/Plugins') ) {
 			while ( ( $file = readdir($handle) ) !== FALSE ) {
 				if ( is_file('Library/Plugins/' . $file) && preg_match('/^(.+)\.php$/', $file, $match) ) {
 					$pluginName = 'ezRPG\Library\Plugins\\' . $match[1];
