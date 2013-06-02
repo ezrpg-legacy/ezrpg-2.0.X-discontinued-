@@ -36,11 +36,8 @@ class Index extends Module
 					$fail = 'Unable to register.';
 					$this->view->name = 'register';
 				}
-			}else{
-				$this->view->name = 'register';
 			}
-		} else {
-			$this->view->name = 'register';
 		}
+		$this->view->name = 'register';
 	}
 }
