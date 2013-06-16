@@ -18,9 +18,11 @@ class Index extends Module
         if (empty($_POST['username']) || empty($_POST['password'])) {
             $warn = 'Please enter your username and password!';
 		} else {
-			$player = $auth->authenticate($_POST['username'], $_POST['password']);
-			if ($player === false)
-				$fail = 'Please check your username/password!';
+			try {
+				$player = $auth->authenticate($_POST['username'], $_POST['password']);
+			} catch (\Exception $e) {
+				$fail = 'Invalid username and/or password';
+			}
 		}
 		
         if (!$fail && !$warn) {
@@ -35,10 +37,10 @@ class Index extends Module
 			$session->clear();
 			
 			if (!empty($warn)) {
-				$this->view->setMessage($warn, 'WARN');
+				$this->view->setMessage($warn, 'warn');
 			} else {
 				$msg = 'Sorry, you could not be logged in:<br />' . $fail;
-				$this->view->setMessage($msg, 'FAIL');
+				$this->view->setMessage($msg, 'fail');
 			}
 			// Changed from a header to just grabbing the view itself
             $this->view->name = "index";

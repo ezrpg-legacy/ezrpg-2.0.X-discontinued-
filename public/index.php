@@ -45,5 +45,9 @@ try {
 		header('Status: 503 Service Temporarily Unavailable');
 	}
 
-	exit('ezRPG Exception: ' . $e->getMessage());
+	printf('<strong>ezRPG Exception</strong><br />%s<pre>', $e->getMessage());
+	var_dump($e);
+	echo '</pre>';  
+	
+	exit(1);
 }

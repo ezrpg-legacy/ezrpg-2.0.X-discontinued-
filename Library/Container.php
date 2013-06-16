@@ -26,7 +26,7 @@ namespace ezRPG\Library;
  * THE SOFTWARE.
  */
 
-class Container implements ContainerInterface
+class Container implements Interfaces\Container
 {
     protected $values = array();
 
@@ -71,7 +71,7 @@ class Container implements ContainerInterface
     public function offsetGet($id)
     {
         if (!array_key_exists($id, $this->values)) {
-            throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
+            throw new \InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
         }
 
         $isFactory = is_object($this->values[$id]) && method_exists($this->values[$id], '__invoke');
@@ -150,7 +150,7 @@ class Container implements ContainerInterface
     public function raw($id)
     {
         if (!array_key_exists($id, $this->values)) {
-            throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
+            throw new \InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
         }
 
         return $this->values[$id];
@@ -172,13 +172,13 @@ class Container implements ContainerInterface
     public function extend($id, \Closure $callable)
     {
         if (!array_key_exists($id, $this->values)) {
-            throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
+            throw new \InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
         }
 
         $factory = $this->values[$id];
 
         if (!($factory instanceof \Closure)) {
-            throw new InvalidArgumentException(sprintf('Identifier "%s" does not contain an object definition.', $id));
+            throw new \InvalidArgumentException(sprintf('Identifier "%s" does not contain an object definition.', $id));
         }
 
         return $this->values[$id] = function ($c) use ($callable, $factory) {

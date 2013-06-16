@@ -3,10 +3,11 @@ namespace ezRPG\Library;
 
 class View implements Interfaces\View
 {
-	protected $app;
+	protected $container;
 	protected $variables = array();
+	protected $helpers;
 
-	public $layout = 'default';
+	public $layout;
 	public $name;
 
 	/**
@@ -14,10 +15,15 @@ class View implements Interfaces\View
 	 * @param object $app
 	 * @param string $name
 	 */
-	public function __construct(Interfaces\App $app, $name)
+	public function __construct(Interfaces\Container $container, $name)
 	{
-		$this->app  = $app;
+		$this->container = $container;
 		$this->name = $name;
+		$this->layout = $container['config']['site']['theme'];
+		$container['view'] = $this;
+		
+		$this->registerHelpers();
+		
 	}
 
 	/**
@@ -26,7 +32,7 @@ class View implements Interfaces\View
 	 * @params bool $htmlEncode
 	 * @return mixed
 	 */
-	public function get($variable, $htmlEncode = true)
+	public function get($variable, $htmlEncode = false)
 	{
 		if ( isset($this->variables[$variable]) ) {
 			if ( $htmlEncode ) {
@@ -42,63 +48,9 @@ class View implements Interfaces\View
 	 * @param string $variable
 	 * @param mixed $value
 	 */
-	public function set($variable, $value = null)
+	public function set($variable, $value)
 	{
 		$this->variables[$variable] = $value;
-	}
-
-	/**
-	 * Recursively make a value safe for HTML
-	 * @param mixed $value
-	 * @return mixed
-	 */
-	public function htmlEncode($value)
-	{
-		switch ( gettype($value) ) {
-			case 'array':
-				foreach ( $value as $k => $v ) {
-					$value[$k] = $this->htmlEncode($v);
-				}
-
-				break;
-			case 'object':
-				foreach ( $value as $k => $v ) {
-					$value->$k = $this->htmlEncode($v);
-				}
-
-				break;
-			default:
-				$value = htmlentities($value, ENT_QUOTES, 'UTF-8');
-		}
-
-		return $value;
-	}
-
-	/**
-	 * Recursively decode an HTML encoded value
-	 * @param mixed $value
-	 * @return mixed
-	 */
-	public function htmlDecode($value)
-	{
-		switch ( gettype($value) ) {
-			case 'array':
-				foreach ( $value as $k => $v ) {
-					$value[$k] = $this->htmlDecode($v);
-				}
-
-				break;
-			case 'object':
-				foreach ( $value as $k => $v ) {
-					$value->$k = $this->htmlDecode($v);
-				}
-
-				break;
-			default:
-				$value = html_entity_decode($value, ENT_QUOTES, 'UTF-8');
-		}
-
-		return $value;
 	}
 
 	/**
@@ -116,12 +68,40 @@ class View implements Interfaces\View
 	}
 	
 	/**
-	 * Create a msg var.
-	 * $this->get('msg', FALSE) FALSE must be used to decode the HTML
+	 * Register helpers
 	 */
-	public function setMessage($message, $warn)
+	protected function registerHelpers()
 	{
-		$html = '<span class="msg '.$warn.'">'.$message.'</span>';
-		$this->set('msg', $html);
+		foreach(scandir(dirname(__FILE__) . '/View/Helper') as $file) {
+			if (is_dir($file)) {
+				continue;
+			}
+				
+			$fileName = basename($file);
+			$className = substr($fileName, 0, strrpos($fileName, '.'));
+			$className = '\\' . __NAMESPACE__ . '\View\Helper\\' . $className;
+			if (class_exists($className)) {
+				$class = new $className($this->container);
+				foreach($class->helpers as $helper) {
+					$this->helpers[$helper] = $class;
+				}
+			}
+		}
 	}
+	
+	/**
+	 * Proxy call requests
+	 * @param string $method
+	 * @param array $args
+	 */
+	public function __call($method, $args) {
+		if (in_array($method, get_class_methods($this))) {
+			return call_user_func_array(array($this, $method), $args);
+		}
+		
+		if (array_key_exists($method, $this->helpers)) {
+			$class = $this->helpers[$method];
+			return call_user_func_array(array($class, $method), $args);
+		}
+	} 
 }

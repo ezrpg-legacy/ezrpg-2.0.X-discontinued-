@@ -22,19 +22,4 @@ abstract class Module implements Interfaces\Module
 
 		$this->view->set('pageTitle', $this->title);
 	}
-
-	/**
-	 * Default action
-	 */
-	public function index()
-	{
-	}
-
-	/**
-	 * Fallback in case action doesn't exist
-	 */
-	public function notImplemented()
-	{
-		throw new \Exception('Action ' . $this->view->htmlEncode($this->app->getAction()) . ' not implemented in ' . get_called_class());
-	}
 }

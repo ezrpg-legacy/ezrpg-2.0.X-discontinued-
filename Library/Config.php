@@ -1,8 +1,9 @@
 <?php
 
 namespace ezRPG\Library;
+use \Exception;
 
-class Config implements ConfigInterface
+class Config implements Interfaces\Config
 {
     private $config = array();
 
@@ -37,20 +38,10 @@ class Config implements ConfigInterface
     
     public function get($key, $default = null)
     {
-        $config = $this->config;
-        
-        if (is_null($key)) return $config;
-        
-        foreach (explode('.', $key) as $segment)
-        {
-            if ( ! is_array($config) or ! array_key_exists($segment, $config))
-            {
-                return $default;
-            }
-
-            $config = $config[$segment];
+        if (array_key_exists($key, $this->config)) {
+        	return $this->config[$key];
         }
         
-        return $config;
+        throw new Exception('Key "' . $key . '" not found within config');
     }
 }

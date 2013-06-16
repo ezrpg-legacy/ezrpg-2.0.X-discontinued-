@@ -15,6 +15,8 @@ class Auth extends Model
 	protected
 		$bcryptCost = 10
 		;
+		
+	protected $tableName = 'players';
 
 	/**
 	 * Perform compatibility check
@@ -34,34 +36,24 @@ class Auth extends Model
 	/**
 	 * Authenticate
 	 *
-	 * @param string $email
+	 * @param string $id
 	 * @param string $password
 	 * @return object
 	 */
 	public function authenticate($id, $password)
 	{
 		if ( !filter_var($id, FILTER_VALIDATE_EMAIL) ) {
-			$player = $this->getPlayer($id);
+			$player = $this->find($id, 'username');
 		} else {
-			$player = $this->getEmail($id);
+			$player = $this->find($id, 'email');
 		}
 
-
-		if ( !$player ) {
+		if (empty($player)) {
 			throw new \Exception('Player does not exist', self::USER_NOT_FOUND);
 		}
 
-		//$check = sha1($player->secret_key . $_POST['password'] . SECRET_KEY);
-		if( $this->app->getConfig('legacy_secret') && $player->password == "" ){
-			if ( sha1($player->secret_key . $password . $this->app->getConfig('legacy_secret')) != $player->oldpass ){
-				throw new \Exception('Password Incorrect', self::PASSWORD_INCORRECT);
-			}else{
-				$this->setPassword($player->id, $password);
-			}
-		}else{
-			if ( substr(crypt($password, $player->secret_key), 0, 40) != $player->password ) {
-				throw new \Exception('Password Incorrect', self::PASSWORD_INCORRECT);
-			}
+		if ( substr(crypt($password, $player->secret_key), 0, 40) != $player->password ) {
+			throw new \Exception('Password Incorrect', self::PASSWORD_INCORRECT);
 		}
 
 		return $player;
@@ -161,14 +153,10 @@ class Auth extends Model
 	 */
 	public function getPlayer($id)
 	{
-		$dbh = $this->app->getModel('pdo')->getHandle();
-		
-		$config = $this->app->getConfig('db');
-		
-		$sth = $dbh->prepare('
+		$sth = $this->prepare('
 			SELECT
 				*
-			FROM ' . $config["prefix"] . 'players
+			FROM ' . $this->app->config["prefix"] . 'players
 			WHERE
 				id    = :id OR
 				username = :id
@@ -184,11 +172,7 @@ class Auth extends Model
 	
 	public function getEmail($id)
 	{
-		$dbh = $this->app->getModel('pdo')->getHandle();
-		
-		$config = $this->app->getConfig('db');
-		
-		$sth = $dbh->prepare('
+		$sth = $this->prepare('
 			SELECT
 				id,
 				email,
@@ -210,8 +194,7 @@ class Auth extends Model
 	
 	protected function generateHash($password, $salt)
 	{
-
-    return crypt($password, $salt);
+   		return crypt($password, $salt);
 	}
 	
 	protected function generateSalt()
@@ -222,11 +205,7 @@ class Auth extends Model
  
 	public function setLastLogin($id)
 	{
-		$dbh = $this->app->getModel('pdo')->getHandle();
-
-		$config = $this->app->getConfig('db');
-		
-		$sth = $dbh->prepare('
+		$sth = $this->prepare('
 			UPDATE ' . $config["prefix"] . 'players SET
 				last_login = ' . time() . '
 			WHERE
@@ -240,12 +219,8 @@ class Auth extends Model
 	}
 	
 	public function getLastActive()
-	{
-		$dbh = $this->app->getModel('pdo')->getHandle();
-
-		$config = $this->app->getConfig('db');
-		
-		$sth = $dbh->prepare('
+	{		
+		$sth = $this->prepare('
 			SELECT COUNT(id) AS count
 			FROM ' . $config["prefix"] . 'players
 			WHERE 
@@ -258,12 +233,10 @@ class Auth extends Model
 		$rows = $sth->fetch(\PDO::FETCH_NUM);
 		return $rows[0];
 	}
-	public function setLastActive($id){
-		$dbh = $this->app->getModel('pdo')->getHandle();
-
-		$config = $this->app->getConfig('db');
-		
-		$sth = $dbh->prepare('
+	
+	public function setLastActive($id)
+	{
+		$sth = $this->prepare('
 			UPDATE ' . $config["prefix"] . 'players SET
 				last_active = ' . time() . '
 			WHERE

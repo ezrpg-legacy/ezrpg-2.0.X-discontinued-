@@ -2,15 +2,15 @@
 
 <h1><?php echo $this->get('pageTitle'); ?></h1>
 
-<a href="<?php echo $this->app->config->get('site.url') ?>/Index/hello">I have a surprise for you...</a>
 
 <div class="left">
     <p>
-        Welcome to ezRPG! Login now!
+        Welcome to ezRPG! Login now!<br />
+		<a href="<?php echo $this->getUrl('Index/hello'); ?>">I have a surprise for you...</a>
     </p>
 </div>
 <div class="right">
-    <form method="post" action="Login" name="login">
+    <form method="post" action="<?php echo $this->getUrl('Login'); ?>" name="login">
         <label for="username">Username</label>
         <input type="text" name="username" />
 

@@ -42,7 +42,7 @@ Want to join the fun? Fill out the form below to register!
     </table>
 </form>
 
-<script src="<?php echo $this->app->getRootPath() ?>views/js/modules/register/security.js"></script>
+<script src="<?php echo $this->getUrl('views/js/modules/register/security.js'); ?>"></script>
 <script>
 	$.run('ready', 'security.botCheck');
 </script>

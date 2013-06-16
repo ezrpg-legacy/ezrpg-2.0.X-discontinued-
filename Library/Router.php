@@ -71,7 +71,7 @@ class Router implements Interfaces\Router
 		
 		$entries = scandir($directory, SCANDIR_SORT_NONE);
 		$routes = array();
-		
+
 		foreach ($entries as $entry) {
 			
 			$entry = $directory . DIRECTORY_SEPARATOR . $entry . DIRECTORY_SEPARATOR . 'Index.php';
@@ -89,10 +89,9 @@ class Router implements Interfaces\Router
 			$class =  new ReflectionClass($class_name);
 
 			foreach($class->getMethods(256) as $method) {
-				/*This keeps stopping the router from getting routes?
 				if ($method->isConstructor() || $method->isAbstract() || $method->isFinal()) {
 					continue;
-				}*/
+				}
 				
 				$method = $method->name;
 				$uri = $class_name;
@@ -117,14 +116,18 @@ class Router implements Interfaces\Router
 	public function resolve($url) 
 	{
 		$args = explode('\\', $url);
+		
 		if($args){
 			$controllerName = str_replace(' ', '/', ucwords(str_replace('_', ' ', str_replace('-', '', array_shift($args)))));
 		}
+		
 		if ( $action = $args ? array_shift($args) : '' ) {
 				$action = str_replace('-', '', $action);
 		}
+		
 		$uri = $controllerName . ($action ? '\\' . $action : '');
 		$resolve = $this->getRoute($uri);
+		
 		if ($resolve == false) {
 			return false;
 		}

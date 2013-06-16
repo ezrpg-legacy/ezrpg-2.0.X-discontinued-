@@ -18,97 +18,41 @@ class App implements Interfaces\App
     		  $rootPath 	= '/',
     		  $view;
     
-    public function __construct(ContainerInterface $container)
+    public function __construct(Interfaces\Container $container)
     {
         $this->container = $container; 
+        $this->container['app'] = $this;
     }
     
     public function run()
     {
-
-        // Determine the client-side path to root
-		if ( !empty($_SERVER['REQUEST_URI']) ) {
-			$this->rootPath = preg_replace('/(index\.php)?(\?.*)?$/', '', rawurldecode($_SERVER['REQUEST_URI']));
-		}
-
-		// Run from command line, e.g. "php index.php -q index"
-		$opt = getopt('q:');
-
-		if ( isset($opt['q']) ) {
-			$_GET['q'] = $opt['q'];
-		}
-
-		if ( !empty($_GET['q']) ) {
-			$this->rootPath = preg_replace('/' . preg_quote($_GET['q'], '/') . '$/', '', $this->rootPath);
-		}
-
-		if (!(array_key_exists('q', $_GET) && !empty($_GET['q']))) {
-			$_GET['q'] = 'Index';
-		}
-
+    	// Load plugins
+    	$this->loadPlugins();
+    	
 		// Create router and resolve query
 		$router = new Router;
-		
-
-        //
-
-        $router->addRoutes($this->container['config']['routes']);
-
+        $router->addRoute($this->container['config']['routes']);
         $router->buildRoutes('Module');
 
-		$uri = str_replace('/', '\\', $_GET['q']);
-		$routeMatch = $router->resolve($uri);
-
+		$routeMatch = $router->resolve(isset($_GET['q']) ? $_GET['q'] : 'Index');
 		if ($routeMatch == false) {
 			$routeMatch = $router->resolve('Error404');
 		}
-
+		
+		// Set up envorinment variables
 		$this->module = $routeMatch['module'];
-
-
 		$this->action = $routeMatch['action'];
 		$this->arguments = $routeMatch['arguments'];
-
-		// Instantiate the view
-		$this->moduleName = strtolower(substr($this->module, strrpos($this->module, '\\') + 1));
-
-  
-
-		$this->view = new View($this, $this->moduleName);
-
-		// Instantiate the controller
+		$moduleName = basename(dirname(str_replace('\\', '/', strtolower($this->module))));
+		
+		// Instantiate the View
+		$this->view = new View($this->container, $moduleName);
+		
+		// Instantiate the module
+		$this->registerHook('actionBefore');
 		$this->module = new $this->module($this, $this->view);
-
-		// Load plugins
-		if ( $handle = opendir('Library/Plugins') ) {
-			while ( ( $file = readdir($handle) ) !== FALSE ) {
-				if ( is_file('Library/Plugins/' . $file) && preg_match('/^(.+)\.php$/', $file, $match) ) {
-					$pluginName = 'ezRPG\Library\Plugins\\' . $match[1];
-
-					$this->plugins[$pluginName] = array();
-
-					foreach ( get_class_methods($pluginName) as $methodName ) {
-						$method = new \ReflectionMethod($pluginName, $methodName);
-
-						if ( $method->isPublic() && !$method->isFinal() && !$method->isConstructor() ) {
-							$this->plugins[$pluginName][] = $methodName;
-						}
-					}
-				}
-			}
-
-			ksort($this->plugins);
-
-			closedir($handle);
-		}
-
-		// Removed: Call the controller action (Not Utilized, Swiftlet Example of Hook Usage)
-		//$this->registerHook('actionBefore');
-
 		$this->module->{$this->action}();
-
-		// Removed: Call the controller action (Not Utilized, Swiftlet Example of Hook Usage)
-		$this->registerHook('onlinePlayerAction');
+		$this->registerHook('actionAfter');
 
 		return array($this->view, $this->module);
     }
@@ -215,7 +159,7 @@ class App implements Interfaces\App
     
     	foreach ( $this->plugins as $pluginName => $hooks ) {
     		if ( in_array($hookName, $hooks) ) {
-    			$plugin = new $pluginName($this, $this->view, $this->module);
+    			$plugin = new $pluginName($this->container);
     
     			$plugin->{$hookName}($params);
     		}
@@ -238,5 +182,33 @@ class App implements Interfaces\App
     public function __get($key)
     {
         return $this->container[$key];
+    }
+    
+    /**
+     * Loads plugins
+     */
+    protected function loadPlugins()
+    {
+    	if ( $handle = opendir('Library/Plugin') ) {
+    		while ( ( $file = readdir($handle) ) !== FALSE ) {
+    			if ( is_file('Library/Plugin/' . $file) && preg_match('/^(.+)\.php$/', $file, $match) ) {
+    				$pluginName = 'ezRPG\Library\Plugin\\' . $match[1];
+    	
+    				$this->plugins[$pluginName] = array();
+    	
+    				foreach ( get_class_methods($pluginName) as $methodName ) {
+    					$method = new \ReflectionMethod($pluginName, $methodName);
+    	
+    					if ( $method->isPublic() && !$method->isFinal() && !$method->isConstructor() ) {
+    						$this->plugins[$pluginName][] = $methodName;
+    					}
+    				}
+    			}
+    		}
+    	
+    		ksort($this->plugins);
+    	
+    		closedir($handle);
+    	}
     }
 }

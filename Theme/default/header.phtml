@@ -1,20 +1,21 @@
+<!DOCTYPE html>
 <html lang="en">
+<?php $siteConfig = $this->container['config']->get('site'); ?>
 	<head>
 		<meta name="description" content="ezRPG Project, the free, open source browser-based game engine!" />
 		<meta name="keywords" content="" />
 		
-		<link type="text/css" rel="stylesheet" href="<?php echo $this->app->getRootPath() ?>css/style.css">
-		<script src="<?php echo $this->app->getRootPath() ?>js/lib/ext/jquery/jquery.1.8.1.min.js"></script> 
-		<script src="<?php echo $this->app->getRootPath() ?>js/lib/ext/jquery/plugins/run.js"></script>
-		<script src="<?php echo $this->app->getRootPath() ?>js/lib/ext/clock.js"></script>
-		<title><?php echo $this->app->config->get('site.name') ?></title>
-                <script>
+		<link type="text/css" rel="stylesheet" href="<?php echo $this->getThemeUrl('css/style.css'); ?>">
+		<script src="<?php echo $this->getUrl('js/lib/ext/jquery/jquery.1.8.1.min.js'); ?>"></script> 
+		<script src="<?php echo $this->getUrl('js/lib/ext/jquery/plugins/run.js'); ?>"></script>
+		<script src="<?php echo $this->getUrl('js/lib/ext/clock.js'); ?>"></script>
+		<title><?php echo $siteConfig['name']; ?></title>
+        <script>
 			$(document).ready(function()
-				{
-					updateClock();
-					setInterval('updateClock()', 1000);
-				}
-			);
+			{
+				updateClock();
+				setInterval('updateClock()', 1000);
+			});
 		</script>
 	</head>
 	<body>
@@ -23,23 +24,14 @@
 		<div id="wrapper">
  
 			<div id="header">
-				<span id="title"><a href="./">ezRPG <span>rework</span></a></span>
+				<span id="title"><a href="./">ezRPG <span>2.0</span></a></span>
 				<span id="time"><div id="clock"></div>
 					<strong>Players Online</strong>: <?php echo $this->get('ONLINE') ?></span>
 			</div>
 
 			<div id="nav">
-				<ul>
-					<!-- Put Check for Logged In HERE -->
-						<?php if ( $this->get('loggedIn') ) { ?>
-						<li><a href="<?php echo $this->app->config->get('site.url') ?>Index">Home</a></li>
-						<li><a href="<?php echo $this->app->config->get('site.url') ?>Logout">Logout</a></li>
-						<?php } else { ?>
-						<li><a href="<?php echo $this->app->config->get('site.url') ?>Index">Home</a></li>
-						<li><a href="<?php echo $this->app->config->get('site.url') ?>Register">Register</a></li>
-						<?php } ?>
-				</ul>
+				<?php require 'menu.phtml'; ?>
 			</div>
 			<div id="body_wrap">
-				<?php echo $this->get('msg', false); ?>
+				<?php echo $this->get('msg'); ?>
 				<div id="body">

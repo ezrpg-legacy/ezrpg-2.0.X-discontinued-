@@ -19,7 +19,7 @@ class Pdo extends Model
 
 		//require('config/pdo.php');
 
-		$config = $this->app->getConfig('db');
+		$config = $this->app->config['db'];
 
 		try {
 			$this->handle = new \PDO($config['driver'] . ':host=' . $config['host'] . ';port='. $config['port'] . ';dbname=' . $config['database'].';charset=utf8', $config['username'], $config['password']);
