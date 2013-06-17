@@ -7,28 +7,28 @@ class Index extends Module
 {
 
 	/**
-	 * Default action
+	 * Login
 	 */
 	public function index()	{
-		$fail = '';
-		$warn = '';
-		$auth = $this->app->getModel('auth');
-		$session = $this->app->getModel('session');
+		$error = null;
+		$playerModel = $this->app->getModel('Player');
+		$session = $this->app->getModel('Session');
 		
         if (empty($_POST['username']) || empty($_POST['password'])) {
-            $warn = 'Please enter your username and password!';
+            $error = 'Please enter your username and password!';
 		} else {
 			try {
-				$player = $auth->authenticate($_POST['username'], $_POST['password']);
+				$player = $playerModel->authenticate($_POST['username'], $_POST['password']);
 			} catch (\Exception $e) {
-				$fail = 'Invalid username and/or password';
+				$error = 'Invalid username and/or password';
+				$error = $e->getMessage();
 			}
 		}
 		
-        if (!$fail && !$warn) {
+        if (is_null($error)) {
 			$session->clear();
-			$auth->setLastLogin($_POST['username']);
-			$session->set('playerid', $player->id);
+// 			$auth->setLastLogin($_POST['username']);
+			$session->set('playerid', $player['id']);
             $session->set('hash', $session->generateSignature());
             $session->set('last_active', time());
             header('Location: Home');
@@ -36,12 +36,9 @@ class Index extends Module
         } else {
 			$session->clear();
 			
-			if (!empty($warn)) {
-				$this->view->setMessage($warn, 'warn');
-			} else {
-				$msg = 'Sorry, you could not be logged in:<br />' . $fail;
-				$this->view->setMessage($msg, 'fail');
-			}
+			$error = 'Sorry, you could not be logged in:<br />' . $error;
+			$this->view->setMessage($error, 'fail');
+				
 			// Changed from a header to just grabbing the view itself
             $this->view->name = "index";
         }

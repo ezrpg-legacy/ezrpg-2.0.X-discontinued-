@@ -15,7 +15,7 @@ class Index extends Module
 		} else {
 			$playerID = $player->get('playerid');
 			$this->view->name = 'home';
-			$this->view->set('player', $this->app->getModel('auth')->getPlayer($playerID));
+			$this->view->set('player', $this->app->getModel('Player')->find($playerID));
 		}
     }
 	public function test() {

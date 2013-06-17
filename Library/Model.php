@@ -1,7 +1,8 @@
 <?php
 
 namespace ezRPG\Library;
-use \Pdo;
+use \Pdo,
+	\Exception;
 
 /**
  * Model
@@ -13,6 +14,7 @@ use \Pdo;
 abstract class Model extends Pdo implements Interfaces\Model
 {
 	private $_config;
+	protected $conainter;
 	
 	protected $tableName;
 	protected $isVirtualTable;
@@ -26,9 +28,10 @@ abstract class Model extends Pdo implements Interfaces\Model
 	 * Constructor
 	 * @param object $app
 	 */
-	public function __construct(Interfaces\App $app)
+	public function __construct(Interfaces\Container $container)
 	{
-		$config = $this->_config = $app->config['db'];
+		$this->container = $container;
+		$config = $this->_config = $container['config']['db'];
 		
 		// initliaze the Pdo parent
 		parent::__construct(
@@ -111,9 +114,8 @@ abstract class Model extends Pdo implements Interfaces\Model
 		
 		$match_type = ($partail ? 'LIKE' : '=');
 		
-		$sql = 'SELECT * FROM `' . $this->tableName . '` WHERE `' . $priKey .'` ' . $match_type . ' :value';
+		$sql = 'SELECT * FROM `' . $this->tableName . '` WHERE `' . $priKey .'` ' . $match_type . ' ' . $lookup;
 		$query = $this->prepare($sql);
-		$query->bindParam('value', $lookup);
 		$query->execute();
 		
 		return $query->fetchAll();
@@ -176,27 +178,25 @@ abstract class Model extends Pdo implements Interfaces\Model
 			}
 			
 			if (is_string($item)) {
-				$value = $this->quote($item);
+				$item = $this->quote($item);
 			}
 				
 			array_push($pairs, '`' . $key . '` = ' . $item);
 		}
 		
 
-		$sql = 'UPDATE `:table` SET :pairs';
+		$sql = 'UPDATE `' . $this->tableName . '` SET ' . implode(', ', $pairs);
 		
 		// impose restrictions
 		if (is_null($priKey_value) && $this->safeMode == true) {
 			throw new Exception('Cannot update a record without a where clause in safe mode');
-		} else {
+		} elseif(!is_null($priKey_value)) {
 			$sql .= '  WHERE `' . $this->primaryKey . '` = ' . $priKey_value;
 		}
 		
+		var_dump($sql);
+		
 		$query = $this->prepare($sql);
-		
-		$query->bindParam('table', $this->tableName);
-		$query->bindParam('pairs', implode(', ', $pairs));
-		
 		return $query->execute();
 	}
 	

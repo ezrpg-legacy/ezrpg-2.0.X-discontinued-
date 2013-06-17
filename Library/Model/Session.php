@@ -1,7 +1,8 @@
 <?php
 
 namespace ezRPG\Library\Model;
-use \ezRPG\Library\Model;
+use \ezRPG\Library\Model,
+	\ezRPG\Library\Interfaces\Container;
 
 class Session extends Model
 {
@@ -12,9 +13,11 @@ class Session extends Model
 		'GOOD'		=> ''
 	);
 	
-	public function __construct(\ezRPG\Library\Interfaces\App $app)
+	public function __construct(Container $container)
 	{
-		parent::__construct($app);
+		parent::__construct($container);
+		
+		$this->app = $container['app'];
 		
 		if(!session_id()){
 			session_start();
@@ -29,10 +32,6 @@ class Session extends Model
 	public function set($variable, $value)
 	{
 		$_SESSION[$variable] = $value;
-		if ($variable == "last_active")
-		{
-			$this->app->getModel('Auth')->setLastActive($this->get('playerid'));
-		}
 	}
 
 	/**
@@ -52,34 +51,35 @@ class Session extends Model
 	 */
 	public function clear()
 	{
-		$_SESSION = array();
+		session_unset();
 	}
 	
 	function generateSignature() 
 	{
 		
-		$client = array_key_exists('playerid', $_SESSION) ? 
-						$_SESSION['playerid'] : 'guest';
+// 		$client = array_key_exists('playerid', $_SESSION) ? 
+// 						$_SESSION['playerid'] : 'guest';
 		
-		if ( $client == 'guest' )
-			$key = $this->app->getModel('auth')->generateSalt;
-		else
-			$key = $this->app->getModel('auth')->getPlayer($client)->secret_key;
+// 		if ( $client == 'guest' ) {
+// 			$key = $this->app->getModel('auth')->generateSalt();
+// 		} else {
+// 			$key = $this->app->getModel('auth')->getPlayer($client)->secret_key;
+// 		}
 			
-		$bits = array(
-			'playerid'    => $client,
-			'ip'        => $_SERVER['REMOTE_ADDR'],
-			'browser'   => $_SERVER['HTTP_USER_AGENT'],
-			'key'       => $key
-		);
+// 		$bits = array(
+// 			'playerid'    => $client,
+// 			'ip'        => $_SERVER['REMOTE_ADDR'],
+// 			'browser'   => $_SERVER['HTTP_USER_AGENT'],
+// 			'key'       => $key
+// 		);
 			
-		$signature = false;
+// 		$signature = false;
 
-		foreach($bits as $key => $bit) {
-			$signature .= $key . $bit; 
-		}    
+// 		foreach($bits as $key => $bit) {
+// 			$signature .= $key . $bit; 
+// 		}    
 		
-		return sha1($signature);
+		return sha1(1);
 	}
 
 	function compareSignature($origin) {

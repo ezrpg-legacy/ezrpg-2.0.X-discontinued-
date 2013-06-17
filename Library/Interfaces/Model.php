@@ -4,5 +4,5 @@ namespace ezRPG\Library\Interfaces;
 
 interface Model
 {
-	public function __construct(App $app);
+	public function __construct(Container $container);
 }

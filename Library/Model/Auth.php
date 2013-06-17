@@ -1,7 +1,8 @@
 <?php
 
 namespace ezRPG\Library\Model;
-use \ezRPG\Library\Model;
+use \ezRPG\Library\Model,
+	\ezRPG\Library\Interfaces\Container;
 
 class Auth extends Model
 {
@@ -23,10 +24,11 @@ class Auth extends Model
 	 *
 	 * @param object $app
 	 */
-	public function __construct(\ezRPG\Library\Interfaces\App $app)
+	public function __construct(Container $container)
 	{
 		//throw new \Exception('Break');
-		parent::__construct($app);
+		parent::__construct($container);
+		$this->app = $container['app'];
 
 		if ( CRYPT_BLOWFISH != 1 ) {
 			throw new \Exception(__CLASS__ . ' requires PHP support for BCrypt');
@@ -156,7 +158,7 @@ class Auth extends Model
 		$sth = $this->prepare('
 			SELECT
 				*
-			FROM ' . $this->app->config["prefix"] . 'players
+			FROM ' . $this->app->config['db']["prefix"] . 'players
 			WHERE
 				id    = :id OR
 				username = :id

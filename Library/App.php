@@ -124,7 +124,7 @@ class App implements Interfaces\App
     	$modelName = 'ezRPG\Library\Model\\' . ucfirst($modelName);
     
     	// Instantiate the model
-    	return new $modelName($this);
+    	return new $modelName($this->container);
     }
     
     /**
@@ -161,7 +161,7 @@ class App implements Interfaces\App
     		if ( in_array($hookName, $hooks) ) {
     			$plugin = new $pluginName($this->container);
     
-    			$plugin->{$hookName}($params);
+    			return $plugin->{$hookName}($params);
     		}
     	}
     }
