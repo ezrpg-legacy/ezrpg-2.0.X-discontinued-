@@ -11,20 +11,22 @@ use ezRPG\Library\App,
 	ezRPG\Library\Container,
 	ezRPG\Library\Config;
 
-// Traverse back one directroy
-chdir(dirname(__DIR__));
+
+$rootPath = dirname(__DIR__);
+
+// Traverse back one directory
+chdir($rootPath);
 
 // Bootstrap the application
-require dirname(__DIR__) . '/Library/Autoloader.php';
 
-// Instantiate the autoloader
+require $rootPath . '/Library/Autoloader.php';
+
 $autoloader = new Autoloader('ezRPG', dirname(__DIR__));
 $autoloader->register();
 
-// Instantiate the container for depedancy control
-$container = new Container;
+$container = new Container();
 
-// set required dependancies for the container
+// Set required dependencies
 $config = new Config();
 require 'config.php';
 
@@ -34,7 +36,6 @@ $container['config'] = $config;
 try {
 	$app = new App($container);
 	
-	// Set error handler
 	set_error_handler(array($app, 'error'), E_ALL | E_STRICT);
 	
 	$app->run();
