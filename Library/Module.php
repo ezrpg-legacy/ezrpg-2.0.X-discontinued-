@@ -7,7 +7,8 @@ abstract class Module implements Interfaces\Module
 	protected
 		$app,
 		$view,
-		$title
+		$title,
+		$container
 		;
 
 	/**
@@ -15,10 +16,11 @@ abstract class Module implements Interfaces\Module
 	 * @param object $app
 	 * @param object $view
 	 */
-	public function __construct(Interfaces\App $app, Interfaces\View $view)
+	public function __construct(Interfaces\Container $container)
 	{
-		$this->app  = $app;
-		$this->view = $view;
+		$this->container = $container;
+		$this->app  = $container['app'];
+		$this->view = $container['view'];
 
 		$this->view->set('pageTitle', $this->title);
 	}

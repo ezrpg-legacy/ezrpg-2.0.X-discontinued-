@@ -10,12 +10,21 @@ use \ReflectionClass;
  */
 class Router implements Interfaces\Router
 {
-	
 	/**
 	 * An associative array containing current routes
 	 * @var array
 	 */
 	public $_routes = array();
+	
+	protected $container;
+	
+	/**
+	 * Constructor
+	 * @param Container $container
+	 */
+	public function __construct(Interfaces\Container $container) {
+		$this->container = $container;
+	}
 	
 	/**
 	 * Inject multiple routes
@@ -53,6 +62,31 @@ class Router implements Interfaces\Router
 	{
 		if (array_key_exists($route, $this->_routes)) {
 			return $this->_routes[$route];
+		}
+		
+		if ($this->container['config']['router']['partialRoutes'] == true) {
+			$shortest = -1;
+			// try partial (EXPENSIVE)
+			foreach($this->_routes as $routeMatch => $v) {
+				$lev = levenshtein($route, $routeMatch);
+	
+				if ($lev == 0) {
+					$closest = $routeMatch;
+					$shortest = 0;
+					break;
+				}
+				
+				if ($lev <= $shortest || $shortest < 0) {
+					$closest  = $routeMatch;
+					$shortest = $lev;
+				}
+			}
+			
+			// very close
+			if ($shortest <= 2) {
+				header('location: ' . $closest);
+				exit(0);
+			}
 		}
 		
 		return false;

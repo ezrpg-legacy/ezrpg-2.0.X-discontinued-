@@ -102,8 +102,6 @@ abstract class Model extends Pdo implements Interfaces\Model
 			$priKey = $key;
 		}
 		
-		$sql = 'SELECT * FROM `:table` WHERE `:key` :match_type :value';
-		$query = $this->prepare($sql);
 		
 		if ($partail) {
 			$lookup = $this->quote(strpad($lookup, strlen($lookup) + 2, '%', \STR_PAD_BOTH));
@@ -113,10 +111,10 @@ abstract class Model extends Pdo implements Interfaces\Model
 		
 		$match_type = ($partail ? 'LIKE' : '=');
 		
-		$query->bindParam('table', $this->tableName);
-		$query->bindParam('key', $priKey);
-		$query->bindParam('match_type', $match_type);
-		$query->bindParam('value', $value);
+		$sql = 'SELECT * FROM `' . $this->tableName . '` WHERE `' . $priKey .'` ' . $match_type . ' :value';
+		$query = $this->prepare($sql);
+		$query->bindParam('value', $lookup);
+		$query->execute();
 		
 		return $query->fetchAll();
 	}

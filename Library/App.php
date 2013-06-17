@@ -30,8 +30,8 @@ class App implements Interfaces\App
     	$this->loadPlugins();
     	
 		// Create router and resolve query
-		$router = new Router;
-        $router->addRoute($this->container['config']['routes']);
+		$router = new Router($this->container);
+        $router->addRoute($this->container['config']['router']['routes']);
         $router->buildRoutes('Module');
 
 		$routeMatch = $router->resolve(isset($_GET['q']) ? $_GET['q'] : 'Index');
@@ -50,7 +50,7 @@ class App implements Interfaces\App
 		
 		// Instantiate the module
 		$this->registerHook('actionBefore');
-		$this->module = new $this->module($this, $this->view);
+		$this->module = new $this->module($this->container);
 		$this->module->{$this->action}();
 		$this->registerHook('actionAfter');
 
