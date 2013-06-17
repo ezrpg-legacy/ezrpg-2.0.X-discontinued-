@@ -6,31 +6,32 @@
 
 $config['site'] = array(
 	'name' => 'ezRPG',
-	'url' => 'http://localhost:9000/GitHub/Rework-Revisited/public',
-	'theme' => 'default', 
-
+	'url' => 'http://ezrpg/',
+	'theme' => 'default'
 );
 
 $config['db'] = array(
 	'driver'   => 'mysql',
-	'host'     => '127.0.0.1',
+	'host'     => '10.0.0.129',
 	'database' => 'ezrpg',
 	'username' => 'root',
-	'password' => 'password',
+	'password' => '',
 	'port' => '3306',
 	'prefix' => ''
 );
 
-
-//Routing
-
 $config['router'] = array(
- 'partialRoutes' => true,
- 'routes' => array(
-  array(
-  //  'Login' => '\ezRPG\Module\Login\Index',
-  //  'Error404' => '\ezRPG\Module\Error404\Error404',
-  //  'Home' => '\ezRPG\Module\Home\Home',
-  )
- )
+	'partialRoutes' => true,
+	'routes' => array()
+);
+
+$config['security'] = array(
+	'hashRounds' => 15,
+	'hashSaltSize' => 16,
+	'passwordStrength' => 1
+);
+
+$config['accounts'] = array(
+	'requireActivation' => true,
+	'emailActivation' => false
 );
