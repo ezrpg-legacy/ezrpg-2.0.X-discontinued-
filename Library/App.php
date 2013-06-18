@@ -28,21 +28,17 @@ class App implements Interfaces\App
     {
     	// Load plugins
     	$this->loadPlugins();
-    	
-		// Create router and resolve query
 		$router = new Router($this->container);
-        $router->addRoute($this->container['config']['router']['routes']);
-        $router->buildRoutes('Module');
-
-		$routeMatch = $router->resolve(isset($_GET['q']) ? $_GET['q'] : 'Index');
+		
+		$routeMatch = $router->resolve(isset($_GET['q']) ? $_GET['q'] : 'index');
 		if ($routeMatch == false) {
-			$routeMatch = $router->resolve('Error404');
+			$routeMatch = $router->resolve('error');
 		}
 		
 		// Set up envorinment variables
-		$this->module = $routeMatch['module'];
+		$this->module = 'ezRPG\Module\\' . (!empty($base) ? str_replace('/', '\\', ucwords($routeMatch['base'])) . '\\' : '') . ucwords($routeMatch['module']) . '\\Index';
 		$this->action = $routeMatch['action'];
-		$this->arguments = $routeMatch['arguments'];
+		$this->params = $routeMatch['params'];
 		$moduleName = basename(dirname(str_replace('\\', '/', strtolower($this->module))));
 		
 		// Instantiate the View
@@ -51,7 +47,7 @@ class App implements Interfaces\App
 		// Instantiate the module
 		$this->registerHook('actionBefore');
 		$this->module = new $this->module($this->container);
-		$this->module->{$this->action}();
+		$this->module->{$this->action}($this->params);
 		$this->registerHook('actionAfter');
 
 		return array($this->view, $this->module);
