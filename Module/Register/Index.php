@@ -11,7 +11,7 @@ class Index extends Module
 	public function index() {
 		$fail = '';
 		$warn = '';
-		$auth = $this->app->getModel('auth');
+		$auth = $this->app->getModel('player');
 		if (isset($_POST['register'])) {
 			if (strlen($_POST['username']) < 3) {
 				$warn = 'Your username must be at least 3 characters long.';
@@ -31,10 +31,18 @@ class Index extends Module
 			
 			if (!$warn) {
 				//register($player = '', $email = '', $password = '')
-				$register = $auth->register($_POST['username'], $_POST['email'], $_POST['password']);
+				$insert = array();
+				$insert['username'] = $_POST['username'];
+				$insert['email'] =	$_POST['email'];
+				$insert['password'] = $_POST['password'];
+				$register = $auth->create($insert);
 				if (!$register) {
 					$fail = 'Unable to register.';
 					$this->view->name = 'register';
+				} elseif ($data['active'] == 1) {
+					$this->container['app']->registerHook('playerLogin', $register);
+				} else{
+					$this->view->name = 'index';
 				}
 			}
 		}
