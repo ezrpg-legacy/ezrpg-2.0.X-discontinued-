@@ -18,6 +18,8 @@ class App implements Interfaces\App
     		  $rootPath 	= '/',
     		  $view;
     
+    //protected $params = array();
+    
     public function __construct(Interfaces\Container $container)
     {
         $this->container = $container; 

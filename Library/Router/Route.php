@@ -1,9 +1,8 @@
 <?php
-
 namespace ezRPG\Library\Router;
 
-abstract class Route {
-
+abstract class Route
+{
     protected $route;
     
     protected $options = array(
