@@ -35,3 +35,38 @@ $config['accounts'] = array(
 	'requireActivation' => true,
 	'emailActivation' => false
 );
+
+
+$config['routes'] = array(
+		 
+	'index(.*)' => array(
+		'module' => 'index',
+		'type' => 'regex',
+		'params' => array('act')
+	),
+		
+	'error' => array(
+		'module' => 'error404',
+		'action' => 'index'
+	),
+		
+	'player/([a-z]+)' => array(
+		'base' => 'mo/ule',
+		'module' =>	'player',
+		'action' => 'view',
+		'params' => array('username'),
+		'type' => 'regex'
+	),
+	
+	'login' => array(
+		'module' => 'login',
+	),
+		
+	'register' => array(
+		'module' => 'register',
+	),
+		
+	'home' => array(
+		'module' => 'home',
+	),
+);

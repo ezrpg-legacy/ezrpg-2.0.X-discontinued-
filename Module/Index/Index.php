@@ -5,9 +5,13 @@ use ezRPG\Library\Module;
 
 class Index extends Module
 {
-    public function index() 
+    public function index($params) 
     {
      $this->view->name = 'index';
+     
+     if ($params['act'] == 'hello') {
+     	$this->hello();
+     }
     }
     
 	public function hello() 
