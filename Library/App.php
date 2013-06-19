@@ -18,7 +18,8 @@ class App implements Interfaces\App
     		  $rootPath 	= '/',
     		  $view;
     
-    //protected $params = array();
+    //
+    protected $params = array();
     
     public function __construct(Interfaces\Container $container)
     {
@@ -41,6 +42,11 @@ class App implements Interfaces\App
 		$this->module = 'ezRPG\Module\\' . (!empty($base) ? str_replace('/', '\\', ucwords($routeMatch['base'])) . '\\' : '') . ucwords($routeMatch['module']) . '\\Index';
 		$this->action = $routeMatch['action'];
 		$this->params = $routeMatch['params'];
+                
+                //We don't want to break the application just
+                //yet
+                $this->args = $routeMatch['params'];
+                
 		$moduleName = basename(dirname(str_replace('\\', '/', strtolower($this->module))));
 		
 		// Instantiate the View
@@ -90,6 +96,33 @@ class App implements Interfaces\App
     	return $this->action;
     }
     
+    /**
+     * Get all parameters.
+     * 
+     * @return array
+     */
+    
+    public function getParams()
+    {
+        return $this->params;
+    }
+    
+    /**
+     * Get a specific parameter.
+     * 
+     * @param string $name
+     * @param mixed $default
+     * @return mixed
+     */
+    public function getParam($name, $default = null)
+    {
+        if (array_key_exists($name, $this->params)) {
+            return $this->params[$name];
+        }
+
+        return $default;
+    }
+
     /**
      * Get the arguments
      * @return array

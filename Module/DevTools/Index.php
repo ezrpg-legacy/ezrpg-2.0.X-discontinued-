@@ -15,7 +15,10 @@ class Index extends Module
 	 */
 	public function index()
 	{
-		$this->aclTest();
+                $params = $this->container['app']->getParams();
+                var_dump($params);
+                
+		//$this->aclTest();
 	}
 	
 	public function dummyAction() 
