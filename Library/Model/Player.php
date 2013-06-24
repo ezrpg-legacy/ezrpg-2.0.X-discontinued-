@@ -56,7 +56,7 @@ class Player extends \ezRPG\Library\Model
 	 */
 	public function create($data)
 	{
-		if (filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+		if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
 			throw new Exception('Invalid email-address');
 		}
 		
@@ -76,18 +76,20 @@ class Player extends \ezRPG\Library\Model
 			3 => '/[a-zA-Z0-9\!@#\$%\^&\*\(\)-_=+\{\};:,<\.>]/{8,}'
 		);
 		
-		if (preg_match($password_regex[$configPasswordStrength], $data['password']) == false) {
+		if (preg_match($password_regex[$configPasswordStrength], $data['password']) === false) {
 			throw new Exception('Password is too simple');
 		}
 		
 		// all checks succeeded, continue data formatting
 		$data['salt'] = $this->createSalt();
 		$data['password'] = $this->createHash($data['password'], $data['salt']);
-		
+		$data['title'] = ucfirst($data['username']);
 		$data['registered'] = date('Y-m-d H:i:s');
+		$data['lastActive'] = $data['registered'];
+		$data['active'] = $this->container['app']->registerHook('playerActivation', $data);
 		
 		// create the actual record
-		$data['id'] = parent::create($data);
+		$data['id'] = parent::add($data);
 		
 		// fire playerRegistration hook
 		$pluginData = $this->container['app']->registerHook('playerRegistration', $data);

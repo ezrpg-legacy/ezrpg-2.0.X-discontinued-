@@ -12,7 +12,7 @@ class PlayerActivation implements Plugin {
 		$this->container = $container;
 	}
 
-	public function playerRegister($data) {
+	public function playerActivation($data) {
 		// does the application have an activation system enabled
 		$configRequireActivation = $this->container['config']['accounts']['requireActivation'];
 		if ($configRequireActivation) {
@@ -21,9 +21,11 @@ class PlayerActivation implements Plugin {
 			if ($this->container['config']['accounts']['emailActivation']) {
 				$this->sendActivationLink($data);
 			}
+		} else {
+			$data['active'] = 1;
 		}
 		
-		return $data;
+		return $data['active'];
 	}
 	
 	protected function sendActivationLink($data){

@@ -131,24 +131,23 @@ abstract class Model extends Pdo implements Interfaces\Model
 	{
 		$keys = array();
 		$values = array();
-		
+		$sql = "INSERT INTO $this->tableName (";
 		// iterate through array and sanatize 
-		foreach($data as $key => &$item) {			
+		foreach($data as $key => $item) {			
 			if (is_string($item)) {
-				$value = $this->quote($item);
+				$item = $this->quote($item); //$value wasn't used, replaced with $item
 			}
 			
-			array_push($keys, '`' . $key . '`');
-			array_push($values, $item);
+			array_push($keys, $key);
+			array_push($values, $item );
 		}
-		
-		$sql = 'INSERT INTO `:table` (:keys) VALUES (:values)';
+		$sql .= implode(', ', $keys);
+		$sql .= ") VALUES (";
+		$sql .= implode(', ', $values);
+		$sql .= ")";
+		//echo $sql . "<br />"; //Here for Debugging
+		//$sql = "INSERT INTO :table (:keys) VALUES (:values)"; 
 		$query = $this->prepare($sql);
-		
-		$query->bindParam('table', $this->tableName);
-		$query->bindParam('keys', implode(', ', $keys));
-		$query->bindParam('values', implode(', ', $values));
-		
 		$query->execute();
 		
 		return $this->lastInsertId();
