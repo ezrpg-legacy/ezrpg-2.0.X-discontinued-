@@ -25,6 +25,8 @@ class App implements Interfaces\App
     {
         $this->container = $container; 
         $this->container['app'] = $this;
+        
+        $this->addDatabaseConfig();
     }
     
     public function run()
@@ -241,5 +243,17 @@ class App implements Interfaces\App
     	
     		closedir($handle);
     	}
+    }
+    
+    /**
+     * Load settings from Database
+     */
+    protected function addDatabaseConfig() {
+    	$this->container['config'] = new Config(
+    		array_replace_recursive(
+    			current((array) $this->container['config']), 
+    			$this->getModel('Setting')->getAll()
+    		)
+    	);
     }
 }

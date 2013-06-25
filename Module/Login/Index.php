@@ -20,8 +20,11 @@ class Index extends Module
 			try {
 				$player = $playerModel->authenticate($_POST['username'], $_POST['password']);
 			} catch (\Exception $e) {
-				$error = 'Invalid username and/or password';
-				$error = $e->getMessage();
+				$error = 'Invalid username and/or password.';
+				
+				if ($this->container['config']['security']['login']['showInvalidLoginReason']) {
+					$error = $e->getMessage();
+				}
 			}
 		}
 		
@@ -36,11 +39,14 @@ class Index extends Module
         } else {
 			$session->clear();
 			
-			$error = 'Sorry, you could not be logged in:<br />' . $error;
+			$error = '<strong>Sorry, you could not be logged in...</strong><br />' . $error;
 			$this->view->setMessage($error, 'fail');
 				
 			// Changed from a header to just grabbing the view itself
             $this->view->name = "index";
+            $this->view->credentials = array(
+            	'username' => ($this->container['config']['security']['login']['returnUsernameOnFailure']) ? $_POST['username'] : ''
+            );
         }
 		
 	}

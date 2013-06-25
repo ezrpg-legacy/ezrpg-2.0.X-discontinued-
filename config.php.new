@@ -26,7 +26,7 @@ $config['router'] = array(
 );
 
 $config['security'] = array(
-	'hashRounds' => 15,
+	'hashRounds' => 1,
 	'hashSaltSize' => 16,
 	'passwordStrength' => 1
 );

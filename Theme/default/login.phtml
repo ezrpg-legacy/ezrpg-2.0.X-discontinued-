@@ -10,9 +10,9 @@
 </div>
 
 <div class="right">
-    <form method="post" action="Login">
+    <form method="post" action="login">
         <label for="username">Username</label>
-        <input type="text" name="username" />
+        <input type="text" name="username" value="<?php $this->get('credentials')['username'];  ?>" />
 
         <label for="password">Password</label>
         <input type="password" name="password" />
