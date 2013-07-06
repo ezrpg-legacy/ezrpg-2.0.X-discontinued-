@@ -56,14 +56,21 @@ class Player extends \ezRPG\Library\Model
 	 */
 	public function create($data)
 	{
+		// validate username and email address
 		if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
 			throw new Exception('Invalid email-address');
-		}
-		
-		if (strlen($data['username']) > 25 || strlen($data['username']) < 3) {
+		} elseif (strlen($data['username']) > 25 || strlen($data['username']) < 3) {
 			throw new Exception('Username length is invalid');
+		} 
+		
+		// check for the possible existence of accounts with same credentials
+		if ($this->find($data['username'], 'username')) {
+			throw new Exception('Username is not available');
+		} elseif ($this->find($data['email'], 'email')) {
+			throw new Exception('Email address is already associated with another account');
 		}
 		
+		// check the password against predefiend algorithm
 		if (strlen($data['password']) <= 4) {
 			throw new Exception('Password length is invalid');
 		}

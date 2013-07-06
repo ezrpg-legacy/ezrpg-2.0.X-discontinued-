@@ -8,44 +8,31 @@ class Index extends Module
 	/**
 	 * Default action
 	 */
-	public function index() {
-		$fail = '';
-		$warn = '';
+	public function index() 
+	{
 		$auth = $this->app->getModel('player');
+		
 		if (isset($_POST['register'])) {
-			if (strlen($_POST['username']) < 3) {
-				$warn = 'Your username must be at least 3 characters long.';
-			}
-			if (strlen($_POST['username']) > 25) {
-				$warn = 'Your username cannot be greater than 25 characters long.';
-			}
-			if (strlen($_POST['password']) < 3) {
-				$warn = 'Your username must be at least 3 characters long.';
-			}
-			if (strlen($_POST['password']) > 25) {
-				$warn = 'Your username cannot be greater than 25 characters long.';
-			}
-			if (strlen($_POST['email']) < 3 || !preg_match("/^[-!#$%&\'*+\\.\/0-9=?A-Z^_`{|}~]+@([-0-9A-Z]+\.)+([0-9A-Z]){2,4}$/i", $_POST['email'])) {
-				$warn = 'Your email is using an invalid format.';
+			$insert = array();
+			$insert['username'] = $_POST['username'];
+			$insert['email'] =	$_POST['email'];
+			$insert['password'] = $_POST['password'];
+			
+			// attempt to register the account
+			try {
+				$register = $auth->create($insert);
+			} catch(\Exception $e) {
+				$this->container['view']->setMessage($e->getMessage(), 'warn');
 			}
 			
-			if (!$warn) {
-				//register($player = '', $email = '', $password = '')
-				$insert = array();
-				$insert['username'] = $_POST['username'];
-				$insert['email'] =	$_POST['email'];
-				$insert['password'] = $_POST['password'];
-				$register = $auth->create($insert);
-				if (!$register) {
-					$fail = 'Unable to register.';
-					$this->view->name = 'register';
-				} elseif ($data['active'] == 1) {
-					$this->container['app']->registerHook('playerLogin', $register);
-				} else{
-					$this->view->name = 'index';
-				}
+			// if the account is active, redirect the user to the login page
+			if (isset($register['active']) && $register['active'] == '1') {
+				$this->container['view']->setMessage('Your accounts was successfully created. You may now log in.', 'success');
+				$this->view->name = 'index';
+			} elseif (isset($register['active']) && $register['active'] == '0') {
+				$this->container['view']->setMessage('Your account has been created, but requires activation.', 'success');
+				$this->view->name = 'index';
 			}
 		}
-		$this->view->name = 'register';
 	}
 }
