@@ -253,6 +253,7 @@ CREATE TABLE `setting` (
   `parent_id` int(11) DEFAULT NULL,
   `title` varchar(20) NOT NULL,
   `value` text,
+  `active` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;

@@ -1,5 +1,9 @@
 <?php
-
+$config['site'] = array(
+		'name' => 'ezRPG',
+		'url' => 'http://ezrpg.bulma/Web',
+		'theme' => 'default'
+);
 
 $config['router'] = array(
 		'partialRoutes' => true,

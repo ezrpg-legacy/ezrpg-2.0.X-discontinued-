@@ -1,14 +1,8 @@
 <?php
 
 /**
- * Configuration
+ * Database Configuration
  */ 
-
-$config['site'] = array(
-	'name' => 'ezRPG',
-	'url' => 'http://ezrpg.bulma/Web',
-	'theme' => 'default'
-);
 
 $config['db'] = array(
 	'driver'   => 'mysql',
