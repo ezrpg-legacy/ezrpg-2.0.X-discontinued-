@@ -1,0 +1,72 @@
+<?php
+
+/**
+ * Configuration
+ */ 
+
+$config['site'] = array(
+	'name' => 'ezRPG',
+	'url' => 'http://ezrpg/',
+	'theme' => 'default'
+);
+
+$config['db'] = array(
+	'driver'   => 'mysql',
+	'host'     => '10.0.0.129',
+	'database' => 'ezrpg',
+	'username' => 'root',
+	'password' => '',
+	'port' => '3306',
+	'prefix' => ''
+);
+
+$config['router'] = array(
+	'partialRoutes' => true,
+	'routes' => array()
+);
+
+$config['security'] = array(
+	'hashRounds' => 1,
+	'hashSaltSize' => 16,
+	'passwordStrength' => 1
+);
+
+$config['accounts'] = array(
+	'requireActivation' => true,
+	'emailActivation' => false
+);
+
+
+$config['routes'] = array(
+		 
+	'index(.*)' => array(
+		'module' => 'index',
+		'type' => 'regex',
+		'params' => array('act')
+	),
+		
+	'error' => array(
+		'module' => 'error404',
+		'action' => 'index'
+	),
+		
+	'player/([a-z]+)' => array(
+		'base' => 'mo/ule',
+		'module' =>	'player',
+		'action' => 'view',
+		'params' => array('username'),
+		'type' => 'regex'
+	),
+	
+	'login' => array(
+		'module' => 'login',
+	),
+		
+	'register' => array(
+		'module' => 'register',
+	),
+		
+	'home' => array(
+		'module' => 'home',
+	),
+);
