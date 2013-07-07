@@ -23,7 +23,7 @@ class Index extends Module
 				// attempt to register the account
 				$register = $auth->create($insert);
 			} catch(\Exception $e) {				
-				$message = '<ul>';
+				$message = '<strong>You could not be registered:</strong><ul>';
 				foreach(unserialize($e->getMessage()) as $prev) {
 					$message .= '<li>' . $prev->getMessage() . '</li>';
 				}

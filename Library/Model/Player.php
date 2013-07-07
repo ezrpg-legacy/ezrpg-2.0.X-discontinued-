@@ -105,7 +105,7 @@ class Player extends \ezRPG\Library\Model
 			3 => '/[a-zA-Z0-9\!@#\$%\^&\*\(\)-_=+\{\};:,<\.>]/{8,}'
 		);
 		
-		if (preg_match($password_regex[$configPasswordStrength], $data['password']) === false) {
+		if (preg_match($password_regex[$configPasswordStrength], $data['password']) === false || empty($data['password'])) {
 			$password_message = 'Password is too simple, ';
 			
 			// generate a nice message

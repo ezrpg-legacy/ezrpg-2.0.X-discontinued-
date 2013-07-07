@@ -41,7 +41,7 @@ class App implements Interfaces\App
 		}
 		
 		// Set up envorinment variables
-		$this->module = 'ezRPG\Module\\' . (!empty($base) ? str_replace('/', '\\', ucwords($routeMatch['base'])) . '\\' : '') . ucwords($routeMatch['module']) . '\\Index';
+		$this->module = 'ezRPG\Module\\' . (!empty($routeMatch['base']) ? str_replace('/', '\\', ucwords($routeMatch['base'])) . '\\' : '') . ucwords($routeMatch['module']) . '\\Index';
 		$this->action = $routeMatch['action'];
 		$this->params = $routeMatch['params'];
                 

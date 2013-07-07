@@ -6,13 +6,13 @@
 
 $config['site'] = array(
 	'name' => 'ezRPG',
-	'url' => 'http://ezrpg/',
+	'url' => 'http://ezrpg.bulma/Web',
 	'theme' => 'default'
 );
 
 $config['db'] = array(
 	'driver'   => 'mysql',
-	'host'     => '10.0.0.129',
+	'host'     => '127.0.0.1',
 	'database' => 'ezrpg',
 	'username' => 'root',
 	'password' => '',
@@ -26,19 +26,39 @@ $config['router'] = array(
 );
 
 $config['security'] = array(
-	'hashRounds' => 1,
+	'hashRounds' => 11,
 	'hashSaltSize' => 16,
-	'passwordStrength' => 1
+	'passwordStrength' => 1,
+	'login'	=> array(
+		'showInvalidLoginReason' => true,
+		'returnUsernameOnFailure' => true
+	)
 );
 
 $config['accounts'] = array(
-	'requireActivation' => true,
+	'requireActivation' => false,
 	'emailActivation' => false
 );
 
 
 $config['routes'] = array(
-		 
+
+
+	'admin' => array(
+			'module' => 'admin',
+	),
+	
+	'admin/player/listing' => array(
+			'base' => 'admin',
+			'module' => 'player',
+			'action' => 'listing'
+	),
+	
+	'admin/player' => array(
+			'base' => 'admin',
+			'module' => 'player'
+	),
+		
 	'index(.*)' => array(
 		'module' => 'index',
 		'type' => 'regex',
@@ -51,7 +71,6 @@ $config['routes'] = array(
 	),
 		
 	'player/([a-z]+)' => array(
-		'base' => 'mo/ule',
 		'module' =>	'player',
 		'action' => 'view',
 		'params' => array('username'),

@@ -83,7 +83,7 @@ abstract class Model extends Pdo implements Interfaces\Model
 	 * @param boolean $partial Search for a partial match
 	 * @return array
 	 */
-	public function find($lookup, $key=null, $partail=false)
+	public function find($lookup=null, $key=null, $partail=false)
 	{
 		return current($this->findAll($lookup, $key, $partail));
 	}
@@ -96,7 +96,7 @@ abstract class Model extends Pdo implements Interfaces\Model
 	 * @param boolean $partial Search for a partial match
 	 * @return array
 	 */
-	public function findAll($lookup, $key=null, $partail=false)
+	public function findAll($lookup=null, $key=null, $partail=false)
 	{
 		$priKey = $this->primaryKey;
 		
@@ -114,7 +114,11 @@ abstract class Model extends Pdo implements Interfaces\Model
 		
 		$match_type = ($partail ? 'LIKE' : '=');
 		
-		$sql = 'SELECT * FROM `' . $this->tableName . '` WHERE `' . $priKey .'` ' . $match_type . ' ' . $lookup;
+		$sql = 'SELECT * FROM `' . $this->tableName . '`';
+		if ($lookup != null) {
+			$sql .= ' WHERE `' . $priKey .'` ' . $match_type . ' ' . $lookup;
+		}		
+		
 		$query = $this->prepare($sql);
 		$query->execute();
 		
