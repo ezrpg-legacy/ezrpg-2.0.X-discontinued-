@@ -29,6 +29,7 @@ $container = new Container();
 // Set required dependencies
 $config = new Config();
 require 'config.php';
+require 'settings.php';
 
 $container['config'] = $config;
 
