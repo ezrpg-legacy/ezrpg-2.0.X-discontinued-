@@ -95,7 +95,7 @@ class Player extends \ezRPG\Library\Model
 		}
 		
 		unset($data['confirm_password']);
-		
+		 
 		// check password validity against predefined algorithm
 		$configPasswordStrength = $this->container['config']['security']['passwordStrength'];
 		$password_regex = array(
