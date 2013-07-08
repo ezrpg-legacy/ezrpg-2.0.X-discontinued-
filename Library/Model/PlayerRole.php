@@ -16,4 +16,12 @@ class PlayerRole extends Model
 		return $query->fetchAll();
 	}
 	
+	public function addRole($player_id, $role_id) {
+		$data['player_id'] = intval($player_id);
+		$data['role_id'] = intval($role_id);
+		
+		$data['id'] = parent::add($data);
+		return $data['id'];
+	}
+	
 }

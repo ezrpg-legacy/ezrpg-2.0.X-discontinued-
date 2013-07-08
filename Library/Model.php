@@ -75,6 +75,23 @@ abstract class Model extends Pdo implements Interfaces\Model
 			}
 		}
 	}
+
+	/**
+	 * Execute a Query
+	 * 
+	 * @param string $sql Query to execute
+	 * @return boolean
+	 */
+	public function query($sql)
+	{
+		$query = $this->prepare($sql);
+		$run = $query->execute();
+		if($run)
+		{
+			return true;
+		}
+		return false;
+	}
 	
 	/**
 	 * Find a single record

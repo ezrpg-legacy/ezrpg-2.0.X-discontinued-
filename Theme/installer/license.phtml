@@ -1,0 +1,9 @@
+<?php
+include("header.phtml");
+$license = $this->get('license');
+?>
+						<div style="height: 200px; overflow: scroll">
+<?php echo $license; ?>
+						</div>
+						<a href="<?php echo $this->getUrl('installer/config'); ?>">I Agree ></a>
+<?php include("footer.phtml"); ?>

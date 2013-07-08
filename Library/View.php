@@ -63,7 +63,7 @@ class View implements Interfaces\View
 			header('X-Generator: ezRPG');
 			require $file;
 		} else {
-			throw new \Exception('View not found');
+			//throw new \Exception('View not found'); // Not sure why a view would need to be mandatory.
 		}
 	}
 	
