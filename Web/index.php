@@ -34,6 +34,7 @@ if ( file_exists('config.php') && filesize('config.php') != 0 ) {
 }
 
 if ( !isset($config['routes']) || substr($_SERVER['PHP_SELF'], 0, 9) == "installer") {
+
 	$config['routes'] = array(
 		'installer'	=> array(
 			'module' => 'installer',
@@ -55,11 +56,15 @@ if ( !isset($config['routes']) || substr($_SERVER['PHP_SELF'], 0, 9) == "install
 			'base' => 'installer',
 		),
 	);
+	$config['site'] = array(
+		'url' => 'http://'.$_SERVER['HTTP_HOST'].str_ireplace('/index.php', '', $_SERVER['PHP_SELF']),
+		'theme' => 'installer',
+	);
 }
 
 if ( !isset($config['site']) ) {
 	$config['site'] = array(
-		'url' => 'http://'.$_SERVER['HTTP_HOST'].str_ireplace($_SERVER['PHP_SELF'], '/index.php', ''),
+		'url' => 'http://'.$_SERVER['HTTP_HOST'].str_ireplace('/index.php', '', $_SERVER['PHP_SELF']),
 		'theme' => 'default',
 	);
 }
