@@ -1,0 +1,9 @@
+<?php require dirname(__DIR__) . '/header.phtml' ?>
+
+<h1>Access Denied</h1>
+
+<p>You have insufficient privileges to access <a href="<?php echo $_SERVER['REQUEST_URI']; ?>"><?php echo ltrim($_SERVER['REQUEST_URI'], '/'); ?></a>.<br />
+<a href="<?php echo $this->getUrl('Index'); ?>">Go back to home page</a></p>
+
+
+<?php require dirname(__DIR__) . '/footer.phtml' ?>

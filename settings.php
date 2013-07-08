@@ -5,6 +5,12 @@ $config['site'] = array(
 		'theme' => 'default'
 );
 
+$config['cache'] = array(
+		'use' => false,
+		'prefix' => 'Bulma',
+		'ttl' => 60
+);
+
 $config['router'] = array(
 		'partialRoutes' => true,
 		'routes' => array()
@@ -17,7 +23,8 @@ $config['security'] = array(
 		'login'	=> array(
 				'showInvalidLoginReason' => true,
 				'returnUsernameOnFailure' => true
-		)
+		),
+		'showExceptions' => true
 );
 
 $config['accounts'] = array(
@@ -52,9 +59,11 @@ $config['routes'] = array(
 				'params' => array('act')
 		),
 
-		'error' => array(
-				'module' => 'error404',
-				'action' => 'index'
+		'error(/+.*)' => array(
+				'module' => 'error',
+				'action' => 'index',
+				'params' => array('type'),
+				'type' => 'regex'
 		),
 
 		'player/([a-z]+)' => array(

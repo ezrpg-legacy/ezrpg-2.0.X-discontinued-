@@ -1,0 +1,9 @@
+<?php require dirname(__DIR__) . '/header.phtml' ?>
+
+<h1>Not Found</h1>
+
+<p>The page you are looking for, <a href="<?php echo $_SERVER['REQUEST_URI']; ?>"><?php echo ltrim($_SERVER['REQUEST_URI'], '/'); ?></a>, could not be found on this server.<br />
+<a href="<?php echo $this->getUrl('Index'); ?>">Go back to home page</a></p>
+
+
+<?php require dirname(__DIR__) . '/footer.phtml' ?>

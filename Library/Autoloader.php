@@ -39,6 +39,10 @@ class Autoloader
 		if (file_exists($fileName) == false) {
 			$fileName = $this->includePath . DIRECTORY_SEPARATOR . $fileName;
 		}
+		
+		if (file_exists($fileName) == false) {
+			throw new \Exception('Autoloader could not find "' . $fileName . '"');
+		}
 
 		require $fileName;
 	}

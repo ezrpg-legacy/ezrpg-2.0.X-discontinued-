@@ -21,6 +21,7 @@ abstract class Model extends Pdo implements Interfaces\Model
 	
 	protected $primaryKey;
 	protected $tableColumns;
+	protected $useCaching = true;
 	
 	public $safeMode = true;
 	
@@ -119,10 +120,23 @@ abstract class Model extends Pdo implements Interfaces\Model
 			$sql .= ' WHERE `' . $priKey .'` ' . $match_type . ' ' . $lookup;
 		}		
 		
+		// cache entries
+		if ($this->useCaching == true && $this->container['config']['cache']['use']
+			&& isset($this->container['cache']['sql_' . base64_encode($sql)])) {
+			return $this->container['cache']['sql_' . base64_encode($sql)];
+		} 
+		
 		$query = $this->prepare($sql);
 		$query->execute();
 		
-		return $query->fetchAll();
+		$result = $query->fetchAll();
+		
+		// cache entries
+		if ($this->useCaching == true && $this->container['config']['cache']['use']) {
+			$this->container['cache']['sql_' . base64_encode($sql)] = $result;
+		} 
+		
+		return $result;
 	}
 	
 	/**
@@ -149,8 +163,7 @@ abstract class Model extends Pdo implements Interfaces\Model
 		$sql .= ") VALUES (";
 		$sql .= implode(', ', $values);
 		$sql .= ")";
-		//echo $sql . "<br />"; //Here for Debugging
-		//$sql = "INSERT INTO :table (:keys) VALUES (:values)"; 
+
 		$query = $this->prepare($sql);
 		$query->execute();
 		
@@ -196,8 +209,6 @@ abstract class Model extends Pdo implements Interfaces\Model
 		} elseif(!is_null($priKey_value)) {
 			$sql .= '  WHERE `' . $this->primaryKey . '` = ' . $priKey_value;
 		}
-		
-		var_dump($sql);
 		
 		$query = $this->prepare($sql);
 		return $query->execute();

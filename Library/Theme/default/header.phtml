@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<?php $siteConfig = $this->container['config']->get('site'); ?>
+	<head>
+		<meta name="description" content="ezRPG Project, the free, open source browser-based game engine!" />
+		<meta name="keywords" content="" />
+		
+		<link type="text/css" rel="stylesheet" href="<?php echo $this->getThemeUrl('css/style.css'); ?>">
+		<script src="<?php echo $this->getUrl('js/lib/ext/jquery/jquery.1.8.1.min.js'); ?>"></script> 
+		<script src="<?php echo $this->getUrl('js/lib/ext/jquery/plugins/run.js'); ?>"></script>
+		<script src="<?php echo $this->getUrl('js/lib/ext/clock.js'); ?>"></script>
+	    <script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js?lang=css&lang=php&autoload=true"></script>
+	    <link href="<?php echo $this->getThemeUrl('css/prettify.css'); ?>" rel="stylesheet">
+	    <link rel="shortcut icon" href="<?php echo $this->getThemeUrl('favicon.ico'); ?>" type="image/x-icon">
+		<title><?php echo $siteConfig['name']; ?></title>
+        <script>
+			$(document).ready(function()
+			{
+				updateClock();
+				setInterval('updateClock()', 1000);
+			});
+		</script>
+	</head>
+	<body>
+	<body>
+
+		<div id="wrapper">
+ 
+			<div id="header">
+				<span id="title"><a href="./">ezRPG <span>2.0</span></a></span>
+				<span id="time"><div id="clock"></div>
+					<strong>Players Online</strong>: <?php echo $this->get('ONLINE') ?></span>
+			</div>
+
+			<div id="nav">
+				<?php require 'menu.phtml'; ?>
+			</div>
+			<div id="body_wrap">
+				<?php echo $this->get('msg'); ?>
+				<div id="body">

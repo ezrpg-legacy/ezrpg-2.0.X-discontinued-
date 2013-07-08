@@ -18,15 +18,13 @@ $rootPath = dirname(__DIR__);
 chdir($rootPath);
 
 // Bootstrap the application
-
 require $rootPath . '/Library/Autoloader.php';
-
 $autoloader = new Autoloader('ezRPG', dirname(__DIR__));
 $autoloader->register();
 
+// Set required dependencies
 $container = new Container();
 
-// Set required dependencies
 $config = new Config();
 require 'config.php';
 require 'settings.php';
@@ -42,14 +40,16 @@ try {
 	$app->run();
 	$app->serve();
 } catch ( \Exception $e ) {
-	if ( !headers_sent() ) {
+	if ($config['security']['showExceptions']) {
+		printf('<div><strong>ezRPG Exception</strong></div>%s<pre>', $e->getMessage());
+		var_dump($e);
+		echo '</pre>';
+	} else {
 		header('HTTP/1.1 503 Service Temporarily Unavailable');
 		header('Status: 503 Service Temporarily Unavailable');
+		
+		echo '<!DOCTYPE html><html><body><h3>Service Temporarily Unavailable</h3>Please try again later.</body></html>';
 	}
-
-	printf('<strong>ezRPG Exception</strong><br />%s<pre>', $e->getMessage());
-	var_dump($e);
-	echo '</pre>';  
 	
 	exit(1);
 }
