@@ -26,7 +26,13 @@ class App implements Interfaces\App
         $this->container = $container; 
         $this->container['app'] = $this;
         
-        $this->addDatabaseConfig();
+        if ((file_exists('config.php')
+        		&& filesize('config.php') == 0)
+        		&& substr($_SERVER['PHP_SELF'], 0, 10) != "installer"
+        		&& substr($_SERVER['PHP_SELF'], 0, 11) != "installer/"
+        		&& substr($_SERVER['PHP_SELF'], 0, 18) != "installer/license") {
+        	$this->addDatabaseConfig();
+        }
     }
     
     public function run()
