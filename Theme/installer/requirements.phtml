@@ -1,0 +1,37 @@
+<?php
+include("header.phtml");
+$data = $this->get('data');
+?>
+						<table cellspacing="0" border="0" width="100%">
+							<tr>
+								<th colspan="2" align="left">Requirement</th>
+							</tr>
+							<tr>
+								<td width="25%">
+									PHP Version
+								</td>
+								<td>
+									<font color="<?php echo ($data['php_version'])?"green":"red"; ?>"><?php echo PHP_VERSION; ?></font>
+								</td>
+							</tr>
+							<tr>
+								<td width="25%">
+									Config File Writable
+								</td>
+								<td>
+									<font color="<?php echo ($data['config_writable'])?"green\">Writable":"red\">Not Writable"; ?></font>
+								</td>
+							</tr>
+							<tr>
+								<td width="25%">
+									Settings File Writable
+								</td>
+								<td>
+									<font color="<?php echo ($data['settings_writable'])?"green\">Writable":"red\">Not Writable"; ?></font>
+								</td>
+							</tr>
+						</table>
+<?php if ( $data['errors'] == 0 ): ?>
+						<a href="<?php echo $this->getUrl('installer/license'); ?>">Continue ></a>
+<?php endif; ?>
+<?php include("footer.phtml"); ?>
