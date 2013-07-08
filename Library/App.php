@@ -27,10 +27,11 @@ class App implements Interfaces\App
         $this->container['app'] = $this;
         
         if ((file_exists('config.php')
-        		&& filesize('config.php') == 0)
+        		&& filesize('config.php') != 0)
         		&& substr($_GET['q'], 0, 10) != "installer"
         		&& substr($_GET['q'], 0, 11) != "installer/"
-        		&& substr($_GET['q'], 0, 18) != "installer/license") {
+        		&& substr($_GET['q'], 0, 18) != "installer/license"
+        		&& substr($_GET['q'], 0, 18) != "installer/config") {
         	$this->addDatabaseConfig();
         }
     }

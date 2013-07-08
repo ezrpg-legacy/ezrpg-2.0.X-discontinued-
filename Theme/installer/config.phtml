@@ -1,0 +1,91 @@
+<?php
+include("header.phtml");
+$data = $this->get('data');
+$dbhost = (!isset($_POST['dbhost']))?'localhost':$_POST['dbhost'];
+$dbuser = (!isset($_POST['dbuser']))?'':$_POST['dbuser'];
+$dbname = (!isset($_POST['dbname']))?'':$_POST['dbname'];
+$dbpref = (!isset($_POST['dbpref']))?'':$_POST['dbpref'];
+$dbtype = (!isset($_POST['dbtype']))?'':$_POST['dbtype'];
+
+$gamename = (!isset($_POST['gamename']))?'ezRPG':$_POST['gamename'];
+$gameurl = (!isset($_POST['gameurl']))?$data['guessUrl']:$_POST['gameurl'];
+?>
+						<form method="post">
+							<table cellspacing="0" border="0" width="100%">
+								<tr>
+									<td width="25%">
+										Game Name
+									</td>
+									<td>
+										<input type="text" name="gamename" value="<?php echo $gamename; ?>" />
+									</td>
+								</tr>
+								<tr>
+									<td width="25%">
+										Game URL
+									</td>
+									<td>
+										<input type="text" name="gameurl" value="<?php echo $gameurl; ?>" /><br />
+										NOTE: There should be NO trailing slash.
+									</td>
+								</tr>
+								<tr>
+									<td width="30%">
+										Database Type
+									</td>
+									<td>
+										<select name="dbtype">
+											<option value="mysql"<?php if($dbtype=="mysql") echo " selected";?>>MySQL</option>
+											<option value="sqlite"<?php if($dbtype=="sqlite") echo " selected";?>>SQLite</option>
+											<option value="sqlsrv"<?php if($dbtype=="sqlsrv") echo " selected";?>>MSSSQL</option>
+										</select>
+									</td>
+								</tr>
+								<tr>
+									<td width="25%">
+										Database Host
+									</td>
+									<td>
+										<input type="text" name="dbhost" value="<?php echo $dbhost; ?>" />
+									</td>
+								</tr>
+								<tr>
+									<td width="25%">
+										Database Name
+									</td>
+									<td>
+										<input type="text" name="dbname" value="<?php echo $dbname; ?>" />
+									</td>
+								</tr>
+								<tr>
+									<td width="25%">
+										Database Username
+									</td>
+									<td>
+										<input type="text" name="dbuser" value="<?php echo $dbuser; ?>" />
+									</td>
+								</tr>
+								<tr>
+									<td width="25%">
+										Database Password
+									</td>
+									<td>
+										<input type="password" name="dbpass" value="" />
+									</td>
+								</tr>
+								<tr>
+									<td width="25%">
+										Database Table Prefix
+									</td>
+									<td>
+										<input type="text" name="dbpref" value="<?php echo $dbpref; ?>" />
+									</td>
+								</tr>
+								<tr>
+									<td colspan="2">
+										<input type="submit" name="submit" value="Save" />
+									</td>
+								</tr>
+							</table>
+						</form>
+<?php include("footer.phtml"); ?>
