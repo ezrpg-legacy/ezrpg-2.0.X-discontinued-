@@ -1,9 +1,0 @@
-<ul>
-	<?php if ($this->get('loggedIn')) { ?>
-	<li><a href="<?php echo $this->getUrl('Home'); ?>">Home</a></li>
-	<li><a href="<?php echo $this->getUrl('Logout'); ?>">Logout</a></li>
-	<?php } else { ?>
-	<li><a href="<?php echo $this->getUrl('Index');  ?>">Home</a></li>
-	<li><a href="<?php echo $this->getUrl('Register');  ?>">Register</a></li>
-	<?php } ?>
-</ul>

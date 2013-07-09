@@ -139,7 +139,7 @@ class AccessControl implements Interfaces\AccessControl {
 		$acl = array();
 		
 		foreach($roles as $role) {
-			if ($role['title'] == 'root') {
+			if ($role['id'] == $this->container['config']['security']['acl']['rootRoleId']) {
 				$this->_isRoot = true;
 			}
 			

@@ -45,7 +45,9 @@ class App implements Interfaces\App
     public function run()
     {
     	// instantiate ACL
-    	$this->acl = new AccessControl($this->container);
+    	if ($this->container['config']['security']['acl']['use']) {
+    		$this->acl = new AccessControl($this->container);
+    	}
     	
     	// Load plugins
     	$this->loadPlugins();
@@ -56,7 +58,8 @@ class App implements Interfaces\App
 
 		if ($routeMatch == false) {
 			$routeMatch = $router->resolve('error/file-not-found');
-		} elseif ($this->acl->validateRoute($query) == false) {
+		} elseif ($this->container['config']['security']['acl']['use'] 
+					&& $this->acl->validateRoute($query) == false) {
 			$routeMatch = $router->resolve('error/access-denied');
 		}
 		

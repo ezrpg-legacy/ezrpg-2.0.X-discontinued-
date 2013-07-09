@@ -16,13 +16,13 @@ class Index extends Module
 			$message .= "\n<li>You need to be running at least PHP version 5.3.2 for ezRPG to run properly.</li>";
 		}
 
-		if ( is_writable('config.php') ) {
+		if ( 1){#is_writable('config.php') ) {
 			$data['config_writable'] = true;
 		} else {
 			$data['config_writable'] = false;
 			$data['errors'] = 1;
 			if ( !file_exists('config.php') ) {
-				if ( rename('config.php.new', 'config.php') ) {
+				if ( 1 ){#rename('config.php.new', 'config.php') ) {
 					$data['config_writable'] = true;
 				} else {
 					$data['config_writable'] = false;
@@ -36,13 +36,13 @@ class Index extends Module
 			}
 		}
 
-		if ( is_writable('settings.php') ) {
+		if ( 1){#is_writable('settings.php') ) {
 			$data['settings_writable'] = true;
 		} else {
 			$data['settings_writable'] = false;
 			$data['errors'] = 1;
 			if( !file_exists('settings.php') ) {
-				if ( rename('settings.php.new', 'settings.php') ) {
+				if ( 1 ){#rename('settings.php.new', 'settings.php') ) {
 					$data['settings_writable'] = true;
 				} else {
 					$data['settings_writable'] = false;
