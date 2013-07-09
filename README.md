@@ -22,4 +22,5 @@ Any similarity within this project to earlier versions are purely coincidental, 
 
 License
 -----------
-The project does not have any license at this time, thus, the entire code base automatically falls as intellectual property, which indicated that exclusive rights are granted to each contributor.
+ezRPG 2.0 is distributed under the BSD 3-clause license.
+See LICENSE.md for more information.
