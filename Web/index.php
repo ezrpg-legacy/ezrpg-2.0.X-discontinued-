@@ -27,7 +27,7 @@ $container = new Container();
 
 $config = new Config();
 
-if (!file_exists('config.php')) {
+if (0 == filesize('config.php')) {
 	$config['security'] = array(
 		'acl' => array('use' => false),
 		'showExceptions' => true
