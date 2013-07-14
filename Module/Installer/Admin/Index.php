@@ -34,11 +34,15 @@ class Index extends Module
 			if (isset($register['active'])) {
 				$playerRole = $this->app->getModel('playerRole');
 				$playerRole->addRole($register['id'], 1);
-				$fh = fopen("Module/Installer/locked", 'w+');
-				if ( !$fh ) {
+				if ( is_writable("Module/Installer/locked") ) {
+					$fh = fopen("Module/Installer/locked", 'w+');
+					if ( !$fh ) {
+						die('Your admin account was created, but we were unable to lock the installer. Please remove the Module/Installer directory to use your game.');
+					} else {
+						die('Your admin account was created, and the installer was locked! Continue to your game');
+					}
+				} else {
 					die('Your admin account was created, but we were unable to lock the installer. Please remove the Module/Installer directory to use your game.');
-				}else{
-					die('Your admin account was created, and the installer was locked! Continue to your game');
 				}
 				
 			}
