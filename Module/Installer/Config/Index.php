@@ -24,7 +24,6 @@ class Index extends Module
 					$installer->runSqlFile($query, $_POST['dbpref']);
 				}
 			} catch(\Exception $e) {
-				var_dump($e);
 				$this->container['view']->setMessage("Please check your database configurations.", 'fail');
 				$error = 1;
 			}
@@ -37,14 +36,8 @@ class Index extends Module
 				$dbpref = $_POST['dbpref'];
 				$gamename = $_POST['gamename'];
 				$gameurl = $_POST['gameurl'];
-				try {
-					
-				} catch (\Exception $e) {
-					$error = 1;
-				}
-				if ( !isset($error) ) {
-					//Generate configuration file
-					$config = <<<CONFIG
+				//Generate configuration file
+				$config = <<<CONFIG
 <?php
 
 /**
@@ -52,17 +45,20 @@ class Index extends Module
  */ 
 
 \$config['db'] = array(
-	'driver'   => $dbtype,
-	'host'     => $dbhost,
-	'database' => $dbname,
-	'username' => $dbuser,
-	'password' => $dbpass,
+	'driver'   => '$dbtype',
+	'host'     => '$dbhost',
+	'database' => '$dbname',
+	'username' => '$dbuser',
+	'password' => '$dbpass',
 	'port' => '',
-	'prefix' => $dbpref
+	'prefix' => '$dbpref'
 );
 CONFIG;
-					//Generate Settings file
-					$settings = <<<SETTINGS
+				$fh = fopen('config.php', 'w+');
+				fwrite($fh, $config);
+				fclose($fh);
+				//Generate Settings file
+				$settings = <<<SETTINGS
 <?php
 \$config['site'] = array(
 		'name' => '$gamename',
@@ -153,8 +149,10 @@ CONFIG;
 		),
 );
 SETTINGS;
-					
-				}
+				$fh = fopen('settings.php', 'w+');
+				fwrite($fh, $settings);
+				fclose($fh);
+				header("location: {$gameurl}/installer/admin");
 			}
 			
 		}

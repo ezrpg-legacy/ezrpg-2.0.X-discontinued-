@@ -26,12 +26,34 @@ $autoloader->register();
 $container = new Container();
 
 $config = new Config();
-
-if (!file_exists('./Module/Installer/locked')) {
+if ( file_exists('config.php') )
+	require 'config.php';
+if ( file_exists('settings.php') && (file_exists('Module/Installer/locked') || !file_exists('Module/Installer/Index.php')) )
+	require 'settings.php';
+if (!file_exists('Module/Installer/locked') && file_exists('Module/Installer/Index.php')) {
 	$config['security'] = array(
-		'acl' => array('use' => false),
-		'showExceptions' => true
+			'hashRounds' => 11,
+			'hashSaltSize' => 16,
+			'passwordStrength' => 1,
+			'showExceptions' => true,
+			'acl' => array(
+				'use' => false,
+			)
 	);
+	$config['accounts'] = array(
+			'requireActivation' => false,
+			'emailActivation' => false
+	);
+
+	$config['site'] = array(
+			'url' => 'http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']),
+			'theme' => 'installer',
+	);
+	
+	$config['cache'] = array(
+		'use' => false,
+	);
+	
 	
 	$config['routes'] = array(
 			'installer'	=> array(
@@ -45,23 +67,10 @@ if (!file_exists('./Module/Installer/locked')) {
 					'module' => 'config',
 					'base' => 'installer',
 			),
-			'installer/structure'	=> array(
-					'module' => 'structure',
-					'base' => 'installer',
-			),
 			'installer/admin'	=> array(
 					'module' => 'admin',
 					'base' => 'installer',
 			),
-	);
-
-	$config['site'] = array(
-			'url' => 'http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']),
-			'theme' => 'installer',
-	);
-	
-	$config['cache'] = array(
-		'use' => false,
 	);
 	
 	if(!isset($_GET['q']) || stripos($_GET['q'], 'installer') !== 0) {
@@ -69,9 +78,6 @@ if (!file_exists('./Module/Installer/locked')) {
 		echo '<a href="./installer">Install ezRPG</a>';
 		exit(0);
 	}
-} else {
-	require 'config.php';
-	require 'settings.php';
 }
 
 $container['config'] = $config;

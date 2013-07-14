@@ -28,17 +28,19 @@ class App implements Interfaces\App
         $this->container['app'] = $this;
 		        
         $config = $this->container['config'];
-       	if (isset($config['cache']['use']) && $config['cache']['use'] == true) {
-        	$this->container['cache'] = new Cache($config['cache']['prefix'], $config['cache']['ttl']);
-
-        	if (!isset($this->container['cache']['config'])) {
-        		$this->addDatabaseConfig();
-        		$this->container['cache']['config'] = $this->container['config'];
-        	} else {
-        		$this->container['config'] = $this->container['cache']['config'];
-        	}
-        } elseif (isset($this->container['config']['db'])) {
-        	$this->addDatabaseConfig();
+        if (file_exists('Module/Installer/locked') || !file_exists('Module/Installer/Index.php')) {
+	       	if (isset($config['cache']['use']) && $config['cache']['use'] == true) {
+	        	$this->container['cache'] = new Cache($config['cache']['prefix'], $config['cache']['ttl']);
+	
+	        	if (!isset($this->container['cache']['config'])) {
+	        		$this->addDatabaseConfig();
+	        		$this->container['cache']['config'] = $this->container['config'];
+	        	} else {
+	        		$this->container['config'] = $this->container['cache']['config'];
+	        	}
+	        } elseif (isset($this->container['config']['db'])) {
+	        	$this->addDatabaseConfig();
+	        }
         }
     }
     
