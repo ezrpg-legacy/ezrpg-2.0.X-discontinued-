@@ -19,7 +19,7 @@ class App implements Interfaces\App
     		  $rootPath 	= '/',
     		  $view;
     
-    //
+    // Yes?
     protected $params = array();
     
     public function __construct(Interfaces\Container $container)
@@ -57,13 +57,13 @@ class App implements Interfaces\App
 		
 		$query = isset($_GET['q']) ? strtolower($_GET['q']) : 'index';
 		$routeMatch = $router->resolve($query);
-
 		if ($routeMatch == false) {
 			$routeMatch = $router->resolve('error/file-not-found');
 		} elseif ($this->container['config']['security']['acl']['use'] 
 					&& $this->acl->validateRoute($query) == false) {
 			$routeMatch = $router->resolve('error/access-denied');
 		}
+		
 		
 		// Set up envorinment variables
 		$this->module = 'ezRPG\Module\\' . (!empty($routeMatch['base']) ? str_replace('/', '\\', ucwords($routeMatch['base'])) . '\\' : '') . ucwords($routeMatch['module']) . '\\Index';

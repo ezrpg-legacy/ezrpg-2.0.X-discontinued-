@@ -80,6 +80,7 @@ class AccessControl implements Interfaces\AccessControl {
 	 * @param string $permission
 	 */
 	public function validateRoute($route) {
+		var_dump($this->_permissions);
 		if ($this->_player === null || empty($this->_permissions)) {
 			return false;
 		}
@@ -145,6 +146,7 @@ class AccessControl implements Interfaces\AccessControl {
 			
 			$perms = $this->getPermissions($role['id']);	
 			foreach($perms as $perm) {
+				var_dump($role);
 				$acl[$role['title']][$perm['title']] = $perm['type'];
 			}
 		}

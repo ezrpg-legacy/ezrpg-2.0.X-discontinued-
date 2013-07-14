@@ -22,6 +22,7 @@ abstract class Model extends Pdo implements Interfaces\Model
 	protected $primaryKey;
 	protected $tableColumns;
 	protected $useCaching = true;
+	protected $usePrefix = true;
 	
 	public $safeMode = true;
 	
@@ -53,11 +54,11 @@ abstract class Model extends Pdo implements Interfaces\Model
 		if (!isset($this->tableName)) {
 			$table_fqn = get_class($this);
 			$this->tableName = substr(strtolower($table_fqn), 1+(strrpos($table_fqn, '\\')));
-			
-			// prefix support
-			if (!empty($this->_config['prefix'])) {
-				$this->tableName = $this->_config['prefix'] . $this->tableName;
-			}
+		}
+		
+		// prefix support
+		if (!empty($this->_config['prefix']) && $this->usePrefix) {
+			$this->tableName = $this->_config['prefix'] . $this->tableName;
 		}
 		
 		$col_q = $this->prepare('SELECT COLUMN_NAME, COLUMN_KEY FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?');
@@ -244,5 +245,31 @@ abstract class Model extends Pdo implements Interfaces\Model
 		$query->bindParam('value', $id);
 		
 		return $query->execute();
+	}
+	
+	/**
+	 * Queries the database
+	 * 
+	 * Low-level extention of Pdo's query method to support prefixes
+	 * 
+	 * @param $statement string
+	 */
+	public function query($statement) 
+	{
+		$statement = preg_replace('/<prefix>[a-z_\-0-9]+/', $this->tableName, $statement);
+		return parent::query($statement);
+	}
+	
+	/**
+	 * Prepares an SQL statement
+	 *
+	 * Low-level extention of Pdo's prepare method to support prefixes
+	 *
+	 * @param $statement string
+	 */
+	public function prepare($statement, array $driver_options = array())
+	{
+		$statement = preg_replace('/<prefix>[a-z_\-0-9]+/', $this->tableName, $statement);
+		return parent::prepare($statement, $driver_options);
 	}
 }

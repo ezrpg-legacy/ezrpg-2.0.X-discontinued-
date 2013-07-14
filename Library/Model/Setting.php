@@ -13,7 +13,7 @@ class Setting extends Model
 	 */
 	public function getAll() 
 	{
-		$parents = $this->query('SELECT title FROM setting WHERE parent_id IS NULL AND active = 1');
+		$parents = $this->query('SELECT title FROM <prefix>setting WHERE parent_id IS NULL AND active = 1');
 		$parents = $parents->fetchAll();
 		
 		$cache = array();
