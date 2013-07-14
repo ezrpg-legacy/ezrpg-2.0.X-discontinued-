@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS `module_action` (
+CREATE TABLE if not exists `<pre>module_action` (
   `id` int(11) NOT NULL,
   `module_id` int(11) NOT NULL,
   `title` varchar(25) NOT NULL,

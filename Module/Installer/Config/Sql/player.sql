@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS `player` (
+CREATE TABLE if not exists `<pre>player` (
   `id` int(10) NOT NULL AUTO_INCREMENT COMMENT 'Player ID',
   `title` varchar(20) DEFAULT NULL COMMENT 'Player name/alias',
   `username` varchar(40) NOT NULL,

@@ -20,7 +20,11 @@ class Index extends Module
 			$this->container['config']['db'] = $dbconfig;
 			try {
 				$installer = $this->app->getModel('installer');
+				foreach ( glob("./Module/Installer/Config/Sql/*.sql") as $query ) {
+					$installer->runSqlFile($query, $_POST['dbpref']);
+				}
 			} catch(\Exception $e) {
+				var_dump($e);
 				$this->container['view']->setMessage("Please check your database configurations.", 'fail');
 				$error = 1;
 			}
@@ -71,6 +75,12 @@ CONFIG;
 		'routes' => array()
 );
 
+\$config['cache'] = array(
+		'use' => false,
+		'prefix' => 'ezRPG',
+		'ttl' => 60
+);
+
 \$config['security'] = array(
 		'hashRounds' => 11,
 		'hashSaltSize' => 16,
@@ -78,6 +88,11 @@ CONFIG;
 		'login'	=> array(
 				'showInvalidLoginReason' => true,
 				'returnUsernameOnFailure' => true
+		),
+		'showExceptions' => true,
+		'acl' => array(
+			'use' => true,
+			'rootRoleId' => 1 # !!THIS IS WRONG!! - 2 IS REALLY ROOT, 1 IS GUEST
 		)
 );
 

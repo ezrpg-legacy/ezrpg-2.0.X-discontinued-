@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS `player_attribute` (
+CREATE TABLE if not exists `<pre>player_attribute` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `attribute_id` int(11) NOT NULL,
   `player_id` int(11) NOT NULL,

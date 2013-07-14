@@ -27,7 +27,7 @@ $container = new Container();
 
 $config = new Config();
 
-if (0 == filesize('config.php')) {
+if (!file_exists('./Module/Installer/locked')) {
 	$config['security'] = array(
 		'acl' => array('use' => false),
 		'showExceptions' => true
@@ -60,7 +60,11 @@ if (0 == filesize('config.php')) {
 			'theme' => 'installer',
 	);
 	
-	if(stripos($_GET['q'], 'installer') !== 0) {
+	$config['cache'] = array(
+		'use' => false,
+	);
+	
+	if(!isset($_GET['q']) || stripos($_GET['q'], 'installer') !== 0) {
 		echo 'ezRPG has not been installed yet.<br />';
 		echo '<a href="./installer">Install ezRPG</a>';
 		exit(0);
