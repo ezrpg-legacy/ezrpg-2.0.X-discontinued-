@@ -5,8 +5,8 @@ use ezRPG\Library\Module;
 
 class Index extends Module
 {
-    public function index()
-    {
+	public function index()
+	{
 		$auth = $this->app->getModel('player');
 		
 		if (isset($_POST['submit'])) {
@@ -47,6 +47,6 @@ class Index extends Module
 				
 			}
 		}
-        $this->view->name = 'admin';
-    }
+		$this->view->name = 'admin';
+	}
 }
