@@ -15,31 +15,31 @@ $post_data = array(
 
 ?>
 <form method="post" action="register">
-    <table width="80%" align=center>
-        <tr>
-            <td valign=top>
-                <label>Username</label>
-                <input type="text" size="40" name="username" value="<?php echo $post_data['username']; ?>" />
-                <label>Email</label>
-                <input type="text" size="40" name="email" value="<?php echo $post_data['email']; ?>" />
-            </td>
-            <td valign=top>
-                <label>Password</label>
-                <input type="password" size="40" name="password"  value="<?php echo $post_data['password']; ?>" />
+	<table width="80%" align=center>
+		<tr>
+			<td valign=top>
+				<label>Username</label>
+				<input type="text" size="40" name="username" value="<?php echo $post_data['username']; ?>" />
+				<label>Email</label>
+				<input type="text" size="40" name="email" value="<?php echo $post_data['email']; ?>" />
+			</td>
+			<td valign=top>
+				<label>Password</label>
+				<input type="password" size="40" name="password"  value="<?php echo $post_data['password']; ?>" />
 
-                <label>Verify Password</label>
-                <input type="password" size="40" name="password2" />
-            </td>
-        </tr>
-        <tr>
-            <td colspan=2 align="center">
+				<label>Verify Password</label>
+				<input type="password" size="40" name="password2" />
+			</td>
+		</tr>
+		<tr>
+			<td colspan=2 align="center">
 				<input type="hidden" name="verify" value="0" />
-                <br />
-                <input name="register" type="submit" value="Register" class="button" zindex="5" />
-            </td>
-        </tr>
-                
-    </table>
+				<br />
+				<input name="register" type="submit" value="Register" class="button" zindex="5" />
+			</td>
+		</tr>
+				
+	</table>
 </form>
 
 <script src="<?php echo $this->getUrl('views/js/modules/register/security.js'); ?>"></script>

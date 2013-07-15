@@ -7,10 +7,10 @@ use \ezRPG\Library\Model,
 class Auth extends Model
 {
   const
-		USER_NOT_FOUND     = 1,
+		USER_NOT_FOUND	 = 1,
 		PASSWORD_INCORRECT = 2,
-		EMAIL_IN_USE       = 3,
-		EMAIL_INVALID      = 4
+		EMAIL_IN_USE	   = 3,
+		EMAIL_INVALID	  = 4
 		;
 
 	protected
@@ -106,8 +106,8 @@ class Auth extends Model
 				' . time() . '
 			)
 			;');
-		$sth->bindParam(':username',    $userName);
-		$sth->bindParam(':email',    $email);
+		$sth->bindParam(':username',	$userName);
+		$sth->bindParam(':email',	$email);
 		$sth->bindParam(':password', $hash);
 		$sth->bindParam(':salt', $salt);
 
@@ -136,7 +136,7 @@ class Auth extends Model
 				password = :password,
 				secret_key = :salt
 			WHERE
-				id    = :id OR
+				id	= :id OR
 				email = :id
 			LIMIT 1
 			;');
@@ -160,7 +160,7 @@ class Auth extends Model
 				*
 			FROM ' . $this->app->config['db']["prefix"] . 'players
 			WHERE
-				id    = :id OR
+				id	= :id OR
 				username = :id
 			LIMIT 1
 			;');
@@ -182,7 +182,7 @@ class Auth extends Model
 				secret_key
 			FROM ' . $config["prefix"] . 'players
 			WHERE
-				id    = :id OR
+				id	= :id OR
 				email = :id
 			LIMIT 1
 			;');
@@ -211,7 +211,7 @@ class Auth extends Model
 			UPDATE ' . $config["prefix"] . 'players SET
 				last_login = ' . time() . '
 			WHERE
-				id    = :id OR
+				id	= :id OR
 				username = :id
 			LIMIT 1
 			;');
@@ -242,7 +242,7 @@ class Auth extends Model
 			UPDATE ' . $config["prefix"] . 'players SET
 				last_active = ' . time() . '
 			WHERE
-				id    = :id OR
+				id	= :id OR
 				username = :id
 			LIMIT 1
 			;');
