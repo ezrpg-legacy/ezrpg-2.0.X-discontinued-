@@ -10,7 +10,7 @@ class Index extends Module
 		if ( isset($_POST['submit']) ) {
 			$dbconfig = array(
 					'driver'   => $_POST['dbtype'],
-					'host'     => $_POST['dbhost'],
+					'host'	 => $_POST['dbhost'],
 					'database' => $_POST['dbname'],
 					'username' => $_POST['dbuser'],
 					'password' => $_POST['dbpass'],
@@ -46,7 +46,7 @@ class Index extends Module
 
 \$config['db'] = array(
 	'driver'   => '$dbtype',
-	'host'     => '$dbhost',
+	'host'	 => '$dbhost',
 	'database' => '$dbname',
 	'username' => '$dbuser',
 	'password' => '$dbpass',

@@ -22,10 +22,10 @@ class PlayerRegistration implements Plugin {
 		$session = $this->container['app']->getModel('Session');
 		$session->clear();
 		$session->set('playerid', $data['id']);
-        $session->set('hash', $session->generateSignature());
-        $session->set('last_active', time());
-        header('Location: Home');
-        exit;
+		$session->set('hash', $session->generateSignature());
+		$session->set('last_active', time());
+		header('Location: Home');
+		exit;
 	}
 	
 }
