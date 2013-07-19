@@ -19,9 +19,15 @@ class App implements Interfaces\App
     		  $rootPath 	= '/',
     		  $view;
     
-    // Yes?
+    /**
+     * @deprecated DON'T USE
+     */
     protected $params = array();
     
+    /**
+     * @todo Clean this up
+     * @param Interfaces\Container $container
+     */
     public function __construct(Interfaces\Container $container)
     {
         $this->container = $container; 
@@ -57,13 +63,13 @@ class App implements Interfaces\App
 		
 		$query = isset($_GET['q']) ? strtolower($_GET['q']) : 'index';
 		$routeMatch = $router->resolve($query);
+		
 		if ($routeMatch == false) {
 			$routeMatch = $router->resolve('error/file-not-found');
 		} elseif ($this->container['config']['security']['acl']['use'] 
-					&& $this->acl->validateRoute($query) == false) {
+					&& $this->acl->verify($query, 'route ') == false) {
 			$routeMatch = $router->resolve('error/access-denied');
 		}
-		
 		
 		// Set up envorinment variables
 		$this->module = 'ezRPG\Module\\' . (!empty($routeMatch['base']) ? str_replace('/', '\\', ucwords($routeMatch['base'])) . '\\' : '') . ucwords($routeMatch['module']) . '\\Index';
@@ -108,6 +114,7 @@ class App implements Interfaces\App
     /**
      * Get the module name
      * @return string
+     * @deprecated DON'T USE
      */
     public function getModuleName()
     {
@@ -117,6 +124,7 @@ class App implements Interfaces\App
     /**
      * Get the action name
      * @return string
+     * @deprecated DON'T USE
      */
     public function getAction()
     {
@@ -127,6 +135,7 @@ class App implements Interfaces\App
      * Get all parameters.
      * 
      * @return array
+     * @deprecated DON'T USE
      */
     
     public function getParams()
@@ -140,6 +149,7 @@ class App implements Interfaces\App
      * @param string $name
      * @param mixed $default
      * @return mixed
+     * @deprecated DON'T USE
      */
     public function getParam($name, $default = null)
     {
@@ -153,6 +163,7 @@ class App implements Interfaces\App
     /**
      * Get the arguments
      * @return array
+     * @deprecated DON'T USE
      */
     public function getArgs()
     {
@@ -162,6 +173,7 @@ class App implements Interfaces\App
     /**
      * Verify an argument exists
      * @return bool
+     * @deprecated DON'T USE
      */
     public function getArg($arg)
     {
@@ -191,6 +203,7 @@ class App implements Interfaces\App
      * @param string $modelName
      * @return object
      * @deprecated
+     * @deprecated DON'T USE
      */
      public function getSingleton($modelName)
      {
@@ -230,13 +243,16 @@ class App implements Interfaces\App
      * @param string $string
      * @param string $file
      * @param int $line
+     * @deprecated DON'T USE
      */
     public function error($number, $string, $file, $line)
     {
     	throw new \Exception('Error #' . $number . ': ' . $string . ' in ' . $file . ' on line ' . $line);
     }
 
-
+	/**
+     * @deprecated DON'T USE
+	 */
     public function __get($key)
     {
         return $this->container[$key];

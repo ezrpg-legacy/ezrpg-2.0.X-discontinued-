@@ -70,6 +70,7 @@ class Container implements Interfaces\Container
      */
     public function offsetGet($id)
     {
+    	// @todo this is *NOT* how an ArrayAccess should behave!!!
         if (!array_key_exists($id, $this->values)) {
             throw new \InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
         }

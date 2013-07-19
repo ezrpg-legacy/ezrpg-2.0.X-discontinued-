@@ -18,9 +18,10 @@ abstract class Model extends Pdo implements Interfaces\Model
 	
 	protected $tableName;
 	protected $isVirtualTable;
-	
+
 	protected $primaryKey;
 	protected $tableColumns;
+	
 	protected $useCaching = true;
 	protected $usePrefix = true;
 	
@@ -106,7 +107,6 @@ abstract class Model extends Pdo implements Interfaces\Model
 		if ($key != null) {
 			$priKey = $key;
 		}
-		
 		
 		if ($partail) {
 			$lookup = $this->quote(strpad($lookup, strlen($lookup) + 2, '%', \STR_PAD_BOTH));
@@ -256,7 +256,7 @@ abstract class Model extends Pdo implements Interfaces\Model
 	 */
 	public function query($statement) 
 	{
-		$statement = preg_replace('/<prefix>[a-z_\-0-9]+/', $this->tableName, $statement);
+		$statement = preg_replace('/<prefix>([a-z_\-0-9]+)/i', $this->_config['prefix'] . '$1', $statement);
 		return parent::query($statement);
 	}
 	
@@ -267,9 +267,14 @@ abstract class Model extends Pdo implements Interfaces\Model
 	 *
 	 * @param $statement string
 	 */
-	public function prepare($statement, array $driver_options = array())
+	public function prepare($statement, array $driver_options = null)
 	{
-		$statement = preg_replace('/<prefix>[a-z_\-0-9]+/', $this->tableName, $statement);
+		if (empty($driver_options)) {
+			$driver_options = array();
+		}
+		
+		$statement = preg_replace('/<prefix>([a-z_\-0-9]+)/i', $this->_config['prefix'] . '$1', $statement);
+
 		return parent::prepare($statement, $driver_options);
 	}
 }

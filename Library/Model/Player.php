@@ -263,4 +263,15 @@ class Player extends \ezRPG\Library\Model
 
 		return $output;
 	}
+
+	/**
+	 * Retrieve a guest player listing
+	 * @return array
+	 */
+	public function findGuest() {
+		return array(
+			'id' => 0,
+			'name' => 'guest'
+		);
+	}
 }

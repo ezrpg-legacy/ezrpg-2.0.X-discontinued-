@@ -1,0 +1,96 @@
+<?php
+
+namespace ezRPG\Library\AccessControl;
+
+class Role 
+{
+	protected $metadata;
+	protected $permissions = array();
+	
+	/**
+	 * Create a new Role
+	 * @param object $container
+	 * @param array $metadata
+	 */
+	public function __construct($container, $metadata) 
+	{
+		$this->metadata = $metadata;
+		
+		// attempt to find in cache
+		if ($container['config']['cache']['use'] &&  isset($container['cache']['acl_roles_' . $metadata['id'] . '_permissions'])) {
+			$permissions = $container['cache']['acl_roles_' . $metadata['id'] . '_permissions'];
+		} else {
+			$permissions = $container['app']->getModel('RolePermission')->getPermissions($metadata['id']);
+			
+			if ($container['config']['cache']['use']) {
+				$container['cache']['acl_roles_' . $metadata['id'] . '_permissions'] = $permission;
+			}
+		}
+		
+		// inject root override if applicable
+		if (strcasecmp($container['config']['security']['acl']['rootRole'], $metadata['title'])) {
+			$this->metadata['isRoot'] = true;
+		} else {
+			$this->metadata['isRoot'] = false;
+		}
+		
+		foreach($permissions as $metadata) {
+			$this->addPermission(new Permission($metadata));
+		}
+	}
+	
+	/**
+	 * Adds a permission
+	 * @param array $permission
+	 */
+	public function addPermission($permission) 
+	{
+		array_push($this->permissions, $permission);
+	}
+	
+	/**
+	 * Validates if a permission exists within this role
+	 * This is case insensitive
+	 * 
+	 * @param string $title
+	 * @param string $type
+	 * @return boolean
+	 */
+	public function hasPermission($title, $type=null)
+	{
+		if ($this->metadata['isRoot']) {
+			return true;
+		}
+		
+		foreach($this->permissions as $permission) {
+			if (strcasecmp($permission->getTitle(), $title) === 0) {
+				// type specific logic
+				if (!is_null($type) && !strcasecmp($permission->getType(), $type)) {
+					continue;
+				}
+				
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Retrieves Id
+	 * @return integer
+	 */
+	public function getId()
+	{
+		return $this->metadata['id'];
+	}
+	
+	/**
+	 * Retrieves title
+	 * @return string
+	 */
+	public function getTitle() 
+	{
+		return $this->metadata['title'];
+	}
+}

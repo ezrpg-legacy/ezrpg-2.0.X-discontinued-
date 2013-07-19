@@ -6,6 +6,4 @@ use \ezRPG\Library\Model;
 class Role extends Model
 {
 	protected $tableName = 'role';
-
-	
 }

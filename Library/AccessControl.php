@@ -2,155 +2,110 @@
 
 namespace ezRPG\Library;
 
+use ezRPG\Library\AccessControl\Role;
 class AccessControl implements Interfaces\AccessControl {
 	
 	protected $container;
 	
-	private $_player;
-	private $_permissions;
-	private $_isRoot;
+	protected $player;
+	protected $roles = array();
 
-	protected $rolePermissionModel;
-	protected $permissionTypeModel;
-	protected $playerRoleModel;
-	
-	public function __construct(Interfaces\Container &$container) {
+	/**
+	 * Instantiates the ACL
+	 * @param Interfaces\Container $container
+	 */
+	public function __construct(Interfaces\Container &$container) 
+	{
 		$this->container = $container;
 		
-		$this->rolePermissionModel = $this->container['app']->getModel('RolePermission');
-		$this->permissionTypeModel = $this->container['app']->getModel('PermissionType');
-		$this->playerRoleModel = $this->container['app']->getModel('PlayerRole');
-		
 		// is the player logged in?
-		$sessionModel = $this->container['app']->getModel('Session');
+		$sessionModel = $container['app']->getModel('Session');
+		$playerModel = $container['app']->getModel('Player');
+		
 		if ($sessionModel->isLoggedIn()) {
-			$this->setPlayer($sessionModel->getPlayerId);
+			$this->setPlayer($playerModel->find($sessionModel->getPlayerId));
 		} else {
-			$this->setPlayer(0);
+			$this->setPlayer($playerModel->findGuest());
 		}
 		
+		// lookup in cache for roles
+		if ($container['config']['cache']['use'] && isset($container['cache']['acl_player_' . $this->player['id'] .'_roles'])) {
+			$roles = $container['cache']['acl_player_' . $this->player['id'] .'_roles'];
+		} else {
+			$roles = $container['app']->getModel('PlayerRole')->findAllForPlayer($this->player['id']);
+
+			if ($container['config']['cache']['use']) {
+				$container['cache']['acl_player_' . $this->player['id'] .'_roles'] = $roles;
+			}
+		}
+		
+		$this->addRoles($roles);
 		$container['acl'] = $this;
 	}
 	
 	/**
-	 * Set the context on which the AC opperates to a player
-	 * @param unknown $id
+	 * Sets the context of the ACL to a player
+	 * @param array $player
 	 */
-	public function setPlayer($id) {
-		$this->_player = $id;
-		
-		$this->buildPlayerPermissions($id);
+	public function setPlayer($player) 
+	{
+		$this->player = $player;
 	}
 	
 	/**
-	 * Resets a role
-	 * @param string $role
+	 * Retrieves the context player
+	 * @return array
 	 */
-	public function reset($role) {
-		$this->_permissions = array();
+	public function getPlayer()
+	{
+		return $this->player;
 	}
 	
 	/**
-	 * Validates that a role has a permission
-	 * @param string $role
+	 * Retrieves roles player is linked to
+	 * @return array
+	 */
+	public function getRoles()
+	{
+		return $this->roles;
+	}
+	
+	/**
+	 * Adds a role to the current context
+	 * @param Role $role
+	 */
+	public function addRole($role)
+	{
+		array_push($this->roles, $role);
+	}
+	
+	/**
+	 * Adds multiple roles to player's context
+	 * @param array $roles
+	 */
+	public function addRoles($roles)
+	{
+		foreach($roles as $metadata) {
+			$this->addRole(new Role($this->container, $metadata));
+		}
+	}
+	
+	/**
+	 * Valdiates whether player has permission
+	 * 
+	 * This is case-insensitive
+	 * 
 	 * @param string $permission
-	 */
-	public function validate($permission) {
-		if ($this->_player === null || empty($this->_permissions)) {
-			return false;
-		}
-		
-		// Root can do anything, period.
-		if ($this->_isRoot) {
-			return true;
-		} 
-		
-		foreach($this->_permissions as $role) {			
-			if (isset($role[$permission])) {
-				return true;
-			}
-		}
-		
-		return false;
-	}
-	
-	/**
-	 * Validates that a role has permission for a route
-	 * @param string $role
-	 * @param string $permission
-	 */
-	public function validateRoute($route) {
-		var_dump($this->_permissions);
-		if ($this->_player === null || empty($this->_permissions)) {
-			return false;
-		}
-		
-		// Root can do anything, period.
-		if ($this->_isRoot) {
-			return true;
-		}
-		
-		$routePermission = $this->permissionTypeModel->find('route', 'title');
-		
-		$route = strtolower($route);
-		foreach($this->_permissions as $role) {
-			if (isset($role[$route]) && $role[$route] == $routePermission['id']) {
-				return true;
-			}
-		}
-		
-		return false;
-	}
-	
-	/**
-	 * Retrieves list of roles
-	 * @param unknown $role
-	 */
-	public function getRoles($player_id) {
-		return $this->playerRoleModel->getRoles($player_id);
-	}
-	
-	/**
-	 * Determines whether player has a role
-	 * @param string $role
 	 * @return boolean
 	 */
-	public function hasRole($role) {
-		if (array_key_exists($role, $this->_permissions)) {
-			return true;
+	public function verify($permission, $type=null)
+	{
+		foreach($this->roles as $role) {
+			if ($role->hasPermission($permission, $type) || $role->isRoot()) {
+				return true;
+			}
 		}
 		
 		return false;
-	}
-	
-	/**
-	 * Retrieves list of permissions for role
-	 * @param unknown $role
-	 */
-	public function getPermissions($role_id) {
-		return $this->rolePermissionModel->getPermissions($role_id);
-	}
-	
-	/**
-	 * Build permissions for player
-	 * @param integer $player_id
-	 */
-	public function buildPlayerPermissions($player_id) {
-		$roles = $this->getRoles($player_id);
-		$acl = array();
-		
-		foreach($roles as $role) {
-			if ($role['id'] == $this->container['config']['security']['acl']['rootRoleId']) {
-				$this->_isRoot = true;
-			}
-			
-			$perms = $this->getPermissions($role['id']);	
-			foreach($perms as $perm) {
-				var_dump($role);
-				$acl[$role['title']][$perm['title']] = $perm['type'];
-			}
-		}
-		
-		$this->_permissions = $acl;
 	}
 }
