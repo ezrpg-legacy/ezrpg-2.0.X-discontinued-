@@ -66,8 +66,13 @@ class App implements Interfaces\App
 		
 		if ($routeMatch == false) {
 			$routeMatch = $router->resolve('error/file-not-found');
-		} elseif ($this->container['config']['security']['acl']['use'] 
-					&& $this->acl->verify($query, 'route ') == false) {
+		}
+		
+		if (!empty($routeMatch['permission']) && !$this->acl->verify($routeMatch['permission'])) {
+			$routeMatch = $router->resolve('error/access-denied');
+		} 
+		
+		if (!empty($routeMatch['role']) && !$this->acl->hasRole($routeMatch['role'])) {
 			$routeMatch = $router->resolve('error/access-denied');
 		}
 		

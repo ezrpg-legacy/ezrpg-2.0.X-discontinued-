@@ -32,13 +32,4 @@ class Permission
 	{
 		return $this->metadata['title'];
 	}
-	
-	/**
-	 * Retrieves type of permission
-	 * @return string
-	 */
-	public function getType()
-	{
-		return $this->metadata['type'];
-	}
 }

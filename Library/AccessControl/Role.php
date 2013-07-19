@@ -53,10 +53,9 @@ class Role
 	 * This is case insensitive
 	 * 
 	 * @param string $title
-	 * @param string $type
 	 * @return boolean
 	 */
-	public function hasPermission($title, $type=null)
+	public function hasPermission($title)
 	{
 		if ($this->metadata['isRoot']) {
 			return true;
@@ -65,7 +64,7 @@ class Role
 		foreach($this->permissions as $permission) {
 			if (strcasecmp($permission->getTitle(), $title) === 0) {
 				// type specific logic
-				if (!is_null($type) && !strcasecmp($permission->getType(), $type)) {
+				if (!is_null($type)) {
 					continue;
 				}
 				
@@ -92,5 +91,14 @@ class Role
 	public function getTitle() 
 	{
 		return $this->metadata['title'];
+	}
+	
+	/**
+	 * Find whether the role has root privileges
+	 * @return boolean
+	 */
+	public function isRoot()
+	{
+		return $this->metadata['isRoot'];
 	}
 }

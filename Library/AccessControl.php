@@ -98,10 +98,29 @@ class AccessControl implements Interfaces\AccessControl {
 	 * @param string $permission
 	 * @return boolean
 	 */
-	public function verify($permission, $type=null)
+	public function verify($permission)
 	{
 		foreach($this->roles as $role) {
-			if ($role->hasPermission($permission, $type) || $role->isRoot()) {
+			if ($role->hasPermission($permission) || $role->isRoot()) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Validates whether player has role
+	 * 
+	 * This is case-insensitive
+	 * 
+	 * @param string $role
+	 * @return boolean
+	 */
+	public function hasRole($role)
+	{
+		foreach($this->roles as $role) {
+			if (stricmp($role->getTitle(), $role)) {
 				return true;
 			}
 		}
