@@ -4,21 +4,21 @@
 
 
 <div class="left">
-    <p>
-        Welcome to ezRPG! Login now!<br />
+	<p>
+		Welcome to ezRPG! Login now!<br />
 		<a href="<?php echo $this->getUrl('Index/hello'); ?>">I have a surprise for you...</a>
-    </p>
+	</p>
 </div>
 <div class="right">
-    <form method="post" action="<?php echo $this->getUrl('Login'); ?>" name="login">
-        <label for="username">Username</label>
-        <input type="text" name="username" />
+	<form method="post" action="<?php echo $this->getUrl('Login'); ?>" name="login">
+		<label for="username">Username</label>
+		<input type="text" name="username" />
 
-        <label for="password">Password</label>
-        <input type="password" name="password" />
+		<label for="password">Password</label>
+		<input type="password" name="password" />
 
-        <input name="login" type="submit" class="button" value="Login">
-    </form>
+		<input name="login" type="submit" class="button" value="Login">
+	</form>
 </div>  
 
 <?php require 'footer.phtml' ?>

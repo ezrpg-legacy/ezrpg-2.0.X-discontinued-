@@ -15,8 +15,8 @@
 }
 .prettyprint.linenums {
   -webkit-box-shadow: inset 40px 0 0 #fbfbfc, inset 41px 0 0 #ececf0 !important;
-     -moz-box-shadow: inset 40px 0 0 #fbfbfc, inset 41px 0 0 #ececf0 !important;
-          box-shadow: inset 40px 0 0 #fbfbfc, inset 41px 0 0 #ececf0 !important;
+	 -moz-box-shadow: inset 40px 0 0 #fbfbfc, inset 41px 0 0 #ececf0 !important;
+		  box-shadow: inset 40px 0 0 #fbfbfc, inset 41px 0 0 #ececf0 !important;
 }
 
 /* Specify class=linenums on a pre to get line numbering */

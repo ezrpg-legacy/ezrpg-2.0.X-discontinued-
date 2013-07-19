@@ -4,5 +4,5 @@ namespace ezRPG\Library;
 
 interface AppInterface
 {
-    public function run();
+	public function run();
 }
