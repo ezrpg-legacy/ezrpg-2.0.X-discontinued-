@@ -1,0 +1,15 @@
+# Follow *nix symlinks through and disallow directory listings
+Options +FollowSymLinks -Indexes 
+
+# Turn on the Rewriting Engine
+RewriteEngine On 
+
+# Static assets
+RewriteCond %{DOCUMENT_ROOT}/Web/%{REQUEST_URI} -f
+RewriteRule (.*) Web/$1 [L]
+
+# Does the file exist? If so, do not rewrite it.
+RewriteCond %{SCRIPT_FILENAME} !-f  
+
+# The requested file does not exist, so rewrite the request to use index.php
+RewriteRule (.*) Web/index.php?q=$1&%1 [NC]

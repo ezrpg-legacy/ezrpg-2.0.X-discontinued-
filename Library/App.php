@@ -10,11 +10,6 @@ class App implements Interfaces\App
 {
     protected $container, 
     		  $acl,
-    		  $action, 
-    		  $args 		= array(), 
-    		  $module, 
-    		  $moduleName, 
-    		  $hooks 		= array(),
     		  $plugins 		= array(), 
     		  $rootPath 	= '/',
     		  $view;
@@ -68,11 +63,11 @@ class App implements Interfaces\App
 			$routeMatch = $router->resolve('error/file-not-found');
 		}
 		
-		if (!empty($routeMatch['permission']) && !$this->acl->verify($routeMatch['permission'])) {
+		if (!empty($routeMatch['access']['permission']) && !$this->acl->verify($routeMatch['access']['permission'])) {
 			$routeMatch = $router->resolve('error/access-denied');
 		} 
 		
-		if (!empty($routeMatch['role']) && !$this->acl->hasRole($routeMatch['role'])) {
+		if (!empty($routeMatch['access']['role']) && !$this->acl->hasRole($routeMatch['access']['role'])) {
 			$routeMatch = $router->resolve('error/access-denied');
 		}
 		
@@ -108,88 +103,6 @@ class App implements Interfaces\App
     }
     
     /**
-     * Get the client-side path to root
-     * @return string
-     */
-    public function getRootPath()
-    {
-    	return $this->rootPath;
-    }
-    
-    /**
-     * Get the module name
-     * @return string
-     * @deprecated DON'T USE
-     */
-    public function getModuleName()
-    {
-    	return $this->moduleName;
-    }
-    
-    /**
-     * Get the action name
-     * @return string
-     * @deprecated DON'T USE
-     */
-    public function getAction()
-    {
-    	return $this->action;
-    }
-    
-    /**
-     * Get all parameters.
-     * 
-     * @return array
-     * @deprecated DON'T USE
-     */
-    
-    public function getParams()
-    {
-        return $this->params;
-    }
-    
-    /**
-     * Get a specific parameter.
-     * 
-     * @param string $name
-     * @param mixed $default
-     * @return mixed
-     * @deprecated DON'T USE
-     */
-    public function getParam($name, $default = null)
-    {
-        if (array_key_exists($name, $this->params)) {
-            return $this->params[$name];
-        }
-
-        return $default;
-    }
-
-    /**
-     * Get the arguments
-     * @return array
-     * @deprecated DON'T USE
-     */
-    public function getArgs()
-    {
-    	return $this->args;
-    }
-    
-    /**
-     * Verify an argument exists
-     * @return bool
-     * @deprecated DON'T USE
-     */
-    public function getArg($arg)
-    {
-    	$args = $this->getArgs();
-    	if (!empty($args) && $args[0] == $arg) {
-    		return true;
-    	}
-    	return false;
-    }
-    
-    /**
      * Get a model
      * @param string $modelName
      * @return object
@@ -203,36 +116,12 @@ class App implements Interfaces\App
     }
     
     /**
-     * Deprecated 05/27/13
-     * Get a model singleton
-     * @param string $modelName
-     * @return object
-     * @deprecated
-     * @deprecated DON'T USE
-     */
-     public function getSingleton($modelName)
-     {
-	     if ( isset($this->singletons[$modelName]) ) {
-	     return $this->singletons[$modelName];
-	     }
-	    
-	     $model = $this->getModel($modelName);
-	    
-	     $this->singletons[$modelName] = $model;
-	    
-	     return $model;
-     }
-    
-    
-    /**
      * Register a hook for plugins to implement
      * @param string $hookName
      * @param array $params
      */
     public function registerHook($hookName, array $params = array())
     {
-    	$this->hooks[] = $hookName;
-    
     	foreach ( $this->plugins as $pluginName => $hooks ) {
     		if ( in_array($hookName, $hooks) ) {
     			$plugin = new $pluginName($this->container);
@@ -254,14 +143,6 @@ class App implements Interfaces\App
     {
     	throw new \Exception('Error #' . $number . ': ' . $string . ' in ' . $file . ' on line ' . $line);
     }
-
-	/**
-     * @deprecated DON'T USE
-	 */
-    public function __get($key)
-    {
-        return $this->container[$key];
-    }
     
     /**
      * Loads plugins
@@ -270,7 +151,7 @@ class App implements Interfaces\App
     {
     	if ( $handle = opendir('Library/Plugin') ) {
     		while ( ( $file = readdir($handle) ) !== FALSE ) {
-    			if ( is_file('Library/Plugin/' . $file) && preg_match('/^(.+)\.php$/', $file, $match) ) {
+    			if ( is_file('Library/Plugin/' . $file) && preg_match('/^(.+)\.php$/', $file, $match)) {
     				$pluginName = 'ezRPG\Library\Plugin\\' . $match[1];
     	
     				$this->plugins[$pluginName] = array();
@@ -286,7 +167,6 @@ class App implements Interfaces\App
     		}
     	
     		ksort($this->plugins);
-    	
     		closedir($handle);
     	}
     }

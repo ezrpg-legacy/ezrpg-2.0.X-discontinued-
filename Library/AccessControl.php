@@ -23,7 +23,7 @@ class AccessControl implements Interfaces\AccessControl {
 		$playerModel = $container['app']->getModel('Player');
 		
 		if ($sessionModel->isLoggedIn()) {
-			$this->setPlayer($playerModel->find($sessionModel->getPlayerId));
+			$this->setPlayer($playerModel->find($sessionModel->getPlayerId()));
 		} else {
 			$this->setPlayer($playerModel->findGuest());
 		}

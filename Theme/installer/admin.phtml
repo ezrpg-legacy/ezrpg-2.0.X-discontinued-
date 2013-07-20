@@ -1,39 +1,43 @@
 <?php
+
 include("header.phtml");
 $username = (!isset($_POST['username']))?'':$_POST['username'];
 $email = (!isset($_POST['email']))?'':$_POST['email'];
+
 ?>
-						<form method="post">
-							<table cellspacing="0" border="0" width="100%">
-								<tr>
-									<td width="25%">
-										Admin Username
-									</td>
-									<td>
-										<input type="text" name="username" value="<?php echo $username; ?>" />
-									</td>
-								</tr>
-								<tr>
-									<td width="25%">
-										Admin Password
-									</td>
-									<td>
-										<input type="password" name="password" value="" /><br />
-									</td>
-								</tr>
-								<tr>
-									<td width="25%">
-										Admin E-Mail
-									</td>
-									<td>
-										<input type="text" name="email" value="<?php echo $email; ?>" />
-									</td>
-								</tr>
-								<tr>
-									<td colspan="2">
-										<input type="submit" name="submit" value="Save" />
-									</td>
-								</tr>
-							</table>
-						</form>
+
+<form method="post">
+	<table cellspacing="0" border="0" width="100%">
+		<tr>
+			<td width="25%">
+				Admin Username
+			</td>
+			<td>
+				<input type="text" name="username" value="<?php echo $username; ?>" />
+			</td>
+		</tr>
+		<tr>
+			<td width="25%">
+				Admin Password
+			</td>
+			<td>
+				<input type="password" name="password" value="" /><br />
+			</td>
+		</tr>
+		<tr>
+			<td width="25%">
+				Admin E-Mail
+			</td>
+			<td>
+				<input type="text" name="email" value="<?php echo $email; ?>" />
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<input type="submit" name="submit" value="Save" />
+			</td>
+		</tr>
+	</table>
+</form>
+
 <?php include("footer.phtml"); ?>

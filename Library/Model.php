@@ -267,7 +267,7 @@ abstract class Model extends Pdo implements Interfaces\Model
 	 *
 	 * @param $statement string
 	 */
-	public function prepare($statement, array $driver_options = null)
+	public function prepare($statement, $driver_options = null)
 	{
 		if (empty($driver_options)) {
 			$driver_options = array();
