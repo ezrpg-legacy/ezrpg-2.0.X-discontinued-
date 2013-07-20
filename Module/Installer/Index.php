@@ -1,10 +1,17 @@
 <?php
-namespace ezRPG\Module\Installer;
 
+namespace ezRPG\Module\Installer;
 use ezRPG\Library\Module;
 
+/**
+ * Installer Index
+ * @see Library\Module
+ */
 class Index extends Module
 {
+	/**
+	 * Default Action
+	 */
 	public function index()
 	{
 		$errors = array();

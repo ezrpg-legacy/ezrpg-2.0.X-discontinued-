@@ -1,31 +1,39 @@
 <?php
 
 namespace ezRPG\Module\DevTools;
-use ezRPG\Library\Module,
-	ezRPG\Library\AccessControl;
+use ezRPG\Library\Module;
+use ezRPG\Library\AccessControl;
 
+/**
+ * DevTools Index
+ * Various Tools To Test Methods
+ * @see Library\Module
+ */
 class Index extends Module
 {
-	protected
-		$title = 'Developer Tools'
-		;
+	protected $title = 'Developer Tools';
 
 	/**
 	 * Default action
 	 */
 	public function index()
 	{
-				$params = $this->container['app']->getParams();
-				var_dump($params);
-				
-		//$this->aclTest();
+		$params = $this->container['app']->getParams();
+		var_dump($params);
+		/* $this->aclTest(); */
 	}
 	
+	/**
+	 * dummyAction
+	 */
 	public function dummyAction() 
 	{
 		echo 'HAAI';exit;
 	}
 	
+	/**
+	 * aclTest
+	 */
 	public function aclTest()
 	{
 		$ac = new AccessControl($this->container);
@@ -41,6 +49,9 @@ class Index extends Module
 		$this->view->set('acl_stack', $stack);
 	}
 	
+	/**
+	 * setPassword
+	 */
 	public function setpassword()
 	{
 		if ($_POST['username'] && $_POST['password']) {

@@ -3,18 +3,20 @@
 namespace ezRPG\Module\Error;
 use ezRPG\Library\Module;
 
+/**
+ * Error Index
+ * @see Library\Module
+ */
 class Index extends Module
 {
-	protected
-		$title = 'Error 404'
-		;
+	protected $title = 'Error 404';
 
 	/**
 	 * Default action
+	 * @param array $params
 	 */
 	public function index($params=array())
 	{
-		
 		switch ($params['type']) {
 			case 'access-denied' :
 					if ( !headers_sent() ) {
@@ -24,11 +26,8 @@ class Index extends Module
 				
 					$this->container['view']->name = 'error/access_denied';
 					break;
-					
-
 			case 'file-not-found' :
-				// falls through
-				
+				/* falls through */
 			default :
 					if ( !headers_sent() ) {
 						header('HTTP/1.1 404 Not Found');
@@ -37,9 +36,6 @@ class Index extends Module
 				
 					$this->container['view']->name = 'error/file_not_found';
 					break;
-			
 		}
-		
-
 	}
 }

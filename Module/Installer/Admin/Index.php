@@ -1,10 +1,17 @@
 <?php
-namespace ezRPG\Module\Installer\Admin;
 
+namespace ezRPG\Module\Installer\Admin;
 use ezRPG\Library\Module;
 
+/**
+ * Admin Index
+ * @see Library\Module
+ */
 class Index extends Module
 {
+	/*
+	 * Default Action
+	 */
 	public function index()
 	{
 		$auth = $this->app->getModel('player');
@@ -17,7 +24,7 @@ class Index extends Module
 			$insert['confirm_password'] = $_POST['password'];
 			
 			try {
-				// attempt to register the account
+				/* Attempt to register the account */
 				$register = $auth->create($insert);
 			} catch(\Exception $e) {
 				die($e);
@@ -30,22 +37,26 @@ class Index extends Module
 				$this->container['view']->setMessage($message, 'warn');
 			}
 			
-			// if the account is active, redirect the user to the login page
+			/* If the account is active, redirect the user to the login page */
 			if (isset($register['active'])) {
 				$playerRole = $this->app->getModel('playerRole');
 				$playerRole->addRole($register['id'], 1);
+				
 				if ( is_writable("Module/Installer/") ) {
 					$fh = fopen("Module/Installer/locked", 'w+');
+					
 					if ( !$fh ) {
 						die('Your admin account was created, but we were unable to lock the installer. Please remove the Module/Installer directory to use your game.');
 					} else {
 						die('Your admin account was created, and the installer was locked! Continue to your game');
 					}
+				
 				} else {
 					die('Your admin account was created, but we were unable to lock the installer. Please remove the Module/Installer directory to use your game.');
 				}
 				
 			}
+			
 		}
 		$this->view->name = 'admin';
 	}

@@ -3,8 +3,15 @@
 namespace ezRPG\Module\Installer\Config;
 use ezRPG\Library\Module;
 
+/**
+ * Config Index
+ * @see Library\Module
+ */
 class Index extends Module
 {
+	/**
+	 * Default Action
+	 */
 	public function index()	{
 		$data['guessUrl'] = 'http://'.$_SERVER['HTTP_HOST'].str_ireplace('/index.php', '', $_SERVER['PHP_SELF']);
 		if ( isset($_POST['submit']) ) {
@@ -36,7 +43,7 @@ class Index extends Module
 				$dbpref = $_POST['dbpref'];
 				$gamename = $_POST['gamename'];
 				$gameurl = $_POST['gameurl'];
-				//Generate configuration file
+				/* Generate configuration file */
 				$config = <<<CONFIG
 <?php
 
@@ -57,7 +64,7 @@ CONFIG;
 				$fh = fopen('config.php', 'w+');
 				fwrite($fh, $config);
 				fclose($fh);
-				//Generate Settings file
+				/* Generate Settings file */
 				$settings = <<<SETTINGS
 <?php
 \$config['site'] = array(
