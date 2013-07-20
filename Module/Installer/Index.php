@@ -25,13 +25,17 @@ class Index extends Module
 		}
 		
 		if (!is_writable('config.php')) {
-			$data['writable']['config'] = false;
-			$errors[] = 'The config.php file must be writable. Please rename config.php.new to config.php';
+			if (!rename('config.php.new', 'config.php')) {
+				$data['writable']['config'] = false;
+				$errors[] = 'The config.php file must be writable. Please rename config.php.new to config.php';
+			}
 		}
 		
 		if (!is_writable('settings.php')) {
-			$data['writable']['settings'] = false;
-			$errors[] = 'The settings.php file must be writable. Please rename settings.php.new to settings.php';
+			if (!rename('settings.php.new', 'settings.php')) {
+				$data['writable']['settings'] = false;
+				$errors[] = 'The settings.php file must be writable. Please rename settings.php.new to settings.php';
+			}
 		}
 
 		if ($errors) {
