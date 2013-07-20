@@ -1,13 +1,15 @@
 <?php
-namespace ezRPG\Library\Router\Route;
 
+namespace ezRPG\Library\Router\Route;
 use ezRPG\Library\Router\Route;
 
+/**
+ * Literal
+ * @see Library\Router\Route
+ */
 class Literal extends Route
 {   
 	/**
-	 * Match a given url
-	 * 
 	 * @param string $url
 	 * @return boolean
 	 */
@@ -18,8 +20,7 @@ class Literal extends Route
 	}	
 	
 	/**
-	 * Resolve the url 
-	 * 
+	 * Resolve the url
 	 * @param string The url to resolve
 	 * @return mixed
 	 */
@@ -34,7 +35,6 @@ class Literal extends Route
 	
 	/**
 	 * Format a given url
-	 * 
 	 * @param string
 	 * @return string The formatted url
 	 */

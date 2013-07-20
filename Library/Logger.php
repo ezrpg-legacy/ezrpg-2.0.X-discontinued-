@@ -3,7 +3,8 @@
 namespace ezRPG\Library;
 
 /**
- * @todo 
+ * Logger
+ * @todo Create Logger class
  */
 abstract class Logger 
 {

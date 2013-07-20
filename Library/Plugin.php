@@ -2,19 +2,20 @@
 
 namespace ezRPG\Library;
 
+/**
+ * Plugin
+ */
 abstract class Plugin implements Interfaces\Plugin
 {
-	protected
-		$app,
-		$controller,
-		$view
-		;
+	protected $app;
+	protected $module;
+	protected $view;
 
 	/**
 	 * Constructor
 	 * @param object $app
 	 * @param object $view
-	 * @param object $controller
+	 * @param object $module
 	 */
 	public function __construct(Interfaces\App $app, Interfaces\View $view, Interfaces\Module $module)
 	{

@@ -1,13 +1,16 @@
 <?php
+
 namespace ezRPG\Library;
 
+/**
+ * Router
+ */
 class Router implements Interfaces\Router
 {
 	protected $routes = array();
 	
 	/**
 	 * Create the routes.
-	 * 
 	 * @param \ezRPG\Library\Interfaces\Container $container
 	 * @throws Exception
 	 */
@@ -20,10 +23,10 @@ class Router implements Interfaces\Router
 			switch ($type) {
 				case 'literal':
 					$route = new Router\Route\Literal($route, $options);
-				break;
+					break;
 				case 'regex':
 					$route = new Router\Route\Regex($route, $options);
-				break;
+					break;
 				default :
 					throw new Exception('Invalid route type "' . $options['type'] . '" specified');
 			}
@@ -34,7 +37,6 @@ class Router implements Interfaces\Router
 	
 	/**
 	 * Add a route
-	 * 
 	 * @param array $route
 	 */
 	public function addRoute($route) 
@@ -44,7 +46,6 @@ class Router implements Interfaces\Router
 	
 	/**
 	 * Resolve a url and find a matching route
-	 * 
 	 * @param string $url
 	 * @return boolean
 	 */

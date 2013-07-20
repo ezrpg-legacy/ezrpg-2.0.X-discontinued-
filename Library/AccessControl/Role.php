@@ -2,6 +2,9 @@
 
 namespace ezRPG\Library\AccessControl;
 
+/** 
+ * Role
+ */
 class Role 
 {
 	protected $metadata;
@@ -16,7 +19,7 @@ class Role
 	{
 		$this->metadata = $metadata;
 		
-		// attempt to find in cache
+		/* Attempt to find in cache */
 		if ($container['config']['cache']['use'] &&  isset($container['cache']['acl_roles_' . $metadata['id'] . '_permissions'])) {
 			$permissions = $container['cache']['acl_roles_' . $metadata['id'] . '_permissions'];
 		} else {
@@ -27,7 +30,7 @@ class Role
 			}
 		}
 		
-		// inject root override if applicable
+		/* Inject root override if applicable */
 		if (strcasecmp($container['config']['security']['acl']['rootRole'], $metadata['title'])) {
 			$this->metadata['isRoot'] = true;
 		} else {
@@ -51,7 +54,6 @@ class Role
 	/**
 	 * Validates if a permission exists within this role
 	 * This is case insensitive
-	 * 
 	 * @param string $title
 	 * @return boolean
 	 */
@@ -63,7 +65,7 @@ class Role
 		
 		foreach($this->permissions as $permission) {
 			if (strcasecmp($permission->getTitle(), $title) === 0) {
-				// type specific logic
+				/* Type specific logic */
 				if (!is_null($type)) {
 					continue;
 				}

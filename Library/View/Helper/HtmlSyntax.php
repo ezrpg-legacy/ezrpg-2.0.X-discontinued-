@@ -3,6 +3,9 @@
 namespace ezRPG\Library\View\Helper;
 use \ezRPG\Library\Interfaces\Container;
 
+/**
+ * HtmlSyntax
+ */
 class HtmlSyntax implements ViewHelperInterface {
 	
 	/**

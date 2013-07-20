@@ -3,6 +3,9 @@
 namespace ezRPG\Library\View\Helper;
 use \ezRPG\Library\Interfaces\Container;
 
+/**
+ * Message
+ */
 class Message implements ViewHelperInterface {
 
 	/**

@@ -1,19 +1,30 @@
 <?php
 
 namespace ezRPG\Library\Plugin;
-use ezRPG\Library\Interfaces\Plugin,
-ezRPG\Library\Interfaces\Container;
+use ezRPG\Library\Interfaces\Plugin;
+use ezRPG\Library\Interfaces\Container;
 
-class PlayerActivation implements Plugin {
-
+/**
+ * PlayerActivation
+ * @see Library\Plugin
+ */
+class PlayerActivation implements Plugin 
+{
 	protected $container;
 
-	public function __construct(Container $container) {
+	public function __construct(Container $container) 
+	{
 		$this->container = $container;
 	}
 
-	public function playerActivation($data) {
-		// does the application have an activation system enabled
+	/**
+	 * playerActivation
+	 * @param array $data
+	 * @return int
+	 */
+	public function playerActivation($data) 
+	{
+		/* Does the application have an activation system enabled */
 		$configRequireActivation = $this->container['config']['accounts']['requireActivation'];
 		if ($configRequireActivation) {
 			$data['active'] = 0;
@@ -28,8 +39,14 @@ class PlayerActivation implements Plugin {
 		return $data['active'];
 	}
 	
-	protected function sendActivationLink($data){
-		// I do nothing, yet.
+	/**
+	 * sendActivationLink
+	 * Not yet implemented
+	 * @param array $data
+	 * @todo Finish implementing
+	 */
+	protected function sendActivationLink($data)
+	{
 		return;
 	}
 }

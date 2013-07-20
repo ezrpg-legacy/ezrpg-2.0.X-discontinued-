@@ -1,6 +1,10 @@
 <?php
+
 namespace ezRPG\Library;
 
+/**
+ * View
+ */ 
 class View implements Interfaces\View
 {
 	protected $container;
@@ -59,12 +63,20 @@ class View implements Interfaces\View
 	public function render()
 	{
 		$file = 'Theme/' . $this->layout . '/' . $this->name . '.phtml';
+		
 		if ( is_file($file) ) {
 			header('X-Generator: ezRPG');
 			require $file;
-		} else {
-			//throw new \Exception('View not found'); // Not sure why a view would need to be mandatory.
-		}
+		} 
+		/**
+		 * Removed as already commented out
+		 * @todo remove from code
+		 */
+		/**
+		 * else {
+		 *	//throw new \Exception('View not found'); // Not sure why a view would need to be mandatory.
+		 * }
+		 */
 	}
 	
 	/**

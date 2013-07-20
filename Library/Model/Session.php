@@ -4,6 +4,10 @@ namespace ezRPG\Library\Model;
 use \ezRPG\Library\Model,
 	\ezRPG\Library\Interfaces\Container;
 
+/**
+ * Session
+ * @see Library\Model
+ */
 class Session extends Model
 {
   protected $messages = array(

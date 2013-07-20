@@ -1,9 +1,14 @@
 <?php
-namespace ezRPG\Library\Model;
-use \Exception,
-	\InvalidArgumentException;
 
-class Player extends \ezRPG\Library\Model
+namespace ezRPG\Library\Model;
+use \Exception;
+use	\InvalidArgumentException;
+
+/**
+ * Player
+ * @see Library\Model
+ */
+class Player extends Model
 {
 	/**
 	 * Random state
@@ -27,7 +32,7 @@ class Player extends \ezRPG\Library\Model
 			$playerMatch = $this->find($player, 'username');
 		}
 
-		// prevent service disruptions due to expensive hashing
+		/* Prevent service disruptions due to expensive hashing */
 		$rounds = $this->container['config']['security']['hashRounds'];
 		if ($playerMatch == false) {
 			sleep($rounds / 10);
@@ -40,7 +45,7 @@ class Player extends \ezRPG\Library\Model
 			throw new Exception('Invalid password');
 		}
 
-		// fire playerLogin hook
+		/* Fire playerLogin hook */
 		$pluginData = $this->container['app']->registerHook('playerLogin', $playerMatch);
 		
 		if (is_array($pluginData)) {
@@ -51,8 +56,8 @@ class Player extends \ezRPG\Library\Model
 	}
 	
 	/**
+	 * create
 	 * Creates a new player (registration)
-	 * 
 	 * Exception codes
 	 * 1 - Invalid email
 	 * 2 - Invalid username
@@ -68,37 +73,37 @@ class Player extends \ezRPG\Library\Model
 	 */
 	public function create($data)
 	{
-		// it's good for UI to produce a list of invalid input
+		/* It's good for UI to produce a list of invalid input */
 		$errors = array();
 		
-		// validate email address against ??(unknown) specification
+		/* Validate email address against ??(unknown) specification */
 		if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
 			$errors[] = new InvalidArgumentException('An invalid email address was provided', 1);
 		} 
 		
-		// validate username for length
+		/* Validate username for length */
 		if (strlen($data['username']) > 25 || strlen($data['username']) < 3) {
 			$errors[] = new InvalidArgumentException('Username length is invalid, it should be more than three characters and less than twenty-five', 2);
 		} 
 		
-		// check for the possible existence of accounts with same username
+		/* Check for the possible existence of accounts with same username */
 		if ($this->find($data['username'], 'username')) {
 			$errors[] = new InvalidArgumentException('Another account is already registered with the same username', 4);
 		} 
 		
-		// check for an existent account with same email-address
+		/* Check for an existent account with same email-address */
 		if($this->find($data['email'], 'email')) {
 			$errors[] = new InvalidArgumentException('Email address is already associated with another account', 8);
 		}
 
-		// check that confirmation password is the same as password
+		/* Check that confirmation password is the same as password */
 		if ($data['confirm_password'] !== $data['password']) {
 			$errors[] = new InvalidArgumentException('Confirmation password does not match original', 16);
 		}
 		
 		unset($data['confirm_password']);
 		 
-		// check password validity against predefined algorithm
+		/* Check password validity against predefined algorithm */
 		$configPasswordStrength = $this->container['config']['security']['passwordStrength'];
 		$password_regex = array(
 			0 => '/[a-z]{6,}/',
@@ -110,7 +115,7 @@ class Player extends \ezRPG\Library\Model
 		if (preg_match($password_regex[$configPasswordStrength], $data['password']) === false || empty($data['password'])) {
 			$password_message = 'Password is too simple, ';
 			
-			// generate a nice message
+			/* Generate a nice message */
 			switch ($configPasswordStrength) {
 				case 0 : 
 					$password_message .= 'should contain alphabetic characters and be six characters or longer';
@@ -129,12 +134,12 @@ class Player extends \ezRPG\Library\Model
 			$errors[] = new InvalidArgumentException($password_message, 32);
 		}
 		
-		// if there were any errors, quit early
+		/* If there were any errors, quit early */
 		if (count($errors) <> 0) {
 			throw new Exception(serialize($errors), null,  end($errors));
 		} 
 		
-		// all checks succeeded, continue data formatting
+		/* All checks succeeded, continue data formatting */
 		$data['salt'] = $this->createSalt();
 		$data['password'] = $this->createHash($data['password'], $data['salt']);
 		$data['title'] = ucfirst($data['username']);
@@ -142,10 +147,10 @@ class Player extends \ezRPG\Library\Model
 		$data['lastActive'] = $data['registered'];
 		$data['active'] = $this->container['app']->registerHook('playerActivation', $data);
 
-		// create the actual record
+		/* Create the actual record */
 		$data['id'] = parent::add($data);
 		
-		// fire playerRegistration hook
+		/* Fire playerRegistration hook */
 		$pluginData = $this->container['app']->registerHook('playerRegistration', $data);
 		
 		if (is_array($pluginData)) {
@@ -155,7 +160,10 @@ class Player extends \ezRPG\Library\Model
 		return $data;
 	}
 	
-
+	/**
+	 * getOnline
+	 * @return object
+	 */
 	public function getOnline()
 	{
 		$query = $this->query('SELECT * FROM player WHERE lastActive > DATE_SUB(NOW(), INTERVAL 15 MINUTE)');

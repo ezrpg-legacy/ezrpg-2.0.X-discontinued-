@@ -2,17 +2,28 @@
 
 namespace ezRPG\Library;
 
+/**
+ * Autoloader
+ */ 
 class Autoloader
 {
 	private $includePath;
 	private $namespace;
 
+    /**
+     * @param string $namespace
+	 * @param string $includePath
+     */
 	public function __construct($namespace = null, $includePath = null)
 	{
 		$this->namespace = $namespace;
 		$this->includePath = $includePath;
 	}
 
+	/**
+	 * loadClass
+	 * @param string $className
+	 */
 	public function loadClass($className)
 	{
 		$className  = ltrim($className, '\\');
@@ -47,6 +58,10 @@ class Autoloader
 		require $fileName;
 	}
 
+	/**
+	 * register
+	 * @param bool $prepend
+	 */
 	public function register($prepend = false)
 	{
 		spl_autoload_register(array($this, 'loadClass'), true, $prepend);

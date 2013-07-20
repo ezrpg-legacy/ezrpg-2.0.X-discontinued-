@@ -1,6 +1,10 @@
 <?php
+
 namespace ezRPG\Library\Router;
 
+/**
+ * Route
+ */
 abstract class Route
 {
     protected $route;

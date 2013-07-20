@@ -1,24 +1,38 @@
 <?php
 
 namespace ezRPG\Library\Plugin;
-use ezRPG\Library\Interfaces\Plugin,
-ezRPG\Library\Interfaces\Container;
+use ezRPG\Library\Interfaces\Plugin;
+use ezRPG\Library\Interfaces\Container;
 
-class PlayerRegistration implements Plugin {
-
+/**
+ * PlayerRegistration
+ * @see Library\Plugin
+ */
+class PlayerRegistration implements Plugin 
+{
 	protected $container;
 
-
-	public function __construct(Container $container) {
+	public function __construct(Container $container) 
+	{
 		$this->container = $container;
 	}
 
-	public function playerRegistration($data) {
-		//I do nothing yet.
+	/**
+	 * playerRegistration
+	 * @param array $data
+	 * @todo Isnt implemented yet
+	*/
+	public function playerRegistration($data) 
+	{
 		return;
 	}
 	
-	public function playerLogin($data) {
+	/**
+	 * playerLogin
+	 * @param array $data
+	*/
+	public function playerLogin($data) 
+	{
 		$session = $this->container['app']->getModel('Session');
 		$session->clear();
 		$session->set('playerid', $data['id']);

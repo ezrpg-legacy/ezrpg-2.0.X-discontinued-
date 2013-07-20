@@ -2,6 +2,9 @@
 
 namespace ezRPG\Library\AccessControl;
 
+/**
+ * Permission
+ */
 class Permission 
 {
 	protected $metadata;

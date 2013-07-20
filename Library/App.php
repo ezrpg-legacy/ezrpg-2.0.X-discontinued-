@@ -8,16 +8,11 @@ namespace ezRPG\Library;
  */
 class App implements Interfaces\App
 {
-    protected $container, 
-    		  $acl,
-    		  $plugins 		= array(), 
-    		  $rootPath 	= '/',
-    		  $view;
-    
-    /**
-     * @deprecated DON'T USE
-     */
-    protected $params = array();
+    protected $container; 
+    protected $acl;
+    protected $plugins = array(); 
+    protected $rootPath	= '/';
+    protected $view;
     
     /**
      * @todo Clean this up
@@ -27,11 +22,12 @@ class App implements Interfaces\App
     {
         $this->container = $container; 
         $this->container['app'] = $this;
-		        
-        $config = $this->container['config'];
-        if (file_exists('Module/Installer/locked') || !file_exists('Module/Installer/Index.php')) {
+		$config = $this->container['config'];
+        
+		if (file_exists('Module/Installer/locked') || !file_exists('Module/Installer/Index.php')) {
 	       	if (isset($config['cache']['use']) && $config['cache']['use'] == true) {
-	        	$this->container['cache'] = new Cache($config['cache']['prefix'], $config['cache']['ttl']);
+	        	/* @see Library\Cache */
+				$this->container['cache'] = new Cache($config['cache']['prefix'], $config['cache']['ttl']);
 	
 	        	if (!isset($this->container['cache']['config'])) {
 	        		$this->addDatabaseConfig();
@@ -45,15 +41,21 @@ class App implements Interfaces\App
         }
     }
     
+	/**
+	 * Run
+	 * @return array
+	*/
     public function run()
     {
-    	// instantiate ACL
+    	/* Instantiate ACL */
     	if ($this->container['config']['security']['acl']['use']) {
+			/* @see Library\AccessControl */
     		$this->acl = new AccessControl($this->container);
     	}
     	
-    	// Load plugins
+    	/* Load plugins */
     	$this->loadPlugins();
+		/* @see Library\Router */
 		$router = new Router($this->container);
 		
 		$query = isset($_GET['q']) ? strtolower($_GET['q']) : 'index';
@@ -71,21 +73,22 @@ class App implements Interfaces\App
 			$routeMatch = $router->resolve('error/access-denied');
 		}
 		
-		// Set up envorinment variables
+		/* Set up envorinment variables */
 		$this->module = 'ezRPG\Module\\' . (!empty($routeMatch['base']) ? str_replace('/', '\\', ucwords($routeMatch['base'])) . '\\' : '') . ucwords($routeMatch['module']) . '\\Index';
 		$this->action = $routeMatch['action'];
 		$this->params = $routeMatch['params'];
                 
-                //We don't want to break the application just
-                //yet
-                $this->args = $routeMatch['params'];
+		$this->args = $routeMatch['params'];
                 
 		$moduleName = basename(dirname(str_replace('\\', '/', strtolower($this->module))));
 		
-		// Instantiate the View
+		/**
+		 * Instantiate the View 
+		 * @see Library\View 
+		*/
 		$this->view = new View($this->container, $moduleName);
 		
-		// Instantiate the module
+		/* Instantiate the module */
 		$this->registerHook('actionBefore');
 		$this->module = new $this->module($this->container);
 		$this->module->{$this->action}($this->params);
@@ -111,7 +114,7 @@ class App implements Interfaces\App
     {
     	$modelName = 'ezRPG\Library\Model\\' . ucfirst($modelName);
     
-    	// Instantiate the model
+    	/* Instantiate the model */
     	return new $modelName($this->container);
     }
     
@@ -129,19 +132,6 @@ class App implements Interfaces\App
     			return $plugin->{$hookName}($params);
     		}
     	}
-    }
-    
-    /**
-     * Error handler
-     * @param int $number
-     * @param string $string
-     * @param string $file
-     * @param int $line
-     * @deprecated DON'T USE
-     */
-    public function error($number, $string, $file, $line)
-    {
-    	throw new \Exception('Error #' . $number . ': ' . $string . ' in ' . $file . ' on line ' . $line);
     }
     
     /**

@@ -1,8 +1,12 @@
 <?php
-namespace ezRPG\Library\Router\Route;
 
+namespace ezRPG\Library\Router\Route;
 use ezRPG\Library\Router\Route;
 
+/**
+ * Regex
+ * @see Library\Router\Route
+ */
 class Regex extends Route
 {
 	
@@ -14,7 +18,6 @@ class Regex extends Route
 	
 	/**
 	 * Match a given url
-	 * 
 	 * @param string $url
 	 * @return boolean
 	 */
@@ -25,7 +28,6 @@ class Regex extends Route
 	
 	/**
 	 * Resolve the url
-	 * 
 	 * @param type $url
 	 * @return boolean
 	 */
@@ -40,7 +42,6 @@ class Regex extends Route
 	
 	/**
 	 * Map the params
-	 * 
 	 * @param string $url
 	 * @return array
 	 */

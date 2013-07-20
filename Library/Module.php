@@ -2,14 +2,15 @@
 
 namespace ezRPG\Library;
 
+/**
+ * Module
+ */
 abstract class Module implements Interfaces\Module
 {
-	protected
-		$app,
-		$view,
-		$title,
-		$container
-		;
+	protected $app;
+	protected $view;
+	protected $title;
+	protected $container;
 
 	/**
 	 * Constructor

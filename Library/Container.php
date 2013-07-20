@@ -26,15 +26,16 @@ namespace ezRPG\Library;
  * THE SOFTWARE.
  */
 
+/**
+ * Container
+ */ 
 class Container implements Interfaces\Container
 {
     protected $values = array();
 
     /**
      * Instantiate the container.
-     *
      * Objects and parameters can be passed as argument to the constructor.
-     *
      * @param array $values The parameters or objects.
      */
     public function __construct (array $values = array())
@@ -44,13 +45,10 @@ class Container implements Interfaces\Container
 
     /**
      * Sets a parameter or an object.
-     *
      * Objects must be defined as Closures.
-     *
      * Allowing any PHP callable leads to difficult to debug problems
      * as function names (strings) are callable (creating a function with
      * the same a name as an existing parameter would break your container).
-     *
      * @param string $id    The unique identifier for the parameter or object
      * @param mixed  $value The value of the parameter or a closure to defined an object
      */
@@ -61,11 +59,8 @@ class Container implements Interfaces\Container
 
     /**
      * Gets a parameter or an object.
-     *
      * @param string $id The unique identifier for the parameter or object
-     *
      * @return mixed The value of the parameter or an object
-     *
      * @throws InvalidArgumentException if the identifier is not defined
      */
     public function offsetGet($id)
@@ -82,9 +77,7 @@ class Container implements Interfaces\Container
 
     /**
      * Checks if a parameter or an object is set.
-     *
      * @param string $id The unique identifier for the parameter or object
-     *
      * @return Boolean
      */
     public function offsetExists($id)
@@ -94,7 +87,6 @@ class Container implements Interfaces\Container
 
     /**
      * Unsets a parameter or an object.
-     *
      * @param string $id The unique identifier for the parameter or object
      */
     public function offsetUnset($id)
@@ -105,9 +97,7 @@ class Container implements Interfaces\Container
     /**
      * Returns a closure that stores the result of the given closure for
      * uniqueness in the scope of this instance of Pimple.
-     *
      * @param Closure $callable A closure to wrap for uniqueness
-     *
      * @return Closure The wrapped closure
      */
     public static function share(\Closure $callable)
@@ -125,11 +115,8 @@ class Container implements Interfaces\Container
 
     /**
      * Protects a callable from being interpreted as a service.
-     *
      * This is useful when you want to store a callable as a parameter.
-     *
      * @param Closure $callable A closure to protect from being evaluated
-     *
      * @return Closure The protected closure
      */
     public static function protect(\Closure $callable)
@@ -141,11 +128,8 @@ class Container implements Interfaces\Container
 
     /**
      * Gets a parameter or the closure defining an object.
-     *
      * @param string $id The unique identifier for the parameter or object
-     *
      * @return mixed The value of the parameter or the closure defining an object
-     *
      * @throws InvalidArgumentException if the identifier is not defined
      */
     public function raw($id)
@@ -159,15 +143,11 @@ class Container implements Interfaces\Container
 
     /**
      * Extends an object definition.
-     *
      * Useful when you want to extend an existing object definition,
      * without necessarily loading that object.
-     *
      * @param string  $id       The unique identifier for the object
      * @param Closure $callable A closure to extend the original
-     *
      * @return Closure The wrapped closure
-     *
      * @throws InvalidArgumentException if the identifier is not defined
      */
     public function extend($id, \Closure $callable)

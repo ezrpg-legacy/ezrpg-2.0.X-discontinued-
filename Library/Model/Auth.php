@@ -1,32 +1,29 @@
 <?php
 
 namespace ezRPG\Library\Model;
-use \ezRPG\Library\Model,
-	\ezRPG\Library\Interfaces\Container;
+use \ezRPG\Library\Model;
+use	\ezRPG\Library\Interfaces\Container;
 
+/**
+ * Auth
+ * @see Library\Model
+ */
 class Auth extends Model
 {
-  const
-		USER_NOT_FOUND	 = 1,
-		PASSWORD_INCORRECT = 2,
-		EMAIL_IN_USE	   = 3,
-		EMAIL_INVALID	  = 4
-		;
+	const USER_NOT_FOUND	 = 1;
+	const PASSWORD_INCORRECT = 2;
+	const EMAIL_IN_USE	   = 3;
+	const EMAIL_INVALID	  = 4;
 
-	protected
-		$bcryptCost = 10
-		;
-		
+	protected $bcryptCost = 10;
 	protected $tableName = 'players';
 
 	/**
 	 * Perform compatibility check
-	 *
 	 * @param object $app
 	 */
 	public function __construct(Container $container)
 	{
-		//throw new \Exception('Break');
 		parent::__construct($container);
 		$this->app = $container['app'];
 
@@ -37,7 +34,6 @@ class Auth extends Model
 
 	/**
 	 * Authenticate
-	 *
 	 * @param string $id
 	 * @param string $password
 	 * @return object
@@ -62,8 +58,8 @@ class Auth extends Model
 	}
 
 	/**
+	 * Register
 	 * Create a new player
-	 *
 	 * @param string $email
 	 * @param string $password
 	 * @return bool
@@ -83,14 +79,11 @@ class Auth extends Model
 		if ( $this->getPlayer($userName) ) {
 			throw new \Exception('Username is already in use', self::EMAIL_IN_USE);
 		}
+		
 		$salt = $this->generateSalt();
-	
 		$hash = $this->generateHash($password, $salt);
-		
 		$dbh = $this->app->getModel('pdo')->getHandle();
-		
 		$config = $this->app->getConfig('db');
-		
 		$sth = $dbh->prepare('
 			INSERT INTO ' . $config["prefix"] . 'players (
 				username,
@@ -106,6 +99,7 @@ class Auth extends Model
 				' . time() . '
 			)
 			;');
+			
 		$sth->bindParam(':username',	$userName);
 		$sth->bindParam(':email',	$email);
 		$sth->bindParam(':password', $hash);
@@ -116,7 +110,6 @@ class Auth extends Model
 
 	/**
 	 * Update a player's password by ID or email address
-	 *
 	 * @param mixed $id
 	 * @param string $password
 	 * @return bool
@@ -124,13 +117,9 @@ class Auth extends Model
 	public function setPassword($id, $password)
 	{
 		$salt = $this->generateSalt();
-
 		$hash = $this->generateHash($password, $salt);
-
 		$dbh = $this->app->getModel('pdo')->getHandle();
-		
 		$config = $this->app->getConfig('db');
-		
 		$sth = $dbh->prepare('
 			UPDATE ' . $config["prefix"] . 'players SET
 				password = :password,
@@ -149,8 +138,8 @@ class Auth extends Model
 	}
 
 	/**
+	 * getPlayer
 	 * Get a player by ID or email address
-	 *
 	 * @param mixed $id
 	 */
 	public function getPlayer($id)
@@ -166,12 +155,15 @@ class Auth extends Model
 			;');
 
 		$sth->bindParam(':id', $id);
-
 		$sth->execute();
 
 		return $sth->fetch(\PDO::FETCH_OBJ);
 	}
-	
+
+	/**
+	 * getEmail
+	 * @param mixed $id
+	 */
 	public function getEmail($id)
 	{
 		$sth = $this->prepare('
@@ -188,23 +180,36 @@ class Auth extends Model
 			;');
 
 		$sth->bindParam(':id', $id);
-
 		$sth->execute();
 
 		return $sth->fetch(\PDO::FETCH_OBJ);
 	}
-	
+
+	/**
+	 * generateHash
+	 * @param string $password
+	 * @param string $salt
+	 * @return string
+	 */
 	protected function generateHash($password, $salt)
 	{
    		return crypt($password, $salt);
 	}
-	
+
+	/**
+	 * generateSalte
+	 * @return string
+	 */
 	protected function generateSalt()
 	{
 		$salt = sprintf('$2a$%02d$', $this->bcryptCost) . strtr(base64_encode(mcrypt_create_iv(16, MCRYPT_DEV_URANDOM)), '+', '.');
 		return $salt;
 	}
- 
+
+	/**
+	 * setLastLogin
+	 * @param mixed $id
+	 */
 	public function setLastLogin($id)
 	{
 		$sth = $this->prepare('
@@ -215,11 +220,16 @@ class Auth extends Model
 				username = :id
 			LIMIT 1
 			;');
+		
 		$sth->bindParam(':id', $id);
 
 		return $sth->execute();
 	}
-	
+
+	/**
+	 * getLastActive
+	 * @return int
+	 */
 	public function getLastActive()
 	{		
 		$sth = $this->prepare('
@@ -228,14 +238,21 @@ class Auth extends Model
 			WHERE 
 				last_active > :last
 			;');
-			$time = time() - (60*5);
+			
+		$time = time() - (60*5);
 			
 		$sth->bindParam(':last', $time);
 		$sth->execute();
+		
 		$rows = $sth->fetch(\PDO::FETCH_NUM);
+		
 		return $rows[0];
 	}
 	
+	/**
+	 * setLastActive
+	 * @param mixed $id
+	 */
 	public function setLastActive($id)
 	{
 		$sth = $this->prepare('
@@ -246,6 +263,7 @@ class Auth extends Model
 				username = :id
 			LIMIT 1
 			;');
+		
 		$sth->bindParam(':id', $id);
 
 		return $sth->execute();

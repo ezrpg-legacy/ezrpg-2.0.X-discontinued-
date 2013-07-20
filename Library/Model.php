@@ -1,30 +1,25 @@
 <?php
 
 namespace ezRPG\Library;
-use \Pdo,
-	\Exception;
+use \Pdo;
+use	\Exception;
 
 /**
  * Model
- * 
  * Base model class that other models will use.
  * This class extends Pdo, and initializes it within it's
  * constructor with database settings gathered from Config.
  */
 abstract class Model extends Pdo implements Interfaces\Model
 {
-	private $_config;
 	protected $conainter;
-	
 	protected $tableName;
 	protected $isVirtualTable;
-
 	protected $primaryKey;
-	protected $tableColumns;
-	
+	protected $tableColumns;	
 	protected $useCaching = true;
-	protected $usePrefix = true;
-	
+	protected $usePrefix = true;	
+	private $_config;
 	public $safeMode = true;
 	
 	/**
@@ -36,7 +31,7 @@ abstract class Model extends Pdo implements Interfaces\Model
 		$this->container = $container;
 		$config = $this->_config = $container['config']['db'];
 		
-		// initliaze the Pdo parent
+		/* Initliaze the Pdo parent */
 		parent::__construct(
 			$config['driver'] . ':host=' . $config['host'] . ';port='. $config['port'] . ';dbname=' . $config['database'].';charset=utf8', 
 			$config['username'], 
@@ -46,18 +41,18 @@ abstract class Model extends Pdo implements Interfaces\Model
 		$this->setAttribute(Pdo::ATTR_ERRMODE, Pdo::ERRMODE_EXCEPTION);
 		$this->setAttribute(Pdo::ATTR_DEFAULT_FETCH_MODE, Pdo::FETCH_ASSOC);
 		
-		// if this is a *virtual* table, skip all info probing
+		/* If this is a *virtual* table, skip all info probing */
 		if ($this->isVirtualTable == true){
 			return;
 		}
 		
-		// a few things to set up
+		/* A few things to set up */
 		if (!isset($this->tableName)) {
 			$table_fqn = get_class($this);
 			$this->tableName = substr(strtolower($table_fqn), 1+(strrpos($table_fqn, '\\')));
 		}
 		
-		// prefix support
+		/* Prefix support */
 		if (!empty($this->_config['prefix']) && $this->usePrefix) {
 			$this->tableName = $this->_config['prefix'] . $this->tableName;
 		}
@@ -66,7 +61,7 @@ abstract class Model extends Pdo implements Interfaces\Model
 		$col_q->execute(array($config['database'], $this->tableName));	
 		$columns = $col_q->fetchAll();	
 		
-		// generate list of columns
+		/* Generate list of columns */
 		if (count($columns) <> 0) {
 			foreach($columns as $column) {
 				if ($this->primaryKey == null && $column['COLUMN_KEY'] == 'PRI') {
@@ -80,7 +75,6 @@ abstract class Model extends Pdo implements Interfaces\Model
 	
 	/**
 	 * Find a single record
-	 * 
 	 * @param mixed $lookup A vlaue to match against the primary key
 	 * @param string $key Sets an alternative key to lookup against
 	 * @param boolean $partial Search for a partial match
@@ -93,7 +87,6 @@ abstract class Model extends Pdo implements Interfaces\Model
 	
 	/**
 	 * Find all records matching a criteria
-	 *
 	 * @param mixed $lookup A vlaue to match against the primary key
 	 * @param string $key Sets an alternative key to lookup against
 	 * @param boolean $partial Search for a partial match
@@ -103,7 +96,7 @@ abstract class Model extends Pdo implements Interfaces\Model
 	{
 		$priKey = $this->primaryKey;
 		
-		// reset the primary key
+		/* Reset the primary key */
 		if ($key != null) {
 			$priKey = $key;
 		}
@@ -121,7 +114,7 @@ abstract class Model extends Pdo implements Interfaces\Model
 			$sql .= ' WHERE `' . $priKey .'` ' . $match_type . ' ' . $lookup;
 		}		
 		
-		// cache entries
+		/* Cache entries */
 		if ($this->useCaching == true && $this->container['config']['cache']['use']
 			&& isset($this->container['cache']['sql_' . base64_encode($sql)])) {
 			return $this->container['cache']['sql_' . base64_encode($sql)];
@@ -132,7 +125,7 @@ abstract class Model extends Pdo implements Interfaces\Model
 		
 		$result = $query->fetchAll();
 		
-		// cache entries
+		/* Cache entries */
 		if ($this->useCaching == true && $this->container['config']['cache']['use']) {
 			$this->container['cache']['sql_' . base64_encode($sql)] = $result;
 		} 
@@ -142,7 +135,6 @@ abstract class Model extends Pdo implements Interfaces\Model
 	
 	/**
 	 * Create a new record
-	 * 
 	 * @param array $data
 	 * @return integer Id of created record
 	 */
@@ -151,15 +143,17 @@ abstract class Model extends Pdo implements Interfaces\Model
 		$keys = array();
 		$values = array();
 		$sql = "INSERT INTO $this->tableName (";
-		// iterate through array and sanatize 
+		
+		/* Iterate through array and sanatize */ 
 		foreach($data as $key => $item) {			
 			if (is_string($item)) {
-				$item = $this->quote($item); //$value wasn't used, replaced with $item
+				$item = $this->quote($item);
 			}
 			
 			array_push($keys, $key);
 			array_push($values, $item );
 		}
+		
 		$sql .= implode(', ', $keys);
 		$sql .= ") VALUES (";
 		$sql .= implode(', ', $values);
@@ -173,10 +167,8 @@ abstract class Model extends Pdo implements Interfaces\Model
 	
 	/**
 	 * Saves an updated record
-	 * 
 	 * Will attempt to retrieve record ID from data array if $id 
 	 * is not set.
-	 * 
 	 * @param array $data
 	 * @param mixed $id
 	 * @returns integer Number of affected rows
@@ -186,7 +178,7 @@ abstract class Model extends Pdo implements Interfaces\Model
 		$pairs = array();
 		$priKey_value = $id;
 		
-		// iterate through array and sanatize
+		/* Iterate through array and sanatize */
 		foreach($data as $key => &$item) {
 			if ($key == $this->primaryKey && $id == null) {
 				$priKey_value = $item;
@@ -200,11 +192,10 @@ abstract class Model extends Pdo implements Interfaces\Model
 				
 			array_push($pairs, '`' . $key . '` = ' . $item);
 		}
-		
 
 		$sql = 'UPDATE `' . $this->tableName . '` SET ' . implode(', ', $pairs);
 		
-		// impose restrictions
+		/* impose restrictions */
 		if (is_null($priKey_value) && $this->safeMode == true) {
 			throw new Exception('Cannot update a record without a where clause in safe mode');
 		} elseif(!is_null($priKey_value)) {
@@ -217,7 +208,6 @@ abstract class Model extends Pdo implements Interfaces\Model
 	
 	/**
 	 * Removes a single record
-	 * 
 	 * @param mixed $id The record's primary key
 	 * @param string $key A column the primary key should be reset as
 	 * @param boolean $partial Remove partial matches
@@ -225,7 +215,7 @@ abstract class Model extends Pdo implements Interfaces\Model
 	 */
 	public function remove($id, $key=null, $partial=false) 
 	{
-		// impose restrictions
+		/* Impose restrictions */
 		if ($partial && $this->safeMode) {
 			throw new \Exception('Cannot remove a partially matched record in safe mode');
 		}
@@ -249,9 +239,7 @@ abstract class Model extends Pdo implements Interfaces\Model
 	
 	/**
 	 * Queries the database
-	 * 
 	 * Low-level extention of Pdo's query method to support prefixes
-	 * 
 	 * @param $statement string
 	 */
 	public function query($statement) 
@@ -262,9 +250,7 @@ abstract class Model extends Pdo implements Interfaces\Model
 	
 	/**
 	 * Prepares an SQL statement
-	 *
 	 * Low-level extention of Pdo's prepare method to support prefixes
-	 *
 	 * @param $statement string
 	 */
 	public function prepare($statement, $driver_options = null)

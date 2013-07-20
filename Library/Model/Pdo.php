@@ -3,11 +3,13 @@
 namespace ezRPG\Library\Model;
 use \ezRPG\Library\Model;
 
+/**
+ * PDO
+ * @see Library\Model
+ */
 class Pdo extends Model
 {
-  protected
-		$handle
-		;
+	protected $handle;
 
 	/**
 	 * Establish database connection
@@ -15,9 +17,7 @@ class Pdo extends Model
 	 */
 	public function __construct(\ezRPG\Library\Interfaces\App $app)
 	{
-			parent::__construct($app);
-
-		//require('config/pdo.php');
+		parent::__construct($app);
 
 		$config = $this->app->config['db'];
 

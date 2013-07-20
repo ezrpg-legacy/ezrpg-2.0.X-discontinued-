@@ -1,12 +1,14 @@
 <?php
 
 namespace ezRPG\Library;
-
 use ezRPG\Library\AccessControl\Role;
+
+/**
+ * AccessControl
+ */
 class AccessControl implements Interfaces\AccessControl {
 	
 	protected $container;
-	
 	protected $player;
 	protected $roles = array();
 
