@@ -6,7 +6,8 @@ use \ezRPG\Library\Interfaces\Container;
 /**
  * HtmlSyntax
  */
-class HtmlSyntax implements ViewHelperInterface {
+class HtmlSyntax implements ViewHelperInterface
+{
 	
 	/**
 	 * Expose helpers
@@ -23,15 +24,15 @@ class HtmlSyntax implements ViewHelperInterface {
 	 */
 	public function htmlEncode($value)
 	{
-		switch ( gettype($value) ) {
+		switch (gettype($value)) {
 			case 'array':
-				foreach ( $value as $k => $v ) {
+				foreach ($value as $k => $v) {
 					$value[$k] = $this->htmlEncode($v);
 				}
 
 				break;
 			case 'object':
-				foreach ( $value as $k => $v ) {
+				foreach ($value as $k => $v) {
 					$value->$k = $this->htmlEncode($v);
 				}
 
@@ -50,15 +51,15 @@ class HtmlSyntax implements ViewHelperInterface {
 	 */
 	public function htmlDecode($value)
 	{
-		switch ( gettype($value) ) {
+		switch (gettype($value)) {
 			case 'array':
-				foreach ( $value as $k => $v ) {
+				foreach ($value as $k => $v) {
 					$value[$k] = $this->htmlDecode($v);
 				}
 
 				break;
 			case 'object':
-				foreach ( $value as $k => $v ) {
+				foreach ( $value as $k => $v ){
 					$value->$k = $this->htmlDecode($v);
 				}
 

@@ -2,7 +2,8 @@
 
 namespace ezRPG\Library\Interfaces;
 
-interface Router {
+interface Router
+{
 	public function addRoute($route);
 	public function resolve($url);
 }

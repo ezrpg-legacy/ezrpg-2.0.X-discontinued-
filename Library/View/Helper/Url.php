@@ -6,7 +6,8 @@ use \ezRPG\Library\Interfaces\Container;
 /**
  * URL
  */
-class Url implements ViewHelperInterface {
+class Url implements ViewHelperInterface
+{
 	
 	protected $siteConfig;
 	
@@ -18,7 +19,8 @@ class Url implements ViewHelperInterface {
 		'getThemeUrl',
 	);		
 	
-	public function __construct(Container $container) {
+	public function __construct(Container $container)
+	{
 		$this->siteConfig =  $container['config']->get('site');
 	}
 	
@@ -27,7 +29,8 @@ class Url implements ViewHelperInterface {
 	 * @param string $uri
 	 * @return string
 	 */
-	public function getUrl($uri) {
+	public function getUrl($uri)
+	{
 		return $this->siteConfig['url'] . '/' . $uri;
 	}
 	
@@ -36,7 +39,8 @@ class Url implements ViewHelperInterface {
 	 * @param string $uri
 	 * @return string
 	 */
-	public function getThemeUrl($uri) {
+	public function getThemeUrl($uri)
+	{
 		return $this->siteConfig['url'] . '/theme/' . $this->siteConfig['theme'] . '/' . $uri;
 	}
 }

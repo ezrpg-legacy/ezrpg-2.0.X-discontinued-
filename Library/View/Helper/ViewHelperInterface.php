@@ -6,6 +6,6 @@ use \ezRPG\Library\Interfaces\Container;
 /**
  * ViewHelperInterface
  */
-interface ViewHelperInterface {
-	
+interface ViewHelperInterface
+{
 }

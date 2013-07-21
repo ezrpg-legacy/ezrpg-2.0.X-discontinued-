@@ -6,7 +6,8 @@ use ezRPG\Library\AccessControl\Role;
 /**
  * AccessControl
  */
-class AccessControl implements Interfaces\AccessControl {
+class AccessControl implements Interfaces\AccessControl
+{
 	
 	protected $container;
 	protected $player;

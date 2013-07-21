@@ -6,7 +6,8 @@ use \ezRPG\Library\Interfaces\Container;
 /**
  * Message
  */
-class Message implements ViewHelperInterface {
+class Message implements ViewHelperInterface
+{
 
 	/**
 	 * Expose helpers
