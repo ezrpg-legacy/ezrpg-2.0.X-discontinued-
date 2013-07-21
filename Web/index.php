@@ -24,60 +24,15 @@ $autoloader->register();
 
 // Set required dependencies
 $container = new Container();
+$config = new Config($container);
 
-$config = new Config();
-if ( file_exists('config.php') )
+if (!file_exists('config.php')) {
+	define('INSTALL', true);
+	require 'config.install.php';
+} else {
 	require 'config.php';
-if ( file_exists('settings.php') && (file_exists('Module/Installer/locked') || !file_exists('Module/Installer/Index.php')) )
+	// @todo merge settings.php to database
 	require 'settings.php';
-if (!file_exists('Module/Installer/locked') && file_exists('Module/Installer/Index.php')) {
-	$config['security'] = array(
-			'hashRounds' => 11,
-			'hashSaltSize' => 16,
-			'passwordStrength' => 1,
-			'showExceptions' => true,
-			'acl' => array(
-				'use' => false,
-			)
-	);
-	$config['accounts'] = array(
-			'requireActivation' => false,
-			'emailActivation' => false
-	);
-
-	$config['site'] = array(
-			'url' => 'http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']),
-			'theme' => 'installer',
-	);
-	
-	$config['cache'] = array(
-		'use' => false,
-	);
-	
-	
-	$config['routes'] = array(
-			'installer'	=> array(
-					'module' => 'installer',
-			),
-			'installer/license'	=> array(
-					'module' => 'license',
-					'base' => 'installer',
-			),
-			'installer/config'	=> array(
-					'module' => 'config',
-					'base' => 'installer',
-			),
-			'installer/admin'	=> array(
-					'module' => 'admin',
-					'base' => 'installer',
-			),
-	);
-	
-	if(!isset($_GET['q']) || stripos($_GET['q'], 'installer') !== 0) {
-		echo 'ezRPG has not been installed yet.<br />';
-		echo '<a href="./installer">Install ezRPG</a>';
-		exit(0);
-	}
 }
 
 $container['config'] = $config;

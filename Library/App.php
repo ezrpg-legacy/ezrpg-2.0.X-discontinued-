@@ -15,30 +15,34 @@ class App implements Interfaces\App
     protected $view;
     
     /**
-     * @todo Clean this up
      * @param Interfaces\Container $container
      */
     public function __construct(Interfaces\Container $container)
     {
-        $this->container = $container; 
-        $this->container['app'] = $this;
-		$config = $this->container['config'];
-        
-		if (file_exists('Module/Installer/locked') || !file_exists('Module/Installer/Index.php')) {
-	       	if (isset($config['cache']['use']) && $config['cache']['use'] == true) {
-	        	/* @see Library\Cache */
-				$this->container['cache'] = new Cache($config['cache']['prefix'], $config['cache']['ttl']);
-	
-	        	if (!isset($this->container['cache']['config'])) {
-	        		$this->addDatabaseConfig();
-	        		$this->container['cache']['config'] = $this->container['config'];
-	        	} else {
-	        		$this->container['config'] = $this->container['cache']['config'];
-	        	}
-	        } elseif (isset($this->container['config']['db'])) {
-	        	$this->addDatabaseConfig();
-	        }
-        }
+        $container['app'] = $this;
+		
+		// Skip configuration if INSTALL flag is set
+		if (defined('INSTALL')) {
+			$this->container = $container;
+			return;
+		}
+
+		$config = $container['config'];
+		
+		// Instantiate the Cache
+		new Cache($container);
+		
+		if (isset($container['cache']) && isset($container['cache']['config'])) {
+			$container['config'] = $container['cache']['config'];
+		} elseif (isset($container['cache'])) {
+			$container['config']->addDatabaseConfig();
+			$container['cache']['config'] = $config;
+		}
+
+		// Load plugins
+		$this->loadPlugins();
+
+		$this->container = $container;
     }
     
 	/**
@@ -47,54 +51,70 @@ class App implements Interfaces\App
 	*/
     public function run()
     {
-    	/* Instantiate ACL */
+    	// Instantiate ACL, conditionally
     	if ($this->container['config']['security']['acl']['use']) {
 			/* @see Library\AccessControl */
     		$this->acl = new AccessControl($this->container);
     	}
     	
-    	/* Load plugins */
-    	$this->loadPlugins();
-		/* @see Library\Router */
+		// Instantiate the Router
 		$router = new Router($this->container);
 		
-		$query = isset($_GET['q']) ? strtolower($_GET['q']) : 'index';
+		$query = isset($_GET['q']) && !empty($_GET['q']) ? strtolower($_GET['q']) : 'index';
 		$routeMatch = $router->resolve($query);
 		
 		if ($routeMatch == false) {
 			$routeMatch = $router->resolve('error/file-not-found');
 		}
-		
-		if (!empty($routeMatch['access']['permission']) && !$this->acl->verify($routeMatch['access']['permission'])) {
-			$routeMatch = $router->resolve('error/access-denied');
-		} 
-		
-		if (!empty($routeMatch['access']['role']) && !$this->acl->hasRole($routeMatch['access']['role'])) {
-			$routeMatch = $router->resolve('error/access-denied');
+
+		// Authorization of routes through the AC
+		if ($this->container['config']['security']['acl']['use']) {
+			if (!empty($routeMatch['access']['permission']) && !$this->acl->verify($routeMatch['access']['permission'])) {
+				$routeMatch = $router->resolve('error/access-denied');
+			} 
+			
+			if (!empty($routeMatch['access']['role']) && !$this->acl->hasRole($routeMatch['access']['role'])) {
+				$routeMatch = $router->resolve('error/access-denied');
+			}
 		}
 		
-		/* Set up envorinment variables */
-		$this->module = 'ezRPG\Module\\' . (!empty($routeMatch['base']) ? str_replace('/', '\\', ucwords($routeMatch['base'])) . '\\' : '') . ucwords($routeMatch['module']) . '\\Index';
-		$this->action = $routeMatch['action'];
-		$this->params = $routeMatch['params'];
-                
-		$this->args = $routeMatch['params'];
-                
-		$moduleName = basename(dirname(str_replace('\\', '/', strtolower($this->module))));
-		
-		/**
-		 * Instantiate the View 
-		 * @see Library\View 
-		*/
-		$this->view = new View($this->container, $moduleName);
-		
-		/* Instantiate the module */
-		$this->registerHook('actionBefore');
-		$this->module = new $this->module($this->container);
-		$this->module->{$this->action}($this->params);
-		$this->registerHook('actionAfter');
-
-		return array($this->view, $this->module);
+		return $this->dispatch($routeMatch);
+    }
+    
+    
+    /**
+     * Dispatch the request
+     * 
+     * Instantiates the routed module and assigns
+     * sets up the View object.
+     * 
+     * @param array $routeMatch
+     * @return array View and Module
+     */
+    protected function dispatch(array $routeMatch)
+    {
+    	// Set up envorinment variables
+    	$this->module = 'ezRPG\Module\\' . (!empty($routeMatch['base']) ? str_replace('/', '\\', ucwords($routeMatch['base'])) . '\\' : '') . ucwords($routeMatch['module']) . '\\Index';
+    	$this->action = $routeMatch['action'];
+    	$this->params = $routeMatch['params'];
+    	
+    	$this->args = $routeMatch['params'];
+    	
+    	$moduleName = basename(dirname(str_replace('\\', '/', strtolower($this->module))));
+    	
+    	/**
+    	 * Instantiate the View
+    	 * @see Library\View
+    	*/
+    	$this->view = new View($this->container, $moduleName);
+    	
+    	// Instantiate the module
+    	$this->registerHook('actionBefore');
+    	$this->module = new $this->module($this->container);
+    	$this->module->{$this->action}($this->params);
+    	$this->registerHook('actionAfter');
+    	
+    	return array($this->view, $this->module);
     }
     
     /**
@@ -159,17 +179,5 @@ class App implements Interfaces\App
     		ksort($this->plugins);
     		closedir($handle);
     	}
-    }
-    
-    /**
-     * Load settings from Database
-     */
-    protected function addDatabaseConfig() {
-    	$this->container['config'] = new Config(
-    		array_replace_recursive(
-    			current((array) $this->container['config']), 
-    			$this->getModel('Setting')->getAll()
-    		)
-    	);
     }
 }

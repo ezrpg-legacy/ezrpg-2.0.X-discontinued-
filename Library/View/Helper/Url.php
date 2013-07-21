@@ -21,7 +21,7 @@ class Url implements ViewHelperInterface
 	
 	public function __construct(Container $container)
 	{
-		$this->siteConfig =  $container['config']->get('site');
+		$this->siteConfig =  $container['config']['site'];
 	}
 	
 	/**

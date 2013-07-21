@@ -11,7 +11,7 @@ class View implements Interfaces\View
 	protected $variables = array();
 	protected $helpers;
 
-	public $layout;
+	public $theme;
 	public $name;
 
 	/**
@@ -23,11 +23,10 @@ class View implements Interfaces\View
 	{
 		$this->container = $container;
 		$this->name = $name;
-		$this->layout = $container['config']['site']['theme'];
+		$this->theme = $container['config']['site']['theme'];
 		$container['view'] = $this;
 		
 		$this->registerHelpers();
-		
 	}
 
 	/**
@@ -62,21 +61,12 @@ class View implements Interfaces\View
 	 */
 	public function render()
 	{
-		$file = 'Theme/' . $this->layout . '/' . $this->name . '.phtml';
-		
+		$file = 'Theme/' . $this->theme . '/' . $this->name . '.phtml';
+
 		if ( is_file($file) ) {
 			header('X-Generator: ezRPG');
 			require $file;
-		} 
-		/**
-		 * Removed as already commented out
-		 * @todo remove from code
-		 */
-		/**
-		 * else {
-		 *	//throw new \Exception('View not found'); // Not sure why a view would need to be mandatory.
-		 * }
-		 */
+		}
 	}
 	
 	/**

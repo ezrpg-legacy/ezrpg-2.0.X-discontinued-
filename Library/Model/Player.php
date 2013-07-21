@@ -3,6 +3,7 @@
 namespace ezRPG\Library\Model;
 use \Exception;
 use	\InvalidArgumentException;
+use ezRPG\Library\Model;
 
 /**
  * Player

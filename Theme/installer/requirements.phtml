@@ -1,48 +1,72 @@
-<?php include 'header.phtml';
+<?php 
 
-$data = $this->get('data');
+include 'header.phtml';
+$checks = $this->get('checks');
+
 ?>
-<table cellspacing="0" border="0" width="100%">
+<style>
+	.good { color: green; }
+	.bad { color: red; }
+	.warn { color: orange; }
+	.box { padding: 3px 2px; border: solid 1px #DDD; border-radius: 2px; display: block; }
+</style>
+<table style="width: 100%">
 	<tr>
 		<th colspan="2" align="left">Requirement</th>
 	</tr>
-	<tr>
-		<td width="25%">
-			PHP Version
-		</td>
-		<td>
-			<font color="<?php echo ($data['php_version']) ? "green" : "red"; ?>"><?php echo PHP_VERSION; ?></font>
-		</td>
-	</tr>
-	<tr>
-		<td width="25%">
-			Config File Writable
-		</td>
-		<td>
-			<font color="<?php echo ($data['writable']['config']) ? "green\">Writable" : "red\">Not Writable"; ?></font>
-				  </td>
-				  </tr>
-				  <tr>
-				  <td width="25%">
-			Settings File Writable
-		</td>
-		<td>
-			<font color="<?php echo ($data['writable']['settings']) ? "green\">Writable" : "red\">Not Writable"; ?></font>
-				  </td>
-				  </tr>
-				  </table>
+	<?php foreach($checks as $title => $results) { ?>
+		<tr>
+			<td width="25%">
+				<?php echo $title; ?>
+			</td>
+			<td>
+				<span class="<?php echo ($results['passed'] ? 'good' : ($results['required'] ? 'bad' : 'warn')); ?>">
+					<?php echo ($results['passed'] ? 'Passed' : 'Failed'); ?>
+				</span>
+			</td>
+		</tr>
+	<?php } ?>
+</table>
+<?php 
 
-				  <?php if ($data['passed']) { ?>
+$warnings = array();
+$errors = array();
 
-					  <a href="<?php echo $this->getUrl('installer/license'); ?>">Continue</a>
+foreach($checks as $check) {
+	if ($check['passed'] == false) {
+		if ($check['required'] == false) {
+			$warnings[] = $check['message'];
+		} else {
+			$errors[] = $check['message'];
+		}
+	}
+}
 
-			
-				  <?php } else { 
-					  
-					  echo '<ul>';
-					  foreach ($this->get('errors') as $error) {
-						  echo '<li>' . $error . '</li>';
-					  }
-					  echo '</ul>';
-					  
-				  }
+if (count($errors) == 0) {
+	echo '<br /><br /><div style="text-align:center"><button style="margin:0" onclick="javascript:location = \'' . $this->getUrl('installer/license') . '\'">Continue</button></div>';
+} 
+
+if (count($errors) > 0 || count($warnings) > 0) {
+	echo '<br /><strong>Not all prerequisites have been met, please see advice below on how to solve this issue.</strong>';
+	
+	if (count($errors) > 0) {
+		echo '<p><strong>Errors</strong><br />These are the problems the installer found that needs attention:<br />';
+		foreach($errors as $error) {
+			echo '<span class="bad box">' . $error . '</span>';
+		}
+		
+		echo '<strong><i>Please rectify these issues before continuing.</i></strong></p>';
+	}
+	
+	if (count($warnings) > 0) {
+		echo '<p><strong>Warngings</strong><br />These are the problems the installer found that doesn\'t need your immediate attention, but are worth looking into to get all the power of ezRPG:<br />';
+		foreach($warnings as $warning) {
+				echo '<span class="warn box">' . $warning . '</span>';
+		}
+		echo '</p>';
+	}
+	
+	echo '<div style="text-align:center"><button style="margin:0" onclick="javascript:location.reload()">Refresh</button></div><br /><br />';
+}
+
+include 'footer.phtml';

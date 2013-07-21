@@ -11,6 +11,4 @@ interface App
 	public function getModel($modelName);
 
 	public function registerHook($hookName, array $params = array());
-
-	public function error($number, $string, $file, $line);
 }

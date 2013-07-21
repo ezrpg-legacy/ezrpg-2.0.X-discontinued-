@@ -8,14 +8,15 @@ use \Exception;
  */ 
 class Config implements Interfaces\Config
 {
-	private $config = array();
+	protected $config = array();
+	protected $container;
 
 	/**
      * @param array $config
      */
-	public function __construct(array $config = array())
+	public function __construct(Interfaces\Container $container)
 	{
-		$this->config = $config;
+		$this->container = $container;
 	}
 
 	/**
@@ -66,5 +67,16 @@ class Config implements Interfaces\Config
 		}
 		
 		throw new Exception('Key "' . $key . '" not found within config');
+	}
+	
+	/**
+	 * Load configuration options from the database
+	 * and add it to the runtime configuration.
+	 */
+	protected function addDatabaseConfig() {
+		$this->config = array_merge_recursive(
+			$this->config,
+			$this->container['app']->getModel('Setting')->getAll()
+		);
 	}
 }

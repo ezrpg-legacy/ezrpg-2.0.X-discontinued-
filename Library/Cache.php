@@ -11,18 +11,34 @@ class Cache implements Interfaces\Cache
 	protected $ttl;
 	
 	/**
-	 * Constructor
-	 * @param string $prefix
-	 * @param int $ttl
+	 * Construct
+	 * @param Container $container
+	 * @throws \Exception
 	 */
-	public function __construct($prefix='ezRPG', $ttl=6400)
+	public function __construct(Interfaces\Container &$container)
 	{
-		$this->prefix = $prefix;
-		$this->ttl = $ttl;
+		$this->container = $container;
+		
+		// assume no caching should be used if not present
+		// within configuration
+		if (!isset($container['config']['cache'])) {
+			return;
+		}
+		
+		$cache_config = $container['config']['cache'];
+		if ($cache_config['use'] == false) {
+			return;
+		}
+		
+		$this->prefix = $cache_config['prefix'];
+		$this->ttl = $cache_config['ttl'];
 		
 		if (!function_exists('apc_fetch')) {
 			throw new \Exception('Current configuration does not support APC');
 		}
+		
+		// expose the Cache object
+		$container['cache'] = $this;
 	}
 	
 	/**

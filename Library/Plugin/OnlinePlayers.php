@@ -20,8 +20,7 @@ class OnlinePlayers implements Plugin
 	public function actionBefore()
 	{
 		// When we have db
-		// $playerModel = $this->_container['app']->getModel('Player');
-		//var_dump($playerModel->getOnline());
-		$this->_container['view']->set('ONLINE', number_format(rand(0,PHP_INT_MAX / 1000000)));
+		$playerModel = $this->_container['app']->getModel('Player');
+		$this->_container['view']->set('ONLINE', number_format($playerModel->getOnline()));
 	}
 }

@@ -14,43 +14,44 @@ class Index extends Module
 	 */
 	public function index()
 	{
-		$errors = array();
-		
-		$data = array
-		(
-			'php_version' => true,
-			'writable' => array(
-				'config' => true,
-				'settings' => true,
+		$checks = array(
+			'PHP Version' => array(
+				'passed' => false,
+				'required' => true,
+				'message' => 'ezRPG uses some of the newer libraries only available in versions of PHP 5.3.2. and later, while we detected that you are currently running on PHP ' . PHP_VERSION . '.<br />' .
+							 'If you are using your own infrastructure, please upgrade PHP to the latest version.<br />' .
+							 'If you are on a shared hosting provider this may be some troublesome news, but ask them if they might be able to help you with this problem.'
 			),
-			'passed' => true,
+				
+			'APC Support' => array(
+				'passed' => false,
+				'required' => false,
+				'message' => 'ezRPG uses APC for caching expensive computations to improve performance.<br />' .
+							 'Although this is not a scrict requirement, we highly suggest that you(or your hosting provider) enable this functionality.'
+			),
+				
+			'Root directory writable' => array(
+				'passed' => false,
+				'required' => true,
+				'message' => 'ezRPG writes configuration files within the root directory of the application.<br />' .
+							 'You can resolve this problem by changing the permission(even temporarily) for the directory <code>' . getcwd() . '</code>.'
+			)					
 		);
-
-		if (version_compare(PHP_VERSION, '5.3.2', '<')) {
-			$data['php_version'] = false;
-			$errors[] = 'Your web server need to be running at least PHP version 5.3.2.';
+		
+		// A series of checks to confirm compatibility
+		if (version_compare(PHP_VERSION, '5.3.2', '>=')) {
+			$checks['PHP Version']['passed'] = true;
 		}
 		
-		if (!is_writable('config.php')) {
-			if (!rename('config.php.new', 'config.php')) {
-				$data['writable']['config'] = false;
-				$errors[] = 'The config.php file must be writable. Please rename config.php.new to config.php';
-			}
+		if (function_exists('apc_fetch')) {
+			$checks['APC Support']['passed'] = true;
 		}
 		
-		if (!is_writable('settings.php')) {
-			if (!rename('settings.php.new', 'settings.php')) {
-				$data['writable']['settings'] = false;
-				$errors[] = 'The settings.php file must be writable. Please rename settings.php.new to settings.php';
-			}
-		}
-
-		if ($errors) {
-			$data['passed'] = false;
-			$this->view->set('errors', $errors);
+		if (is_writable(__DIR__)) {
+			$checks['Root directory writable']['passed'] = true;
 		}
 		
-		$this->view->set('data', $data);
+		$this->view->set('checks', $checks);
 		$this->view->name = 'requirements';
 	}
 }
