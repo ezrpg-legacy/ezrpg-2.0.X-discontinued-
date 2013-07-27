@@ -98,7 +98,7 @@ CONFIG;
 		'showExceptions' => true,
 		'acl' => array(
 			'use' => true,
-			'rootRoleId' => 1 # !!THIS IS WRONG!! - 2 IS REALLY ROOT, 1 IS GUEST
+			'rootRole' => 1 # !!THIS IS WRONG!! - 2 IS REALLY ROOT, 1 IS GUEST
 		)
 );
 
