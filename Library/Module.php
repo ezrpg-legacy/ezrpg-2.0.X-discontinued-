@@ -32,7 +32,7 @@ abstract class Module implements Interfaces\Module
 	 */
 	protected function registerHelpers()
 	{
-		foreach(scandir(dirname(__FILE__) . '/Module/Helper') as $file) {
+		foreach(glob(dirname(__FILE__) . '/Module/Helper/*.php') as $file) {
 			if (is_dir($file)) {
 				continue;
 			}

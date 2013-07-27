@@ -41,8 +41,6 @@ $container['config'] = $config;
 try {
 	$app = new App($container);
 	
-	set_error_handler(array($app, 'error'), E_ALL | E_STRICT);
-	
 	$app->run();
 	$app->serve();
 } catch ( \Exception $e ) {
