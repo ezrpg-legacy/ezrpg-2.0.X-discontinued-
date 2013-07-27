@@ -35,7 +35,7 @@ class Autoloader
 
 			$className  = substr($className, ++$lastNsPos);
 
-			$fileName  = str_replace(array('\\', '_'), DIRECTORY_SEPARATOR, $namespace);
+			$fileName  = str_replace('\\', DIRECTORY_SEPARATOR, $namespace);
 			$fileName .= DIRECTORY_SEPARATOR;
 		}
 		
