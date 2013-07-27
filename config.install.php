@@ -1,4 +1,9 @@
 <?php
+if (file_exists("Module/Installer/locked")) {
+	echo 'ezRPG installer is currently locked.<br />';
+	echo 'Please remove the Module/Installer/locked file to continue.';
+	exit(0);
+}
 
 /**
  * Installer Configuration
@@ -47,11 +52,15 @@ $config = array(
 	)
 );
 
+if (file_exists('config.php')) {
+	include("config.php");
+}
+
 /**
  * Display a friendly message to user to let them know
  * that the engine should be installed before usage.
  */
-if (!isset($_GET['q']) || stripos($_GET['q'], 'installer') !== 0) {
+if ($uri->segment(0) != "installer") {
 	echo 'ezRPG has not been installed yet.<br />';
 	echo '<a href="./installer">Install ezRPG</a>';
 	exit(0);

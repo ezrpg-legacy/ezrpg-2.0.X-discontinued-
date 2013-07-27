@@ -148,6 +148,7 @@ class Player extends Model
 		$data['lastActive'] = $data['registered'];
 		$data['active'] = $this->container['app']->registerHook('playerActivation', $data);
 
+		print_r($this->container['app']->plugins);
 		/* Create the actual record */
 		$data['id'] = parent::add($data);
 		
@@ -169,6 +170,16 @@ class Player extends Model
 	{
 		$query = $this->query('SELECT * FROM player WHERE lastActive > DATE_SUB(NOW(), INTERVAL 15 MINUTE)');
 		return $query->fetchAll(\Pdo::FETCH_ASSOC);
+	}
+	
+	/**
+	 * getNumOnline
+	 * @return int
+	 */
+	public function getNumOnline()
+	{
+		$query = $this->query('SELECT * FROM player WHERE lastActive > DATE_SUB(NOW(), INTERVAL 15 MINUTE)');
+		return $query->rowCount();
 	}
 	
 	/**

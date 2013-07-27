@@ -5,15 +5,16 @@ namespace ezRPG\Library;
 /**
  * URI
  */
-abstract class Uri {
+class Uri {
 	protected $segments = NULL;
 
 	/**
 	 * Initiates the Uri class
 	 */
-	private function __construct()
+	public function __construct()
 	{
-		$this->segments = explode("/", $_GET['q']);
+		if(isset($_GET['q']))
+			$this->segments = explode("/", $_GET['q']);
 	}
 
 	/**

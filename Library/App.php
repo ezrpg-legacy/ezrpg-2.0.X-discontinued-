@@ -10,7 +10,7 @@ class App implements Interfaces\App
 {
     protected $container; 
     protected $acl;
-    protected $plugins = array(); 
+    public $plugins = array(); 
     protected $rootPath	= '/';
     protected $view;
     
@@ -22,21 +22,24 @@ class App implements Interfaces\App
         $container['app'] = $this;
 		
 		// Skip configuration if INSTALL flag is set
-		if (defined('INSTALL')) {
+		/*if (defined('INSTALL')) {
 			$this->container = $container;
 			return;
-		}
+		}*/
 
 		$config = $container['config'];
 		
 		// Instantiate the Cache
-		new Cache($container);
-		
-		if (isset($container['cache']) && isset($container['cache']['config'])) {
-			$container['config'] = $container['cache']['config'];
-		} elseif (isset($container['cache'])) {
-			$container['config']->addDatabaseConfig();
-			$container['cache']['config'] = $config;
+
+		if (!defined("INSTALL")) {
+			new Cache($container);
+			
+			if (isset($container['cache']) && isset($container['cache']['config'])) {
+				$container['config'] = $container['cache']['config'];
+			} elseif (isset($container['cache'])) {
+				$container['config']->addDatabaseConfig();
+				$container['cache']['config'] = $config;
+			}
 		}
 
 		// Load plugins

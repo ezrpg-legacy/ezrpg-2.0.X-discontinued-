@@ -25,8 +25,9 @@ $autoloader->register();
 // Set required dependencies
 $container = new Container();
 $config = new Config($container);
+$uri = new Library\Uri();
 
-if (!file_exists('config.php')) {
+if (!file_exists('config.php') || $uri->segment(0) == "installer") {
 	define('INSTALL', true);
 	require 'config.install.php';
 } else {

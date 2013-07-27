@@ -16,6 +16,7 @@ class Index extends Module
 		$data['guessUrl'] = 'http://'.$_SERVER['HTTP_HOST'].str_ireplace('/index.php', '', $_SERVER['PHP_SELF']);
 		if ( isset($_POST['submit']) ) {
 			$dbconfig = array(
+				'db' => array(
 					'driver'   => $_POST['dbtype'],
 					'host'	 => $_POST['dbhost'],
 					'database' => $_POST['dbname'],
@@ -23,8 +24,10 @@ class Index extends Module
 					'password' => $_POST['dbpass'],
 					'port' => '',
 					'prefix' => $_POST['dbpref']
+				),
 			);
-			$this->container['config']['db'] = $dbconfig;
+			$newConfig = array_merge($this->container->offsetGet('config'), $dbconfig);
+			$this->container->offsetSet('config', $newConfig);
 			try {
 				$installer = $this->app->getModel('installer');
 				foreach ( glob("./Module/Installer/Config/Sql/*.sql") as $query ) {

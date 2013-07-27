@@ -21,6 +21,6 @@ class OnlinePlayers implements Plugin
 	{
 		// When we have db
 		$playerModel = $this->_container['app']->getModel('Player');
-		$this->_container['view']->set('ONLINE', number_format($playerModel->getOnline()));
+		$this->_container['view']->set('ONLINE', number_format($playerModel->getNumOnline()));
 	}
 }
