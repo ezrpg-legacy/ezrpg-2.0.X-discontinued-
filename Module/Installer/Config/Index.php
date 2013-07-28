@@ -106,62 +106,19 @@ CONFIG;
 		'requireActivation' => false,
 		'emailActivation' => false
 );
-
-
-\$config['routes'] = array(
-		'installer'	=> array(
-				'module' => 'installer',
-		),
-
-		'admin' => array(
-				'module' => 'admin',
-		),
-
-		'admin/player/listing' => array(
-				'base' => 'admin',
-				'module' => 'player',
-				'action' => 'listing'
-		),
-
-		'admin/player' => array(
-				'base' => 'admin',
-				'module' => 'player'
-		),
-
-		'index(.*)' => array(
-				'module' => 'index',
-				'type' => 'regex',
-				'params' => array('act')
-		),
-
-		'error' => array(
-				'module' => 'error404',
-				'action' => 'index'
-		),
-
-		'player/([a-z]+)' => array(
-				'module' =>	'player',
-				'action' => 'view',
-				'params' => array('username'),
-				'type' => 'regex'
-		),
-
-		'login' => array(
-				'module' => 'login',
-		),
-
-		'register' => array(
-				'module' => 'register',
-		),
-
-		'home' => array(
-				'module' => 'home',
-		),
-);
 SETTINGS;
 				$fh = fopen('settings.php', 'w+');
 				fwrite($fh, $settings);
 				fclose($fh);
+
+				$routes = $this->app->getModel('routes');
+				try {
+					$routes->buildCache();
+				} catch(\Exception $e) {
+					printf('<div><strong>ezRPG Exception</strong></div>%s<pre>', $e->getMessage());
+					var_dump($e);
+					die();
+				}
 				header("location: {$gameurl}/installer/admin");
 			}
 			

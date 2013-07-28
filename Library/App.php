@@ -148,13 +148,16 @@ class App implements Interfaces\App
      */
     public function registerHook($hookName, array $params = array())
     {
-    	foreach ( $this->plugins as $pluginName => $hooks ) {
-    		if ( in_array($hookName, $hooks) ) {
-    			$plugin = new $pluginName($this->container);
-    
-    			return $plugin->{$hookName}($params);
-    		}
+    	if (!defined('NO_HOOKS')) {
+	    	foreach ( $this->plugins as $pluginName => $hooks ) {
+	    		if ( in_array($hookName, $hooks) ) {
+	    			$plugin = new $pluginName($this->container);
+	    
+	    			return $plugin->{$hookName}($params);
+	    		}
+	    	}
     	}
+    	return false;
     }
     
     /**

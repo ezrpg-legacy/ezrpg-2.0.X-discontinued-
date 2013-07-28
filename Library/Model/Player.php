@@ -148,7 +148,6 @@ class Player extends Model
 		$data['lastActive'] = $data['registered'];
 		$data['active'] = $this->container['app']->registerHook('playerActivation', $data);
 
-		print_r($this->container['app']->plugins);
 		/* Create the actual record */
 		$data['id'] = parent::add($data);
 		

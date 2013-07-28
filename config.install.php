@@ -1,9 +1,4 @@
 <?php
-if (file_exists("Module/Installer/locked")) {
-	echo 'ezRPG installer is currently locked.<br />';
-	echo 'Please remove the Module/Installer/locked file to continue.';
-	exit(0);
-}
 
 /**
  * Installer Configuration
@@ -64,4 +59,10 @@ if ($uri->segment(0) != "installer") {
 	echo 'ezRPG has not been installed yet.<br />';
 	echo '<a href="./installer">Install ezRPG</a>';
 	exit(0);
+} else {
+	if (file_exists("Module/Installer/locked")) {
+		echo 'ezRPG installer is currently locked.<br />';
+		echo 'Please remove the Module/Installer/locked file to continue.';
+		exit(0);
+	}
 }
