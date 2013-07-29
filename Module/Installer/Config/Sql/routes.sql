@@ -14,7 +14,7 @@ INSERT INTO `<pre>routes` (`id`, `path`, `base`, `action`, `type`, `module`, `pa
 (2, 'admin/player', 'admin', NULL, NULL, 'player', NULL),
 (3, 'admin/player/listing', 'admin', 'listing', NULL, 'player', NULL),
 (4, 'index(.*)', NULL, NULL, 'regex', 'index', 'act'),
-(5, 'error', NULL, 'index', NULL, 'error404', NULL),
+(5, 'error(/+.*)', NULL, 'index', 'regex', 'error', 'type'),
 (6, 'player/([a-z]+)', NULL, 'view', 'regex', 'player', 'username'),
 (7, 'login', NULL, NULL, NULL, 'login', NULL),
 (8, 'register', NULL, NULL, NULL, 'register', NULL),

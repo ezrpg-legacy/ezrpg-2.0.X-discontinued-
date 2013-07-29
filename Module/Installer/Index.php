@@ -47,7 +47,7 @@ class Index extends Module
 			$checks['APC Support']['passed'] = true;
 		}
 		
-		if (is_writable(__DIR__)) {
+		if (is_writable(getcwd())) {
 			$checks['Root directory writable']['passed'] = true;
 		}
 		
