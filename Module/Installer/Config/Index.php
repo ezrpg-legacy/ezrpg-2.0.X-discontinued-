@@ -111,7 +111,7 @@ SETTINGS;
 				fwrite($fh, $settings);
 				fclose($fh);
 
-				$routes = $this->app->getModel('routes');
+				$routes = $this->app->getModel('route');
 				try {
 					$routes->buildCache();
 				} catch(\Exception $e) {

@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS `<pre>routes` (
+CREATE TABLE IF NOT EXISTS `<pre>route` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `path` varchar(255) NOT NULL,
   `base` varchar(255) DEFAULT NULL,
@@ -7,9 +7,9 @@ CREATE TABLE IF NOT EXISTS `<pre>routes` (
   `module` varchar(255) NOT NULL,
   `params` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-INSERT INTO `<pre>routes` (`id`, `path`, `base`, `action`, `type`, `module`, `params`) VALUES
+INSERT INTO `<pre>route` (`id`, `path`, `base`, `action`, `type`, `module`, `params`) VALUES
 (1, 'admin', NULL, NULL, NULL, 'admin', NULL),
 (2, 'admin/player', 'admin', NULL, NULL, 'player', NULL),
 (3, 'admin/player/listing', 'admin', 'listing', NULL, 'player', NULL),

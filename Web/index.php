@@ -48,7 +48,7 @@ $container['config'] = $config;
 try {
 	$app = new App($container);
 	if (!file_exists("rotes.php") && !defined('INSTALL')) {
-		$routes = $app->getModel('routes');
+		$routes = $app->getModel('route');
 		try {
 			$routes->buildCache();
 			require 'routes.php';

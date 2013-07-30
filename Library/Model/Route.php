@@ -4,12 +4,12 @@ namespace ezRPG\Library\Model;
 use \ezRPG\Library\Model;
 
 /**
- * Routes
+ * Route
  * @see Library\Model
  */
-class Routes extends Model
+class Route extends Model
 {
-	protected $tableName = 'routes';
+	protected $tableName = 'route';
 	
 	/**
 	 * Retrieve all routes as an associative array
@@ -17,7 +17,7 @@ class Routes extends Model
 	 */
 	public function getAll() 
 	{
-		$routes = $this->query('SELECT * FROM <prefix>routes');
+		$routes = $this->query('SELECT * FROM <prefix>route');
 		$routes = $routes->fetchAll();
 		
 		return $routes;
