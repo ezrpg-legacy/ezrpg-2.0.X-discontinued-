@@ -21,7 +21,7 @@ $config = array(
 	),
 		
 	'site' => array(
-		'url' => 'http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']),
+		'url' => 'http://' . $_SERVER['HTTP_HOST'] . dirname(str_ireplace('installer/','', $_SERVER['REQUEST_URI'])),
 		'theme' => 'installer',
 	),
 		

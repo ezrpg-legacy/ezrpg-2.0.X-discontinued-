@@ -13,7 +13,7 @@ class Index extends Module
 	 * Default Action
 	 */
 	public function index()	{
-		$data['guessUrl'] = 'http://'.$_SERVER['HTTP_HOST'].str_ireplace('/index.php', '', $_SERVER['PHP_SELF']);
+		$data['guessUrl'] = 'http://'.$_SERVER['HTTP_HOST'].dirname(str_ireplace('installer/','', $_SERVER['REQUEST_URI']));
 		if ( isset($_POST['submit']) ) {
 			$dbconfig = array(
 				'db' => array(

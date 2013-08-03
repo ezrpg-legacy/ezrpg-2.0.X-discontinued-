@@ -1,5 +1,5 @@
 # Follow *nix symlinks through and disallow directory listings
-Options +FollowSymLinks -Indexes 
+#Options +FollowSymLinks -Indexes 
 
 # Turn on the Rewriting Engine
 RewriteEngine On  

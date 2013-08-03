@@ -12,4 +12,4 @@ RewriteRule (.*) Web/$1 [L]
 RewriteCond %{SCRIPT_FILENAME} !-f  
 
 # The requested file does not exist, so rewrite the request to use index.php
-RewriteRule (.*) Web/index.php?q=$1&%1 [NC]
+RewriteRule (.*) Web/$1 [NC]
