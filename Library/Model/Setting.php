@@ -11,6 +11,16 @@ class Setting extends Model
 {
 	protected $tableName = 'setting';
 	
+	public function update($title, $value)
+	{
+		$setting = $this->query("SELECT title FROM <prefix>setting WHERE title='{$title}' AND parent_id != NULL");
+		if ($setting->rowCount() == 1) {
+			$this->query("UPDATE <prefix>setting SET value='{$value}' WHERE title='{$title}' AND parent_id != NULL");
+			return true;
+		}
+		return false;
+	}
+	
 	/**
 	 * Retrieve all settings as an associative array
 	 * @return multitype:string
@@ -75,5 +85,46 @@ class Setting extends Model
 			},
 			$this
 		);
+	}
+
+	private function arrayToString($array) {
+		$string = "";
+		if (is_array($array)) {
+			foreach($array as $key=>$value){
+				if(is_array($value)) {
+					$string .= "'".$key."' => array(\n";
+					$string .= $this->arrayToString($value);
+					$string .= "),\n";
+				}else{
+					if (is_string($value) && $value != "array()") {
+						$value = "'".$value."'";
+					} elseif (is_bool($value)) {
+						$value = ($value)?"true":"false";
+					} elseif (is_null($value)) {
+						$value = "NULL";
+					}
+					$string .= "'".$key."' => ".$value.",\n";
+				}
+			}
+			return $string;
+		}
+		return false;
+	}
+
+	public function buildCache()
+	{
+		$set = $this->getAll();
+		$cache = "<?php\n\$config = array(\n";
+		$cache .= $this->arrayToString($set);
+		$cache .= ");";
+
+		if(is_writable('./')){
+			$fh = fopen('settings.php','w+');
+			fwrite($fh, $cache);
+			fclose($fh);
+		} else {
+			throw new \Exception("Unable to create Settings");
+		}
+		
 	}
 }

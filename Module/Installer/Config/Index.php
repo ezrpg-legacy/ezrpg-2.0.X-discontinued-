@@ -67,49 +67,12 @@ CONFIG;
 				$fh = fopen('config.php', 'w+');
 				fwrite($fh, $config);
 				fclose($fh);
-				/* Generate Settings file */
-				$settings = <<<SETTINGS
-<?php
-\$config['site'] = array(
-		'name' => '$gamename',
-		'url' => '$gameurl',
-		'theme' => 'default'
-);
-
-\$config['router'] = array(
-		'partialRoutes' => true,
-		'routes' => array()
-);
-
-\$config['cache'] = array(
-		'use' => false,
-		'prefix' => 'ezRPG',
-		'ttl' => 60
-);
-
-\$config['security'] = array(
-		'hashRounds' => 11,
-		'hashSaltSize' => 16,
-		'passwordStrength' => 1,
-		'login'	=> array(
-				'showInvalidLoginReason' => true,
-				'returnUsernameOnFailure' => true
-		),
-		'showExceptions' => true,
-		'acl' => array(
-			'use' => true,
-			'rootRole' => 'root'
-		)
-);
-
-\$config['accounts'] = array(
-		'requireActivation' => false,
-		'emailActivation' => false
-);
-SETTINGS;
-				$fh = fopen('settings.php', 'w+');
-				fwrite($fh, $settings);
-				fclose($fh);
+				/* Generate Settings */
+				$settings = $this->app->getModel('setting');
+				$settings->update('name', $gamename);
+				$settings->update('url', $gameurl);
+				
+				$settings->buildCache();
 
 				$routes = $this->app->getModel('route');
 				try {

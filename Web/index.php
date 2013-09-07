@@ -34,12 +34,13 @@ if (!file_exists('config.php') || $uri->segment(0) == "installer") {
 	}
 	require 'config.install.php';
 } else {
-	require 'config.php';
-	// @todo merge settings.php to database
-	require 'settings.php';
+	if (file_exists("settings.php")) {
+		require 'settings.php';
+	}
 	if (file_exists("rotes.php")) {
 		require 'routes.php';
 	}
+	require 'config.php';
 }
 
 $container['config'] = $config;
@@ -47,6 +48,18 @@ $container['config'] = $config;
 // Run
 try {
 	$app = new App($container);
+	if (!file_exists("settings.php") && !defined('INSTALL')) {
+		$settings = $app->getModel('setting');
+		try {
+			$settings->buildCache();
+			require('settings.php');
+			$container->offsetSet('config', $config);
+		} catch (\Exception $e) {
+			printf('<div><strong>ezRPG Exception</strong></div>%s<pre>', $e->getMessage());
+			var_dump($e);
+			die();
+		}
+	}
 	if (!file_exists("rotes.php") && !defined('INSTALL')) {
 		$routes = $app->getModel('route');
 		try {
