@@ -12,7 +12,13 @@ class Index extends Module
 	/**
 	 * Login
 	 */
-	public function index()	{
+	public function index()	
+	{
 		return;
+	}
+	
+	public function player()
+	{
+		$this->view->name = 'admin/player/index';
 	}
 }

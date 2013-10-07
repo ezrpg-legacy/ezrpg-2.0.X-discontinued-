@@ -16,7 +16,14 @@ class Index extends Module
 	public function index($params) 
 	{
 	 $this->view->name = 'index';
+
+	 // redirect user to home if logged in
+	 $sessionModel = $this->container['app']->getModel('Session');
+	 if ($sessionModel->isLoggedIn()) {
+	 	return $this->redirect('home');
+	 }
 	 
+	 // TODO remove dummy action
 	 if ($params['act'] == 'hello') {
 	 	$this->hello();
 	 }

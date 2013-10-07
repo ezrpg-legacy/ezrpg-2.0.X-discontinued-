@@ -123,7 +123,7 @@ class AccessControl implements Interfaces\AccessControl
 	public function hasRole($role)
 	{
 		foreach($this->roles as $role) {
-			if (stricmp($role->getTitle(), $role)) {
+			if (strcasecmp($role->getTitle(), $role)) {
 				return true;
 			}
 		}

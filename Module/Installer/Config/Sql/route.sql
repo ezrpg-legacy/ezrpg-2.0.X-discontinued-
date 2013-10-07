@@ -18,4 +18,5 @@ INSERT INTO `<pre>route` (`id`, `path`, `base`, `action`, `type`, `module`, `par
 (6, 'player/([a-z]+)', NULL, 'view', 'regex', 'player', 'username'),
 (7, 'login', NULL, NULL, NULL, 'login', NULL),
 (8, 'register', NULL, NULL, NULL, 'register', NULL),
-(9, 'home', NULL, NULL, NULL, 'home', NULL);
+(9, 'home', NULL, NULL, NULL, 'home', NULL),
+(10, 'logout', NULL, 'logoutt', NULL, 'login', NULL);
