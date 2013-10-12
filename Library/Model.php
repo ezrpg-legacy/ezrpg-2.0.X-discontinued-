@@ -189,6 +189,10 @@ abstract class Model extends Pdo implements Interfaces\Model
 			if (is_string($item)) {
 				$item = $this->quote($item);
 			}
+			
+			if ($item == NULL) {
+				$item = "NULL";
+			}
 				
 			array_push($pairs, '`' . $key . '` = ' . $item);
 		}

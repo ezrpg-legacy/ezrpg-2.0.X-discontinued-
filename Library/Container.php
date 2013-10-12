@@ -32,6 +32,7 @@ namespace ezRPG\Library;
 class Container implements Interfaces\Container
 {
     protected $values = array();
+    public $version = "2.0b2";
 
     /**
      * Instantiate the container.

@@ -6,4 +6,6 @@ CREATE TABLE if not exists `<pre>permission` (
 
 INSERT INTO `<pre>permission` (`id`, `title`) VALUES
 (1, 'canAdminCP'),
-(2, 'canAdminPlayers');
+(2, 'canAdminPlayers'),
+(3, 'canAdminConfig'),
+(4, 'canAdminRoute');

@@ -1,0 +1,78 @@
+<?php require dirname(__DIR__) . '/header.phtml' ?>
+<?php $data = $this->get('data');?>
+
+<h1>Edit Route</h1>
+
+<form method="post">
+<table style="width:100%">
+<?php if ($data['id'] != 'new') {?>
+<tr>
+	<td><strong>ID:</strong></td>
+	<td><?php echo $data['id']?></td>
+</tr>
+<?php } ?>
+<tr>
+	<td><strong>Path:</strong></td>
+	<td><input type="text" name="path" value="<?php echo $data['path']; ?>" /></td>
+</tr>
+<tr>
+	<td><strong>Base:</strong></td>
+	<td>
+		<select name="base">
+<?php foreach ($data['bases'] as $base) {?>
+			<option value="<?php echo $base ?>"<?php echo ($data['base'] == $base)?' selected':''; ?>><?php echo $base ?></option>
+<?php } ?>
+		</select>
+	</td>
+</tr>
+<tr>
+	<td><strong>Action:</strong></td>
+	<td><input type="text" name="action" value="<?php echo $data['action']; ?>" /></td>
+</tr>
+<tr>
+	<td><strong>Type:</strong></td>
+	<td>
+		<select name="type">
+			<option value="literal"<?php echo ($data['type'] == 'literal' || $data['type'] == NULL)?' selected':''; ?>>Literal</option>
+			<option value="regex"<?php echo ($data['type'] == 'regex')?' selected':''; ?>>Regex</option>
+		</select>
+	</td>
+</tr>
+<tr>
+	<td><strong>Module:</strong></td>
+	<td><input type="text" name="module" value="<?php echo $data['module']; ?>" /></td>
+</tr>
+<tr>
+	<td><strong>Parameters:</strong></td>
+	<td><input type="text" name="params" value="<?php echo $data['params']; ?>" /></td>
+</tr>
+<tr>
+	<td><strong>Permissions:</strong></td>
+	<td>
+		<fieldset><legend>Please select all permissions that are required to view this route.</legend>
+<?php foreach ($data['permissions'] as $permission) {?>
+			
+			<label for="perm_<?php echo $permission['id'] ?>"><input type="checkbox" name="permission[]"<?php echo (in_array($permission['title'], $data['permission']))?' checked':'';?> value="<?php echo $permission['title'] ?>" id="perm_<?php echo $permission['id'] ?>" /> <?php echo $permission['title']; ?></label>
+<?php } ?>
+		</fieldset>
+	</td>
+</tr>
+<tr>
+	<td><strong>Roles:</strong></td>
+	<td>
+		<fieldset><legend>Please select all roles that are required to view this route.</legend>
+<?php foreach ($data['roles'] as $role) {?>
+			<label for="role_<?php echo $role['id'] ?>"><input type="checkbox" name="role[]"<?php echo (in_array($role['title'], $data['role']))?' checked':'';?> value="<?php echo $role['title'] ?>" id="role_<?php echo $role['id'] ?>" /> <?php echo $role['title']; ?></label>
+<?php } ?>
+		</fieldset>
+	</td>
+</tr>
+<tr>
+	<td colspan="2">
+		<input type="submit" name="submit" value="Save" />
+	</td>
+</tr>
+</table>
+</form>
+
+<?php require dirname(__DIR__) . '/footer.phtml' ?>

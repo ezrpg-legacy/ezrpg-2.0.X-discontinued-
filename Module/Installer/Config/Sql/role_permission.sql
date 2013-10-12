@@ -7,4 +7,6 @@ CREATE TABLE if not exists `<pre>role_permission` (
 
 INSERT INTO `<pre>role_permission` (`id`, `role_id`, `permission_id`) VALUES
 (1, 2, 1),
-(1, 2, 2);
+(2, 2, 2),
+(3, 2, 3),
+(3, 2, 4);

@@ -12,10 +12,24 @@ class Route extends Model
 	protected $tableName = 'route';
 	
 	/**
+	 * Retrieve specific route
+	 * @param integer $id Route ID
+	 */
+	public function get($id)
+	{
+		$id = intval($id);
+		$route = $this->query('SELECT * FROM <prefix>route WHERE `id`='.$id);
+		if ($route->rowCount() == 1) {
+			return $route->fetch();
+		}
+		return false;
+	}
+	
+	/**
 	 * Retrieve all routes as an associative array
 	 * @return multitype:string
 	 */
-	public function getAll() 
+	public function getAll($limit=0, $offset=0) 
 	{
 		$routes = $this->query('SELECT * FROM <prefix>route');
 		$routes = $routes->fetchAll();

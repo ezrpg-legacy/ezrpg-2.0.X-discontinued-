@@ -33,7 +33,7 @@ class Router implements Interfaces\Router
 
 			$this->addRoute($route);
 		}
-	}   
+	}
 	
 	/**
 	 * Add a route

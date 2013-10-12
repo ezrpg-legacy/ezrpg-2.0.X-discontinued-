@@ -1,5 +1,10 @@
 <ul>
 	<li><a href="<?php echo $this->getUrl('admin');  ?>">Home</a></li>
+<?php if($this->container['acl']->verify('canAdminConfig')) {?>
+	<li><a href="<?php echo $this->getUrl('admin/config');  ?>">Config</a></li>
+<?php }?>
+<?php if($this->container['acl']->verify('canAdminPlayers')) {?>
 	<li><a href="<?php echo $this->getUrl('admin/player');  ?>">Players</a></li>
+<?php }?>
 	<li><a href="<?php echo $this->getUrl('index');  ?>">Back to Main</a></li>
 </ul>

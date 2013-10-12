@@ -1,0 +1,25 @@
+<?php require dirname(__DIR__) . '/header.phtml' ?>
+
+<h1>Routes</h1>
+
+<table style="width:100%">
+<tr>
+	<th>ID</th>
+	<th>Path</th>
+	<th>Actions</th>
+</tr>
+<?php 
+foreach($this->get('routes') as $route) {
+	?>
+	<tr>
+		<th><?php echo $route['id']; ?></th>
+		<th><?php echo $route['path']; ?></th>
+		<th><a href="<?php echo $this->getUrl('admin/config/route/'.$route['id'])?>">Edit</a></th>
+	</tr>
+	<?php 
+} 
+?>
+</table>
+<a href="<?php echo $this->getUrl('admin/config/route/new')?>">New Route</a>
+
+<?php require dirname(__DIR__) . '/footer.phtml' ?>
