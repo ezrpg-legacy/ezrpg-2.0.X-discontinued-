@@ -37,6 +37,9 @@ if (!file_exists('config.php') || $uri->segment(0) == "installer") {
 	if (file_exists("settings.php")) {
 		require 'settings.php';
 	}
+	if (file_exists("routes.php")) {
+		require 'routes.php';
+	}
 
 	require 'config.php';
 }
@@ -58,11 +61,19 @@ try {
 			die();
 		}
 	}
-
-	// retrieve routes
-	$routes = $app->getModel('route');
-	$config['routes'] = $routes->buildCache();
-	$container->offsetSet('config', $config);
+	
+	if (!file_exists("routes.php") && !defined('INSTALL')) {
+		$routes = $app->getModal('route');
+		try {
+			$routes->buildCache();
+			require 'routes.php';
+			$container->offsetSet('config',$config);
+		} catch(\Exception $e) {
+			printf('<div><strong>ezRPG Exception</strong></div>%s<pre>', $e->getMessage());
+			var_dump($e);
+			die();
+		}
+	}
 	
 	$app->run();
 	$app->serve();
