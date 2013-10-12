@@ -5,4 +5,5 @@ CREATE TABLE if not exists `<pre>permission` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 INSERT INTO `<pre>permission` (`id`, `title`) VALUES
-(1, 'canAdminCP');
+(1, 'canAdminCP'),
+(2, 'canAdminPlayers');

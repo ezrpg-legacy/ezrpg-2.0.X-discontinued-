@@ -72,12 +72,19 @@ class App implements Interfaces\App
 
 		// Authorization of routes through the AC
 		if ($this->container['config']['security']['acl']['use']) {
-			if (!empty($routeMatch['access']['permission']) && !$this->acl->verify($routeMatch['access']['permission'])) {
-				$routeMatch = $router->resolve('error/access-denied');
-			} 
-			
-			if (!empty($routeMatch['access']['role']) && !$this->acl->hasRole($routeMatch['access']['role'])) {
-				$routeMatch = $router->resolve('error/access-denied');
+			if (isset($routeMatch['access']['permission']) && $routeMatch['access']['permission'] != NULL) {
+				foreach ($routeMatch['access']['permission'] as $permission) {
+					if (!$this->acl->verify($permission)) {
+						$routeMatch = $router->resolve('error/access-denied');
+					}
+				}
+			}
+			if (isset($routeMatch['access']['role']) && $routeMatch['access']['role'] != NULL) {
+				foreach ($routeMatch['access']['role'] as $role) {
+					if (!$this->acl->hasRole($role)) {
+						$routeMatch = $router->resolve('error/access-denied');
+					}
+				}
 			}
 		}
 		

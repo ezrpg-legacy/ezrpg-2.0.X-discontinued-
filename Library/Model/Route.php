@@ -49,6 +49,26 @@ class Route extends Model
 				}
 				$cache .= "\n		'params' => array(".$paramList."),";
 			}
+			if ($route['permission'] != NULL || $route['role'] != NULL) {
+				$cache .= "\n		'access' => array(";
+				if ($route['permission'] != NULL) {
+					$permissions = "";
+					$permissionsArray = explode(',', $route['permission']);
+					foreach ($permissionsArray as $permission) {
+						$permissions .= "'".$permission."',";
+					}
+					$cache .= "\n			'permission' => array(".$permissions."),";
+				}
+				if ($route['role'] != NULL) {
+					$roles = "";
+					$rolesArray = explode(',', $route['role']);
+					foreach ($rolesArray as $role) {
+						$roles .= "'".$role."',";
+					}
+					$cache .= "\n			'role' => array(".$roles."),";
+				}
+				$cache .= "\n		),";
+			}
 			if ($route['type'] != NULL)
 				$cache .= "\n		'type' => '".$route['type']."',";
 			$cache .= "\n	),";

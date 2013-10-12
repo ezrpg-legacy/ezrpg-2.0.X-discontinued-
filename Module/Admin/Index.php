@@ -14,11 +14,6 @@ class Index extends Module
 	 */
 	public function index()	
 	{
-		return;
-	}
-	
-	public function player()
-	{
-		$this->view->name = 'admin/player/index';
+		$this->view->name = 'admin/index';
 	}
 }

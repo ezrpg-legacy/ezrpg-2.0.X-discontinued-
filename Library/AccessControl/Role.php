@@ -66,9 +66,9 @@ class Role
 		foreach($this->permissions as $permission) {
 			if (strcasecmp($permission->getTitle(), $title) === 0) {
 				/* Type specific logic */
-				if (!is_null($type)) {
+				/*if (!is_null($type)) {
 					continue;
-				}
+				}*/
 				
 				return true;
 			}

@@ -6,4 +6,5 @@ CREATE TABLE if not exists `<pre>role_permission` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 INSERT INTO `<pre>role_permission` (`id`, `role_id`, `permission_id`) VALUES
-(1, 1, 1);
+(1, 2, 1),
+(1, 2, 2);
