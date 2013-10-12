@@ -31,7 +31,7 @@ class Role
 		}
 		
 		/* Inject root override if applicable */
-		if (strcasecmp($container['config']['security']['acl']['rootRole'], $metadata['title'])) {
+		if (strcasecmp($container['config']['security']['acl']['rootRole'], $metadata['title']) == 0) {
 			$this->metadata['isRoot'] = true;
 		} else {
 			$this->metadata['isRoot'] = false;

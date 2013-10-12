@@ -8,7 +8,7 @@ $loggedIn = $this->container['app']->getModel('session')->isLoggedIn();
 	<li><a href="<?php echo $this->getUrl('Home'); ?>">Home</a></li>
 	<li><a href="<?php echo $this->getUrl('Logout'); ?>">Logout</a></li>
 	
-	<?php if ($this->container['acl']->hasRole('administrator')) { ?>
+	<?php if ($this->container['acl']->verify('canAdminCP')) { ?>
 	<li><a href="<?php echo $this->getUrl('admin/index'); ?>">Admin Panel</a></li>
 	<?php } ?>
 	<?php } else { ?>

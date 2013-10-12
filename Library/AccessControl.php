@@ -122,8 +122,8 @@ class AccessControl implements Interfaces\AccessControl
 	 */
 	public function hasRole($role)
 	{
-		foreach($this->roles as $role) {
-			if (strcasecmp($role->getTitle(), $role)) {
+		foreach($this->roles as $r) {
+			if (strcasecmp($r->getTitle(), $role)) {
 				return true;
 			}
 		}
