@@ -69,8 +69,8 @@ CONFIG;
 				fclose($fh);
 				/* Generate Settings */
 				$settings = $this->app->getModel('setting');
-				$settings->update('name', $gamename);
-				$settings->update('url', $gameurl);
+				$settings->update(2, $gamename);
+				$settings->update(3, $gameurl);
 				
 				$settings->buildCache();
 

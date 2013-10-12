@@ -11,11 +11,12 @@ class Setting extends Model
 {
 	protected $tableName = 'setting';
 	
-	public function update($title, $value)
+	public function update($id, $value)
 	{
-		$setting = $this->query("SELECT title FROM <prefix>setting WHERE title='{$title}' AND parent_id != NULL");
+		$id = intval($id);
+		$setting = $this->query("SELECT id FROM <prefix>setting WHERE id='{$id}'");
 		if ($setting->rowCount() == 1) {
-			$this->query("UPDATE <prefix>setting SET value='{$value}' WHERE title='{$title}' AND parent_id != NULL");
+			$this->query("UPDATE <prefix>setting SET value='{$value}' WHERE id='{$id}'");
 			return true;
 		}
 		return false;
