@@ -20,6 +20,6 @@ foreach($this->get('routes') as $route) {
 } 
 ?>
 </table>
-<a href="<?php echo $this->getUrl('admin/config/route/new')?>">New Route</a>
+<a href="<?php echo $this->getUrl('admin/config/route/new')?>">New Route</a> | <a href="<?php echo $this->getUrl('admin/config/route/rebuild')?>">Rebuild Route Cache</a>
 
 <?php require dirname(__DIR__) . '/footer.phtml' ?>

@@ -22,6 +22,12 @@ class Index extends Module
 		$this->container['view']->set('routes', $data);
 		$this->view->name = 'admin/config/route';
 	}
+	public function rebuildroutes()
+	{
+		$route = $this->container['app']->getmodel('Route');
+		$route->buildCache();
+		header("location: ../route");
+	}
 	public function editroute($params=array())
 	{
 		$route = $this->container['app']->getmodel('Route');
@@ -56,9 +62,11 @@ class Index extends Module
 			$data['role'] = implode(',',$_POST['role']);
 			if ($id == "new") {
 				$route->add($data);
+				$route->buildCache();
 				header("location: ../route");
 			} else {
 				$route->save($data, $id);
+				$route->buildCache();
 				header("location: ../route");
 			}
 		}
