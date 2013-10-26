@@ -22,7 +22,7 @@ INSERT INTO `<pre>route` (`id`, `path`, `base`, `action`, `type`, `module`, `par
 (8, 'register', NULL, NULL, 'literal', 'register', NULL, NULL, NULL),
 (9, 'home', NULL, NULL, 'literal', 'home', NULL, NULL, NULL),
 (10, 'logout', NULL, 'logoutt', 'literal', 'login', NULL, NULL, NULL),
-(11, 'admin/config', 'admin', NULL, 'literal', 'config', NULL, 'canAdminCP,canAdminConfg', NULL),
+(11, 'admin/config', 'admin', NULL, 'literal', 'config', NULL, 'canAdminCP,canAdminConfig', NULL),
 (12, 'admin/config/route', 'admin', 'route', 'literal', 'config', NULL, 'canAdminCP,canAdminConfig,canAdminRoute', NULL),
 (13, 'admin/config/route(/+.*)', 'admin', 'editroute', 'regex', 'config', 'type', 'canAdminCP,canAdminConfig,canAdminRoute', NULL),
 (14, 'admin/config/route/rebuild', 'admin', 'rebuildroutes', 'literal', 'config', '', 'canAdminCP,canAdminConfig,canAdminRoute', NULL);
