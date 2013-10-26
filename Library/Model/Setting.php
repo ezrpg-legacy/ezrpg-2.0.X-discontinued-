@@ -23,33 +23,6 @@ class Setting extends Model
 	}
 	
 	/**
-	 * Retrieve all settings as an associative array
-	 * @return multitype:string
-	 */
-	public function getAll() 
-	{
-		$parents = $this->query('SELECT title FROM <prefix>setting WHERE parent_id IS NULL AND active = 1');
-		$parents = $parents->fetchAll();
-		
-		$cache = array();
-		foreach($parents as $v) {
-			$cache[$v['title']] = '';
-		}
-
-		while(1) {
-			$oc = count($cache, \COUNT_RECURSIVE);
-			$this->recurse($cache);
-			$nc = count($cache, \COUNT_RECURSIVE);
-			
-			if ($nc === $oc) {
-				break;
-			}
-		}
-
-		return $cache;
-	}
-	
-	/**
 	 * Utility function that recurses through an array and fills
 	 * up parent settings.
 	 * @param array $cache
@@ -114,7 +87,7 @@ class Setting extends Model
 
 	public function buildCache()
 	{
-		$set = $this->getAll();
+		$set = $this->findAll();
 		$cache = "<?php\n\$config = array(\n";
 		$cache .= $this->arrayToString($set);
 		$cache .= ");";

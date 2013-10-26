@@ -112,7 +112,7 @@ abstract class Model extends Pdo implements Interfaces\Model
 		$sql = 'SELECT * FROM `' . $this->tableName . '`';
 		if ($lookup != null) {
 			$sql .= ' WHERE `' . $priKey .'` ' . $match_type . ' ' . $lookup;
-		}		
+		}
 		
 		/* Cache entries */
 		if ($this->useCaching == true && $this->container['config']['cache']['use']
@@ -128,7 +128,8 @@ abstract class Model extends Pdo implements Interfaces\Model
 		/* Cache entries */
 		if ($this->useCaching == true && $this->container['config']['cache']['use']) {
 			$this->container['cache']['sql_' . base64_encode($sql)] = $result;
-		} 
+		}
+		echo $sql;
 		
 		return $result;
 	}

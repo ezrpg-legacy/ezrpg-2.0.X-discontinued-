@@ -18,7 +18,7 @@ class Index extends Module
 	}
 	public function route()
 	{
-		$data = $this->container['app']->getModel('Route')->getAll();
+		$data = $this->container['app']->getModel('Route')->findAll();
 		$this->container['view']->set('routes', $data);
 		$this->view->name = 'admin/config/route';
 	}
@@ -75,8 +75,8 @@ class Index extends Module
 		foreach(glob("./module/*") as $base) {
 			$data['bases'][] = strtolower(str_ireplace('./module/','',$base));
 		}
-		$data['permissions'] = $this->container['app']->getmodel('Permission')->getAll();
-		$data['roles'] = $this->container['app']->getmodel('Role')->getAll();
+		$data['permissions'] = $this->container['app']->getmodel('Permission')->findAll();
+		$data['roles'] = $this->container['app']->getmodel('Role')->findAll();
 		$this->container['view']->set('data', $data);
 		$this->view->name = 'admin/config/editroute';
 	}
