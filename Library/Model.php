@@ -129,7 +129,6 @@ abstract class Model extends Pdo implements Interfaces\Model
 		if ($this->useCaching == true && $this->container['config']['cache']['use']) {
 			$this->container['cache']['sql_' . base64_encode($sql)] = $result;
 		}
-		echo $sql;
 		
 		return $result;
 	}
