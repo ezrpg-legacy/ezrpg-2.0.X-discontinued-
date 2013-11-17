@@ -13,6 +13,8 @@ class App implements Interfaces\App
     public $plugins = array(); 
     protected $rootPath	= '/';
     protected $view;
+    public $Pdo;
+    public $loadtime=array();
     
     /**
      * @param Interfaces\Container $container
@@ -21,11 +23,7 @@ class App implements Interfaces\App
     {
         $container['app'] = $this;
 		
-		// Skip configuration if INSTALL flag is set
-		/*if (defined('INSTALL')) {
-			$this->container = $container;
-			return;
-		}*/
+		$this->loadTime();
 
 		$config = $container['config'];
 		
@@ -46,6 +44,29 @@ class App implements Interfaces\App
 		$this->loadPlugins();
 
 		$this->container = $container;
+    }
+    
+    /**
+     * Calculate page load times.
+     */
+    public function loadTime($round=2)
+    {
+    	if(!array_key_exists('start', $this->loadtime)) {
+    		$this->loadtime['start'] = $this->microtime();
+    	} else {
+    		$this->loadtime['end'] = $this->microtime();
+    		$this->loadtime['total'] = round($this->loadtime['end'] - $this->loadtime['start'], $round);
+    		return $this->loadtime['total'];
+    	}
+    }
+    
+    /**
+     * Generate microtime as float
+     * return float Microtime
+     */
+    public function microtime()
+    {
+    	return microtime(true);
     }
     
 	/**
