@@ -76,7 +76,7 @@ class Config implements Interfaces\Config
 	protected function addDatabaseConfig() {
 		$this->config = array_merge_recursive(
 			$this->config,
-			$this->container['app']->getModel('Setting')->getAll()
+			$this->container['app']->getModel('Setting')->findAll()
 		);
 	}
 }

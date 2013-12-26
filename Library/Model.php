@@ -10,7 +10,7 @@ use	\Exception;
  * This class extends Pdo, and initializes it within it's
  * constructor with database settings gathered from Config.
  */
-abstract class Model extends Pdo implements Interfaces\Model
+abstract class Model implements Interfaces\Model
 {
 	protected $conainter;
 	protected $tableName;
@@ -21,6 +21,7 @@ abstract class Model extends Pdo implements Interfaces\Model
 	protected $usePrefix = true;	
 	private $_config;
 	public $safeMode = true;
+	public $db;
 	
 	/**
 	 * Constructor
@@ -31,12 +32,15 @@ abstract class Model extends Pdo implements Interfaces\Model
 		$this->container = $container;
 		$config = $this->_config = $container['config']['db'];
 		
-		/* Initliaze the Pdo parent */
-		parent::__construct(
-			$config['driver'] . ':host=' . $config['host'] . ';port='. $config['port'] . ';dbname=' . $config['database'].';charset=utf8', 
-			$config['username'], 
-			$config['password']
-		);
+		/* Initliaze Pdo */
+		if(empty($this->container['app']->Pdo)) {
+			$this->container['app']->Pdo = new Pdo(
+				$config['driver'] . ':host=' . $config['host'] . ';port='. $config['port'] . ';dbname=' . $config['database'].';charset=utf8', 
+				$config['username'], 
+				$config['password']
+			);
+		}
+		$this->db = $this->container['app']->Pdo;
 		
 		$this->setAttribute(Pdo::ATTR_ERRMODE, Pdo::ERRMODE_EXCEPTION);
 		$this->setAttribute(Pdo::ATTR_DEFAULT_FETCH_MODE, Pdo::FETCH_ASSOC);
@@ -71,6 +75,21 @@ abstract class Model extends Pdo implements Interfaces\Model
 				$this->tableColumns[] = $column['COLUMN_NAME'];
 			}
 		}
+	}
+	
+	public function setAttribute($attribute, $value)
+	{
+		return $this->db->setAttribute($attribute, $value);
+	}
+	
+	public function quote($string, $parameter_type=PDO::PARAM_STR)
+	{
+		return $this->db->quote($string, $parameter_type);
+	}
+	
+	public function lastInsertId()
+	{
+		return $this->db->lastInsertId();
 	}
 	
 	/**
@@ -112,13 +131,15 @@ abstract class Model extends Pdo implements Interfaces\Model
 		$sql = 'SELECT * FROM `' . $this->tableName . '`';
 		if ($lookup != null) {
 			$sql .= ' WHERE `' . $priKey .'` ' . $match_type . ' ' . $lookup;
-		}		
+		}
 		
 		/* Cache entries */
-		if ($this->useCaching == true && $this->container['config']['cache']['use']
-			&& isset($this->container['cache']['sql_' . base64_encode($sql)])) {
-			return $this->container['cache']['sql_' . base64_encode($sql)];
-		} 
+		if (!defined("INSTALL")) {
+			if ($this->useCaching == true && $this->container['config']['cache']['use']
+				&& isset($this->container['cache']['sql_' . base64_encode($sql)])) {
+				return $this->container['cache']['sql_' . base64_encode($sql)];
+			}
+		}
 		
 		$query = $this->prepare($sql);
 		$query->execute();
@@ -128,7 +149,7 @@ abstract class Model extends Pdo implements Interfaces\Model
 		/* Cache entries */
 		if ($this->useCaching == true && $this->container['config']['cache']['use']) {
 			$this->container['cache']['sql_' . base64_encode($sql)] = $result;
-		} 
+		}
 		
 		return $result;
 	}
@@ -249,7 +270,7 @@ abstract class Model extends Pdo implements Interfaces\Model
 	public function query($statement) 
 	{
 		$statement = preg_replace('/<prefix>([a-z_\-0-9]+)/i', $this->_config['prefix'] . '$1', $statement);
-		return parent::query($statement);
+		return $this->db->query($statement);
 	}
 	
 	/**
@@ -265,6 +286,6 @@ abstract class Model extends Pdo implements Interfaces\Model
 		
 		$statement = preg_replace('/<prefix>([a-z_\-0-9]+)/i', $this->_config['prefix'] . '$1', $statement);
 
-		return parent::prepare($statement, $driver_options);
+		return $this->db->prepare($statement, $driver_options);
 	}
 }

@@ -24,18 +24,6 @@ class Route extends Model
 		}
 		return false;
 	}
-	
-	/**
-	 * Retrieve all routes as an associative array
-	 * @return multitype:string
-	 */
-	public function getAll($limit=0, $offset=0) 
-	{
-		$routes = $this->query('SELECT * FROM <prefix>route');
-		$routes = $routes->fetchAll();
-		
-		return $routes;
-	}
 
 	/**
 	 * Builds cache of routes
@@ -43,7 +31,7 @@ class Route extends Model
 	 */
 	public function buildCache()
 	{
-		$routes = $this->getAll();
+		$routes = $this->findAll();
 		$cache = "<?php\n\$config['routes'] = array(";
 		foreach ($routes as $route) {
 			$cache .= "\n	'".$route['path']."' => array(";
